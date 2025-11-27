@@ -1,0 +1,92 @@
+#pc-wrap {
+  display: flex;
+  .service-page {
+    .hero-title {
+      position: absolute;
+      color: #fff;
+      font-family: "Limelight";
+      font-size: 80px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 80px; /* 100% */
+      left: 300px;
+      top: 380px;
+    }
+    .container {
+      flex-direction: column;
+      .service-main {
+        padding-bottom: 50px;
+        .service-main-title {
+          color: #004034;
+          font-family: "Limelight";
+          font-size: 48px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 50px;
+          padding: 112px 0px 23px 187px;
+          height: 198px;
+        }
+        .service-card {
+          height: 198px;
+          width: 100%;
+          // padding-bottom: 53px;
+          border-bottom: 1px solid rgba(189, 199, 197, 1);
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          .service-text-box {
+            .service-title {
+              color: #004034;
+              font-family: "DM Sans";
+              font-size: 22px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: 30px;
+              text-transform: uppercase;
+            }
+            .service-desc {
+              color: #313e3b;
+              font-family: "DM Sans";
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 21px;
+              padding-top: 6px;
+            }
+            .service-time {
+              color: #313e3b;
+              font-family: "DM Sans";
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 500;
+              padding-top: 15px;
+              line-height: 20px;
+              text-transform: uppercase;
+            }
+          }
+          .service-price {
+            color: #004034;
+            text-align: right;
+            font-family: "Limelight";
+            font-size: 26px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 21px;
+          }
+          .service-images {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            img {
+              height: 150px;
+              // width: 224px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

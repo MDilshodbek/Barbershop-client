@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextField } from "@mui/material";
+import { Box, Button, Link, Stack, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -32,22 +32,32 @@ const Footer = () => {
         </Stack>
       </Stack>
       <Stack className="footer-router">
-        <Stack className="footer-link">
+        <Link href="service" className="footer-link">
           <ArrowRightIcon style={{ color: "#c6d984" }} />
           <p>Service</p>
-        </Stack>
-        <Stack className="footer-link">
+        </Link>
+        <Link href="barber" className="footer-link">
+          <ArrowRightIcon style={{ color: "#c6d984" }} />
+          <p>Babers</p>
+        </Link>
+        <Link href="appointment" className="footer-link">
           <ArrowRightIcon style={{ color: "#c6d984" }} />
           <p>Appointment</p>
-        </Stack>
-        <Stack className="footer-link">
+        </Link>
+        <Link href="community" className="footer-link">
           <ArrowRightIcon style={{ color: "#c6d984" }} />
           <p>Community</p>
-        </Stack>
-        <Stack className="footer-link">
+        </Link>
+        {false && (
+          <Link href={"/mypage"} className="footer-link">
+            <ArrowRightIcon style={{ color: "#c6d984" }} />
+            <p>My Page</p>
+          </Link>
+        )}
+        <Link href="faq" className="footer-link">
           <ArrowRightIcon style={{ color: "#c6d984" }} />
           <p>FAQ</p>
-        </Stack>
+        </Link>
       </Stack>
       <Stack className="schedule">
         <Box>Monday ----------------- CLOSED</Box>

@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, colors, Link, Menu, MenuItem, Stack } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Link, Menu, MenuItem, Stack } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
@@ -8,8 +8,27 @@ const Top = () => {
     null
   );
   const logoutOpen = Boolean(logoutAnchor);
+  const [colorChange, setColorChange] = useState(false);
+  const [bgColor, setBgColor] = useState<boolean>(false);
+
+  const changeNavbarColor = () => {
+    if (window.scrollY >= 50) {
+      setColorChange(true);
+    } else {
+      setColorChange(false);
+    }
+  };
+
+  if (typeof window !== "undefined") {
+    window.addEventListener("scroll", changeNavbarColor);
+  }
+
   return (
-    <Stack className="navbar">
+    <Stack
+      className={`navbar ${colorChange ? "transparent" : ""} ${
+        bgColor ? "transparent" : ""
+      }`}
+    >
       <Stack className="container">
         <Box className="logo-box">
           <Link href="/">

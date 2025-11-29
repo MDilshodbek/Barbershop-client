@@ -3,33 +3,60 @@ import Head from "next/head";
 import Top from "../Top";
 import Footer from "../Footer";
 import HeaderHero from "../homepage/HeaderHero";
+import useDeviceDetect from "../../hooks/useDeviceDetect";
 
 const withLayoutMain = (Component: any) => {
   return (props: any) => {
-    return (
-      <>
-        <Head>
-          <title>Cropper</title>
-          <meta name={"title"} content={`Cropper`} />
-        </Head>
-        <Stack id="pc-wrap">
-          <Stack id={"top"}>
-            <Top />
-          </Stack>
-          <Stack className={"header-main"}>
-            <HeaderHero />
-          </Stack>
+    const device = useDeviceDetect();
 
-          <Stack id={"main"}>
-            <Component {...props} />
-          </Stack>
+    if (device === "mobile") {
+      return (
+        <>
+          <Head>
+            <title>Cropper</title>
+            <meta name={"title"} content={`Cropper`} />
+          </Head>
+          <Stack id="mobile-wrap">
+            <Stack id={"top"}>
+              <Top />
+            </Stack>
 
-          <Stack id={"footer"}>
-            <Footer />
+            <Stack id={"main"}>
+              <Component {...props} />
+            </Stack>
+
+            <Stack id={"footer"}>
+              <Footer />
+            </Stack>
           </Stack>
-        </Stack>
-      </>
-    );
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Head>
+            <title>Cropper</title>
+            <meta name={"title"} content={`Cropper`} />
+          </Head>
+          <Stack id="pc-wrap">
+            <Stack id={"top"}>
+              <Top />
+            </Stack>
+            <Stack className={"header-main"}>
+              <HeaderHero />
+            </Stack>
+
+            <Stack id={"main"}>
+              <Component {...props} />
+            </Stack>
+
+            <Stack id={"footer"}>
+              <Footer />
+            </Stack>
+          </Stack>
+        </>
+      );
+    }
   };
 };
 

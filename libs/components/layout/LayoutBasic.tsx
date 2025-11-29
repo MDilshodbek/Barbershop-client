@@ -4,9 +4,13 @@ import TopBasic from "../TopBasic";
 import Footer from "../Footer";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
+import useDeviceDetect from "../../hooks/useDeviceDetect";
+import Top from "../Top";
 
 const withLayoutBasic = (Component: any) => {
   return (props: any) => {
+    const device = useDeviceDetect();
+
     const router = useRouter();
 
     const memoizedValues = useMemo(() => {
@@ -61,24 +65,16 @@ const withLayoutBasic = (Component: any) => {
       return { title, desc, bgImage };
     }, [router.pathname]);
 
-    return (
+    if (device === "mobile") {
       <>
         <Head>
           <title>Cropper</title>
           <meta name={"title"} content={`Cropper`} />
         </Head>
-        <Stack id="pc-wrap">
-          <Stack id={"top-basic"}>
-            <TopBasic />
+        <Stack id="mobile-wrap">
+          <Stack id={"top"}>
+            <Top />
           </Stack>
-          <Stack
-            className={`header-basic`}
-            style={{
-              backgroundImage: `url(${memoizedValues.bgImage})`,
-              backgroundSize: "cover",
-              boxShadow: "inset 10px 40px 150px 40px rgb(24 22 36)",
-            }}
-          ></Stack>
           <Stack id={"main"}>
             <Component {...props} />
           </Stack>
@@ -86,8 +82,36 @@ const withLayoutBasic = (Component: any) => {
             <Footer />
           </Stack>
         </Stack>
-      </>
-    );
+      </>;
+    } else {
+      return (
+        <>
+          <Head>
+            <title>Cropper</title>
+            <meta name={"title"} content={`Cropper`} />
+          </Head>
+          <Stack id="pc-wrap">
+            <Stack id={"top-basic"}>
+              <TopBasic />
+            </Stack>
+            <Stack
+              className={`header-basic`}
+              style={{
+                backgroundImage: `url(${memoizedValues.bgImage})`,
+                backgroundSize: "cover",
+                boxShadow: "inset 10px 40px 150px 40px rgb(24 22 36)",
+              }}
+            ></Stack>
+            <Stack id={"main"}>
+              <Component {...props} />
+            </Stack>
+            <Stack id={"footer"}>
+              <Footer />
+            </Stack>
+          </Stack>
+        </>
+      );
+    }
   };
 };
 

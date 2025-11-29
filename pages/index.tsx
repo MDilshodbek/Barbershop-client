@@ -5,16 +5,23 @@ import Mission from "../libs/components/homepage/Mission";
 import Barbers from "../libs/components/homepage/TopBarber";
 import Journal from "../libs/components/homepage/Journal";
 import { Reviews } from "../libs/components/homepage/Review";
+import useDeviceDetect from "../libs/hooks/useDeviceDetect";
 
 const Home: NextPage = () => {
-  return (
-    <Stack className="home-page">
-      <Mission />
-      <Barbers />
-      <Reviews />
-      <Journal />
-    </Stack>
-  );
+  const device = useDeviceDetect();
+
+  if (device === "mobile") {
+    return <Stack>HomePage Mobile</Stack>;
+  } else {
+    return (
+      <Stack className="home-page">
+        <Mission />
+        <Barbers />
+        <Reviews />
+        <Journal />
+      </Stack>
+    );
+  }
 };
 
 export default withLayoutMain(Home);

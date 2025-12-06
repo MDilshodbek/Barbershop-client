@@ -1,10 +1,79 @@
-import { Container, Stack, Typography } from "@mui/material";
+import { Box, Pagination, Rating, Stack, Typography } from "@mui/material";
 import { NextPage } from "next";
 import withLayoutBasic from "../../libs/components/layout/LayoutBasic";
 import useDeviceDetect from "../../libs/hooks/useDeviceDetect";
+import CommentIcon from "@mui/icons-material/Comment";
+import { ServiceInquiry } from "../../libs/types/service/service.input";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Service } from "../../libs/types/service/service";
+import { useQuery } from "@apollo/client";
+import { GET_SERVICES } from "../../apollo/user/query";
+import { T } from "../../libs/types/common";
+import { useRouter } from "next/router";
 
-const Service: NextPage = () => {
+interface ServiceProps {
+  initialInput?: ServiceInquiry;
+}
+
+const OurService: NextPage<ServiceProps> = (props) => {
   const device = useDeviceDetect();
+  const [service, setService] = useState<Service[]>([]);
+  const router = useRouter();
+  const [total, setTotal] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const {
+    initialInput = {
+      page: 1,
+      limit: 6,
+      text: "",
+      serviceStatus: "ACTIVE",
+    },
+  } = props;
+  const [pageFilter, setPageFilter] = useState<any>(initialInput);
+
+  const {
+    loading: getServicesLoading,
+    data: getServicesData,
+    error: getServicesError,
+    refetch: getServicesRefetch,
+  } = useQuery(GET_SERVICES, {
+    fetchPolicy: "cache-and-network",
+    variables: { input: pageFilter },
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data: T) => {
+      setService(data?.getServices?.list);
+      setTotal(data?.getServices?.metaCounter[0]?.total);
+    },
+  });
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    if (router.query.input) {
+      const input_obj = JSON.parse(router?.query?.input as string);
+      setPageFilter(input_obj);
+      setCurrentPage(input_obj.page ?? 1);
+    }
+  }, [router.isReady, router.query.input]);
+
+  const paginationChangeHandler = async (
+    event: ChangeEvent<unknown>,
+    value: number
+  ) => {
+    const nextFilter = {
+      ...pageFilter,
+      page: value,
+    };
+
+    setPageFilter(nextFilter);
+    setCurrentPage(value);
+
+    const encoded = encodeURIComponent(JSON.stringify(nextFilter));
+    router.replace(`/service?input=${encoded}`, `/service?input=${encoded}`, {
+      scroll: false,
+    });
+  };
 
   if (device === "mobile") {
     return <Stack>Service Mobile Page</Stack>;
@@ -15,141 +84,89 @@ const Service: NextPage = () => {
         <Stack className="container">
           <Stack className="service-main">
             <Stack className="service-main-title">Our Signature Services</Stack>
-            <Stack className="service-card">
-              <Stack className="service-text-box">
-                <Typography className="service-title">
-                  Haircut & Styling
-                </Typography>
-                <Typography className="service-desc">
-                  A meticulously executed haircut
-                </Typography>
-                <Typography className="service-time">60 min</Typography>
+            {service.length === 0 ? (
+              <Box component={"div"} className="empty-list">
+                Services are not available
+              </Box>
+            ) : (
+              <>
+                {service.map((service: Service) => {
+                  return (
+                    <Stack key={service._id} className="service-card">
+                      <Stack className="service-text-box">
+                        <Typography className="service-title">
+                          {service.serviceTitle}
+                        </Typography>
+                        <Typography className="service-desc">
+                          {service.serviceDesc}
+                        </Typography>
+                        <Typography className="service-time">
+                          {service.serviceDuration} min
+                        </Typography>
+                        <Stack className="review-stars">
+                          <Rating
+                            value={5}
+                            readOnly
+                            sx={{
+                              "& .MuiRating-iconFilled": {
+                                color: "#FFD700 !important",
+                              },
+                            }}
+                          />
+                          <CommentIcon style={{ color: "#313e3b" }} />
+                          <span>{service.serviceReviews}</span>
+                        </Stack>
+                      </Stack>
+                      <Stack className="service-price">
+                        ${service.servicePrice}
+                      </Stack>
+                      <Stack className="service-images">
+                        {service.serviceImages?.map((img, index) => (
+                          <img
+                            key={index}
+                            src={`${process.env.REACT_APP_API_URL}/${img}`}
+                            alt=""
+                          />
+                        ))}
+                      </Stack>
+                    </Stack>
+                  );
+                })}
+              </>
+            )}
+            <Stack className={"pagination"}>
+              <Stack className="pagination-box">
+                {service.length !== 0 &&
+                  Math.ceil(total / pageFilter.limit) > 1 && (
+                    <Stack className="pagination-box">
+                      <Pagination
+                        page={pageFilter.page ?? 1}
+                        count={Math.ceil(total / pageFilter.limit)}
+                        onChange={paginationChangeHandler}
+                        shape="circular"
+                        sx={{
+                          "& .MuiPaginationItem-root": {
+                            color: "#004034", // text color
+                            borderColor: "#004034", // border color
+                          },
+                          "& .MuiPaginationItem-root.Mui-selected": {
+                            backgroundColor: "#C6D984", // selected background
+                            color: "#fff", // selected text
+                          },
+                          "& .MuiPaginationItem-root:hover": {
+                            backgroundColor: "#C6D984", // hover background
+                            color: "#fff",
+                          },
+                        }}
+                      />
+                    </Stack>
+                  )}
               </Stack>
-              <Stack className="service-price">$25</Stack>
-              <Stack className="service-images">
-                <img src="/img/cut.jpg" alt="" />
-                <img src="/img/cut2.jpg" alt="" />
-                <img src="/img/cut4.jpg" alt="" />
-              </Stack>
-            </Stack>
-            <Stack className="service-card">
-              <Stack className="service-text-box">
-                <Typography className="service-title">
-                  Beard Trimming & Styling
-                </Typography>
-                <Typography className="service-desc">
-                  A precisely shaped beard with clean, defined lines
-                </Typography>
-                <Typography className="service-time">30 min</Typography>
-              </Stack>
-              <Stack className="service-price">$20</Stack>
-              <Stack className="service-images">
-                <img src="/img/bbeard1.png" alt="" />
-                <img src="/img/bbeard2.png" alt="" />
-                <img src="/img/bbeard3.png" alt="" />
-              </Stack>
-            </Stack>
-            <Stack className="service-card">
-              <Stack className="service-text-box">
-                <Typography className="service-title">
-                  Creative Haircut & Styling
-                </Typography>
-                <Typography className="service-desc">
-                  A freshly crafted, trend-forward style
-                </Typography>
-                <Typography className="service-time">60 min</Typography>
-              </Stack>
-              <Stack className="service-price">$30</Stack>
-              <Stack className="service-images">
-                <img src="/img/modeling.jpg" alt="" />
-                <img src="/img/modeling2.jpg" alt="" />
-                <img src="/img/modeling3.jpg" alt="" />
-              </Stack>
-            </Stack>
-            <Stack className="service-card">
-              <Stack className="service-text-box">
-                <Typography className="service-title">
-                  Long Hair Cut & Styling
-                </Typography>
-                <Typography className="service-desc">
-                  A shape-enhancing cut with a styled, flowing finish
-                </Typography>
-                <Typography className="service-time">60 min</Typography>
-              </Stack>
-              <Stack className="service-price">$30</Stack>
-              <Stack className="service-images">
-                <img src="/img/gallery5.jpg" alt="" />
-                <img src="/img/long-hair2.jpg" alt="" />
-                <img src="/img/long-hair4.jpg" alt="" />
-              </Stack>
-            </Stack>
-            <Stack className="service-card">
-              <Stack className="service-text-box">
-                <Typography className="service-title">
-                  Perm & Styling
-                </Typography>
-                <Typography className="service-desc">
-                  A textured transformation with a defined, styled finish
-                </Typography>
-                <Typography className="service-time">1H 20MIN</Typography>
-              </Stack>
-              <Stack className="service-price">$40</Stack>
-              <Stack className="service-images">
-                <img src="/img/perm.jpeg" alt="" />
-                <img src="/img/perm4.jpg" alt="" />
-                <img src="/img/perm5.jpg" alt="" />
-              </Stack>
-            </Stack>
-            <Stack className="service-card">
-              <Stack className="service-text-box">
-                <Typography className="service-title">
-                  Paint & Styling
-                </Typography>
-                <Typography className="service-desc">
-                  A vibrant color update with a smooth, styled finish
-                </Typography>
-                <Typography className="service-time">1H 30min</Typography>
-              </Stack>
-              <Stack className="service-price">$40</Stack>
-              <Stack className="service-images">
-                <img src="/img/paint1.png" alt="" />
-                <img src="/img/paint2.png" alt="" />
-                <img src="/img/painting3.jpg" alt="" />
-              </Stack>
-            </Stack>
-            <Stack className="service-card">
-              <Stack className="service-text-box">
-                <Typography className="service-title">
-                  Children’s Haircut (up to 10)
-                </Typography>
-                <Typography className="service-desc">
-                  A neat, gentle cut designed for comfort and style
-                </Typography>
-                <Typography className="service-time">60 min</Typography>
-              </Stack>
-              <Stack className="service-price">$25</Stack>
-              <Stack className="service-images">
-                <img src="/img/babycut.jpg" alt="" />
-                <img src="/img/babycut4.jpg" alt="" />
-                <img src="/img/babycut5.jpg" alt="" />
-              </Stack>
-            </Stack>
-            <Stack className="service-card">
-              <Stack className="service-text-box">
-                <Typography className="service-title">
-                  Hair Wash & Style
-                </Typography>
-                <Typography className="service-desc">
-                  A clean refresh with a sleek, styled finish
-                </Typography>
-                <Typography className="service-time">20 min</Typography>
-              </Stack>
-              <Stack className="service-price">$10</Stack>
-              <Stack className="service-images">
-                <img src="/img/wash.webp" alt="" />
-                <img src="/img/dry3.png" alt="" />
-                <img src="/img/dry2.png" alt="" />
-              </Stack>
+              {service.length !== 0 && (
+                <span>
+                  Total {total} service{total > 1 ? "s" : ""} available
+                </span>
+              )}
             </Stack>
           </Stack>
         </Stack>
@@ -158,4 +175,4 @@ const Service: NextPage = () => {
   }
 };
 
-export default withLayoutBasic(Service);
+export default withLayoutBasic(OurService);

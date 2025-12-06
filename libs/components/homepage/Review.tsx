@@ -4,17 +4,42 @@ import SwiperCore, { Autoplay, Navigation, Pagination } from "swiper";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import FormatQuoteRoundedIcon from "@mui/icons-material/FormatQuoteRounded";
 import { useMemo, useState } from "react";
-
+import { AllReviewInquiry } from "../../types/review/review.input";
+import { Review } from "../../types/review/review";
+import { useQuery } from "@apollo/client";
+import { GET_AllREVIEWS } from "../../../apollo/user/query";
+import { T } from "../../types/common";
 SwiperCore.use([Autoplay, Navigation, Pagination]);
 
-export function Reviews() {
-  const [value, setValue] = useState<number | null>(2);
+interface ReviewProps {
+  initialInput: AllReviewInquiry;
+}
 
+export function UserReviews(props: ReviewProps) {
   const slidesOffsetBefore = useMemo(() => {
     // COMMENT: during SSR, window is not defined, so return 0
     if (typeof window === "undefined") return 0;
     return window.innerWidth * 0.2;
   }, []);
+
+  const { initialInput } = props;
+  const [review, setReview] = useState<Review[]>([]);
+
+  const {
+    loading: getAllReviewsLoading,
+    data: getAllReviewsData,
+    error: getAllReviewsError,
+    refetch: getAllReviewsRefetch,
+  } = useQuery(GET_AllREVIEWS, {
+    fetchPolicy: "cache-and-network",
+    variables: { input: initialInput },
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data: T) => {
+      setReview(data?.getAllReviews?.list);
+    },
+  });
+
+  console.log("review", review);
 
   return (
     <div className={"review-frame"}>
@@ -51,146 +76,54 @@ export function Reviews() {
             disableOnInteraction: false,
           }}
         >
-          <SwiperSlide className={"review-info-frame"}>
-            <Box className="mark">
-              <FormatQuoteRoundedIcon
-                style={{
-                  color: "#004034",
-                  fontSize: "40px",
-                }}
-              />
+          {review.length === 0 ? (
+            <Box component={"div"} className="empty-list">
+              Reviews are not available
             </Box>
-            <Box className="review-comment">
-              {
-                "The level of attention and artistry from the barbers at Cropper is truly unmatched. The barbers at Cropper really take the time to understand what style works for you. My cuts have never looked better"
-              }
-            </Box>
-            <Stack className="review-user">
-              <img className="review-userimg" src={"/img/barber3.png"} alt="" />
-              <Stack className="review-user-info">
-                <Box className="review-username">{"Oscar"}</Box>
-                <Rating
-                  className="review-starts"
-                  value={value}
-                  onChange={(event, newValue) => {
-                    setValue(newValue);
-                  }}
-                />
-              </Stack>
-            </Stack>
-          </SwiperSlide>
-          <SwiperSlide className={"review-info-frame"}>
-            <Box className="mark">
-              <FormatQuoteRoundedIcon
-                style={{
-                  color: "#004034",
-                  fontSize: "40px",
-                }}
-              />
-            </Box>
-            <Box className="review-comment">
-              {
-                "The level of attention and artistry from the barbers at Cropper is truly unmatched. The barbers at Cropper really take the time to understand what style works for you. My cuts have never looked better"
-              }
-            </Box>
-            <Stack className="review-user">
-              <img className="review-userimg" src={"/img/barber3.png"} alt="" />
-              <Stack className="review-user-info">
-                <Box className="review-username">{"Oscar"}</Box>
-                <Rating
-                  className="review-starts"
-                  value={value}
-                  onChange={(event, newValue) => {
-                    setValue(newValue);
-                  }}
-                />
-              </Stack>
-            </Stack>
-          </SwiperSlide>
-          <SwiperSlide className={"review-info-frame"}>
-            <Box className="mark">
-              <FormatQuoteRoundedIcon
-                style={{
-                  color: "#004034",
-                  fontSize: "40px",
-                }}
-              />
-            </Box>
-            <Box className="review-comment">
-              {
-                "The level of attention and artistry from the barbers at Cropper is truly unmatched. The barbers at Cropper really take the time to understand what style works for you. My cuts have never looked better"
-              }
-            </Box>
-            <Stack className="review-user">
-              <img className="review-userimg" src={"/img/barber3.png"} alt="" />
-              <Stack className="review-user-info">
-                <Box className="review-username">{"Oscar"}</Box>
-                <Rating
-                  className="review-starts"
-                  value={value}
-                  onChange={(event, newValue) => {
-                    setValue(newValue);
-                  }}
-                />
-              </Stack>
-            </Stack>
-          </SwiperSlide>
-          <SwiperSlide className={"review-info-frame"}>
-            <Box className="mark">
-              <FormatQuoteRoundedIcon
-                style={{
-                  color: "#004034",
-                  fontSize: "40px",
-                }}
-              />
-            </Box>
-            <Box className="review-comment">
-              {
-                "The level of attention and artistry from the barbers at Cropper is truly unmatched. The barbers at Cropper really take the time to understand what style works for you. My cuts have never looked better"
-              }
-            </Box>
-            <Stack className="review-user">
-              <img className="review-userimg" src={"/img/barber3.png"} alt="" />
-              <Stack className="review-user-info">
-                <Box className="review-username">{"Oscar"}</Box>
-                <Rating
-                  className="review-starts"
-                  value={value}
-                  onChange={(event, newValue) => {
-                    setValue(newValue);
-                  }}
-                />
-              </Stack>
-            </Stack>
-          </SwiperSlide>
-          <SwiperSlide className={"review-info-frame"}>
-            <Box className="mark">
-              <FormatQuoteRoundedIcon
-                style={{
-                  color: "#004034",
-                  fontSize: "40px",
-                }}
-              />
-            </Box>
-            <Box className="review-comment">
-              {
-                "The level of attention and artistry from the barbers at Cropper is truly unmatched. The barbers at Cropper really take the time to understand what style works for you. My cuts have never looked better"
-              }
-            </Box>
-            <Stack className="review-user">
-              <img className="review-userimg" src={"/img/barber3.png"} alt="" />
-              <Stack className="review-user-info">
-                <Box className="review-username">{"Oscar"}</Box>
-                <Rating
-                  className="review-starts"
-                  value={value}
-                  onChange={(event, newValue) => {
-                    setValue(newValue);
-                  }}
-                />
-              </Stack>
-            </Stack>
-          </SwiperSlide>
+          ) : (
+            <>
+              {review.map((review: Review) => {
+                return (
+                  <SwiperSlide className={"review-info-frame"}>
+                    <Box className="mark">
+                      <FormatQuoteRoundedIcon
+                        style={{
+                          color: "#004034",
+                          fontSize: "40px",
+                        }}
+                      />
+                    </Box>
+                    <Box className="review-comment">{review.reviewContent}</Box>
+                    <Stack className="review-user">
+                      <img
+                        className="review-userimg"
+                        src={
+                          review?.memberData?.memberImage
+                            ? `${process.env.REACT_APP_API_URL}/${review?.memberData?.memberImage}`
+                            : "/logo/defaultUser.svg"
+                        }
+                        alt=""
+                      />
+                      <Stack className="review-user-info">
+                        <Box className="review-username">
+                          {review.memberData?.memberNick}
+                        </Box>
+                        <Rating
+                          sx={{
+                            "& .MuiRating-iconFilled": {
+                              color: "#FFD700 !important",
+                            },
+                          }}
+                          value={review.rating}
+                          readOnly
+                        />
+                      </Stack>
+                    </Stack>
+                  </SwiperSlide>
+                );
+              })}
+            </>
+          )}
         </Swiper>
         <Box className={"prev-next-frame"}>
           <ArrowBackRoundedIcon className={"swiper-button-prev"} />
@@ -205,3 +138,11 @@ export function Reviews() {
     </div>
   );
 }
+
+UserReviews.defaultProps = {
+  initialInput: {
+    page: 1,
+    limit: 6,
+    sort: "rating",
+  },
+};

@@ -1,10 +1,9 @@
 import {
   Box,
   Button,
-  Container,
-  IconButton,
   Menu,
   MenuItem,
+  OutlinedInput,
   Pagination,
   Stack,
   Typography,
@@ -17,9 +16,197 @@ import XIcon from "@mui/icons-material/X";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import useDeviceDetect from "../../libs/hooks/useDeviceDetect";
+import { BarbersInquiry } from "../../libs/types/member/member.input";
+import { useEffect, useState, MouseEvent, ChangeEvent } from "react";
+import { Member } from "../../libs/types/member/member";
+import { useMutation, useQuery, useReactiveVar } from "@apollo/client";
+import { GET_BARBERS } from "../../apollo/user/query";
+import { T } from "../../libs/types/common";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useRouter } from "next/router";
+import { LIKE_BARBER } from "../../apollo/user/mutation";
+import { Direction, Message } from "../../libs/enums/common.enum";
+import {
+  sweetMixinErrorAlert,
+  sweetTopSmallSuccessAlert,
+} from "../../libs/sweetAlert";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import Link from "next/link";
+import { userVar } from "../../apollo/store";
+import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 
-const Barber: NextPage = () => {
+interface BarbersProps {
+  initialInput: BarbersInquiry;
+}
+
+const Barber: NextPage<BarbersProps> = (props) => {
   const device = useDeviceDetect();
+  const [barber, setBarber] = useState<Member[]>([]);
+  const [filterSortName, setFilterSortName] = useState("Recent");
+  const [sortingOpen, setSortingOpen] = useState(false);
+  const router = useRouter();
+  const [total, setTotal] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchText, setSearchText] = useState<string>("");
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const user = useReactiveVar(userVar);
+
+  const {
+    initialInput = {
+      page: 1,
+      limit: 6,
+      sort: "createdAt",
+      search: {},
+    },
+  } = props;
+  const [searchFilter, setSearchFilter] =
+    useState<BarbersInquiry>(initialInput);
+
+  // Apolo requests
+
+  const {
+    loading: getBarbersLoading,
+    data: getBarbersData,
+    error: getBarbersError,
+    refetch: getBarbersRefetch,
+  } = useQuery(GET_BARBERS, {
+    fetchPolicy: "cache-and-network",
+    variables: { input: searchFilter },
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data: T) => {
+      setBarber(data?.getBarbers?.list);
+      setTotal(data?.getBarbers?.metaCounter[0]?.total);
+    },
+  });
+
+  const [likeTargetMember] = useMutation(LIKE_BARBER);
+
+  /** LIFECYCLES **/
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    if (router.query.input) {
+      const input_obj = JSON.parse(router?.query?.input as string);
+      setSearchFilter(input_obj);
+      setCurrentPage(input_obj.page ?? 1);
+
+      if (input_obj.sort === "createdAt") {
+        if (input_obj.direction === Direction.ASC) {
+          setFilterSortName("Oldest order");
+        } else {
+          setFilterSortName("Recent");
+        }
+      } else if (input_obj.sort === "memberLikes") {
+        setFilterSortName("Likes");
+      } else if (input_obj.sort === "memberRank") {
+        setFilterSortName("Rank");
+      } else if (input_obj.sort === "memberLevel") {
+        setFilterSortName("Level");
+      } else {
+        setFilterSortName("Recent");
+      }
+    }
+  }, [router.isReady, router.query.input]);
+
+  // Handlers
+  const likeMemberHandler = async (user: any, id: string) => {
+    try {
+      if (!id) return;
+      if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+
+      // execute likeTargetProperty Mutation
+      await likeTargetMember({ variables: { input: id } });
+
+      // execute getPropertiesRefetch
+      await getBarbersRefetch({ input: searchFilter });
+      await sweetTopSmallSuccessAlert("success", 800);
+    } catch (error: any) {
+      console.log("Error, likePropertyHandler:", error.message);
+      sweetMixinErrorAlert(error.message).then();
+    }
+  };
+
+  const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget);
+    setSortingOpen(true);
+  };
+
+  const sortingCloseHandler = () => {
+    setSortingOpen(false);
+    setAnchorEl(null);
+  };
+
+  const sortingHandler = (e: React.MouseEvent<HTMLLIElement>) => {
+    let nextFilter = { ...searchFilter };
+    switch (e.currentTarget.id) {
+      case "recent":
+        nextFilter = {
+          ...nextFilter,
+          sort: "createdAt",
+          direction: Direction.DESC,
+        };
+        setFilterSortName("Recent");
+        break;
+      case "old":
+        nextFilter = {
+          ...nextFilter,
+          sort: "createdAt",
+          direction: Direction.ASC,
+        };
+        setFilterSortName("Oldest order");
+        break;
+      case "likes":
+        nextFilter = {
+          ...nextFilter,
+          sort: "memberLikes",
+          direction: Direction.DESC,
+        };
+        setFilterSortName("Likes");
+        break;
+      case "rank":
+        nextFilter = {
+          ...nextFilter,
+          sort: "memberRank",
+          direction: Direction.DESC,
+        };
+        setFilterSortName("Rank");
+        break;
+      case "level":
+        nextFilter = {
+          ...nextFilter,
+          sort: "memberLevel",
+          direction: Direction.DESC,
+        };
+        setFilterSortName("Level");
+        break;
+    }
+    setSearchFilter(nextFilter);
+
+    const encoded = encodeURIComponent(JSON.stringify(nextFilter));
+    router.replace(`/barber?input=${encoded}`, `/barber?input=${encoded}`, {
+      scroll: false,
+    });
+    setSortingOpen(false);
+    setAnchorEl(null);
+  };
+
+  const paginationChangeHandler = async (
+    event: ChangeEvent<unknown>,
+    value: number
+  ) => {
+    const nextFilter = {
+      ...searchFilter,
+      page: value,
+    };
+
+    setSearchFilter(nextFilter);
+    setCurrentPage(value);
+
+    const encoded = encodeURIComponent(JSON.stringify(nextFilter));
+    router.replace(`/barber?input=${encoded}`, `/barber?input=${encoded}`, {
+      scroll: false,
+    });
+  };
 
   if (device === "mobile") {
     return <Stack>Barber Mobile Page</Stack>;
@@ -34,120 +221,224 @@ const Barber: NextPage = () => {
             </Stack>
             <Stack className={"filter"}>
               <Box component={"div"} className={"left"}>
-                <input
+                <OutlinedInput
+                  className="search-input"
                   type="text"
-                  placeholder={"Search for an agent"}
-                  value={"searchText"}
-                  // onChange={(e: any) => setSearchText(e.target.value)}
-                  // onKeyDown={(event: any) => {
-                  //   if (event.key == "Enter") {
-                  //     setSearchFilter({
-                  //       ...searchFilter,
-                  //       search: { ...searchFilter.search, text: searchText },
-                  //     });
-                  //   }
-                  // }}
+                  placeholder={"Search for a barber"}
+                  value={searchText}
+                  onChange={(e: any) => setSearchText(e.target.value)}
+                  onKeyDown={(event: any) => {
+                    if (event.key == "Enter") {
+                      const nextFilter = {
+                        ...searchFilter,
+                        page: 1,
+                        search: {
+                          ...searchFilter.search,
+                          text: searchText,
+                        },
+                      };
+
+                      setSearchFilter(nextFilter);
+                      const encoded = encodeURIComponent(
+                        JSON.stringify(nextFilter)
+                      );
+                      router.replace(
+                        `/barber?input=${encoded}`,
+                        `/barber?input=${encoded}`,
+                        { scroll: false }
+                      );
+                    }
+                  }}
+                  endAdornment={
+                    <>
+                      <CancelRoundedIcon
+                        className="cancel-round"
+                        onClick={() => {
+                          setSearchText("");
+                          setSearchFilter({
+                            ...searchFilter,
+                            search: { ...searchFilter.search, text: "" },
+                          });
+                        }}
+                      />
+                    </>
+                  }
                 />
               </Box>
               <Box component={"div"} className={"right"}>
                 <span>Sort by</span>
                 <div>
                   <Button
-                  // onClick={sortingClickHandler}
-                  // endIcon={<KeyboardArrowDownRoundedIcon />}
+                    onClick={sortingClickHandler}
+                    endIcon={<KeyboardArrowDownRoundedIcon />}
                   >
-                    {"filterSortName"}
+                    {filterSortName}
                   </Button>
                   <Menu
-                    // anchorEl={anchorEl}
-                    open={false}
-                    // onClose={sortingCloseHandler}
+                    anchorEl={anchorEl}
+                    open={sortingOpen}
+                    onClose={sortingCloseHandler}
                     sx={{ paddingTop: "5px" }}
                   >
                     <MenuItem
-                      // onClick={sortingHandler}
+                      onClick={sortingHandler}
                       id={"recent"}
                       disableRipple
                     >
                       Recent
                     </MenuItem>
-                    <MenuItem
-                      // onClick={sortingHandler}
-                      id={"old"}
-                      disableRipple
-                    >
+                    <MenuItem onClick={sortingHandler} id={"old"} disableRipple>
                       Oldest
                     </MenuItem>
                     <MenuItem
-                      // onClick={sortingHandler}
+                      onClick={sortingHandler}
                       id={"likes"}
                       disableRipple
                     >
                       Likes
                     </MenuItem>
                     <MenuItem
-                      // onClick={sortingHandler}
-                      id={"views"}
+                      onClick={sortingHandler}
+                      id={"rank"}
                       disableRipple
                     >
-                      Views
+                      Rank
+                    </MenuItem>
+                    <MenuItem
+                      onClick={sortingHandler}
+                      id={"level"}
+                      disableRipple
+                    >
+                      Level
                     </MenuItem>
                   </Menu>
                 </div>
               </Box>
             </Stack>
             <Stack className="barber-box">
-              <Stack className="barber-info">
-                <Box className="barber-img">
-                  <img src="/img/barber1.png" alt="" />
+              {barber.length === 0 ? (
+                <Box component={"div"} className="empty-list">
+                  Barbers are not available
                 </Box>
-                <Box className="barber-name">Dominick Rossi</Box>
-                <Stack className="barber-media">
-                  <Box className="barber-like">
-                    <IconButton color={"default"}>
-                      <FavoriteBorderIcon
-                        style={{
-                          color: "#004034",
-                          fontSize: "20px",
-                        }}
-                      />
-                    </IconButton>
-                  </Box>
-                  <Stack className="barber-socialmedia">
-                    <FacebookOutlinedIcon
-                      style={{ color: "#004034", fontSize: "20px" }}
-                    />
-                    <InstagramIcon
-                      style={{ color: "#004034", fontSize: "20px" }}
-                    />
-                    <XIcon style={{ color: "#004034", fontSize: "20px" }} />
-                  </Stack>
-                  <Box className="barber-view">
-                    <IconButton color={"default"}>
-                      <RemoveRedEyeIcon
-                        style={{
-                          color: "#004034",
-                          fontSize: "20px",
-                        }}
-                      />
-                    </IconButton>
-                  </Box>
-                </Stack>
-              </Stack>
+              ) : (
+                <>
+                  {barber.map((barber: Member) => {
+                    return (
+                      <Stack key={barber._id} className="barber-info">
+                        <Box className="barber-img">
+                          <Link
+                            href={{
+                              pathname: "/barber/detail",
+                              query: { barberId: barber?._id },
+                            }}
+                          >
+                            <img
+                              src={
+                                barber?.memberImage
+                                  ? `${process.env.REACT_APP_API_URL}/${barber?.memberImage}`
+                                  : "/logo/defaultUser.svg"
+                              }
+                              alt=""
+                            />
+                          </Link>
+                        </Box>
+                        <Link
+                          href={{
+                            pathname: "/barber/detail",
+                            query: { barberId: barber?._id },
+                          }}
+                        >
+                          <Box className="barber-name">
+                            {barber?.memberFullName ?? barber?.memberNick}
+                          </Box>
+                        </Link>
+                        <Stack className="barber-media">
+                          <Box
+                            className="barber-like"
+                            onClick={() => likeMemberHandler(user, barber?._id)}
+                          >
+                            {barber?.meLiked &&
+                            barber?.meLiked[0]?.myFavorite ? (
+                              <FavoriteIcon style={{ color: "red" }} />
+                            ) : (
+                              <FavoriteBorderIcon
+                                style={{ color: "#004034" }}
+                              />
+                            )}
+                            <span>{barber.memberLikes}</span>
+                          </Box>
+                          <Stack className="barber-socialmedia">
+                            <FacebookOutlinedIcon
+                              style={{
+                                color: "#004034",
+                                fontSize: "20px",
+                                cursor: "pointer",
+                              }}
+                            />
+                            <InstagramIcon
+                              style={{
+                                color: "#004034",
+                                fontSize: "20px",
+                                cursor: "pointer",
+                              }}
+                            />
+                            <XIcon
+                              style={{
+                                color: "#004034",
+                                fontSize: "20px",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </Stack>
+                          <Box className="barber-view">
+                            <RemoveRedEyeIcon
+                              style={{
+                                color: "#004034",
+                                fontSize: "20px",
+                              }}
+                            />
+                            <span>{barber.memberViews}</span>
+                          </Box>
+                        </Stack>
+                      </Stack>
+                    );
+                  })}
+                </>
+              )}
             </Stack>
             <Stack className={"pagination"}>
               <Stack className="pagination-box">
-                <Stack className="pagination-box">
-                  <Pagination
-                    page={1}
-                    // count={Math.ceil(total / searchFilter.limit)}
-                    // onChange={paginationChangeHandler}
-                    shape="circular"
-                    style={{ color: "#004034" }}
-                  />
-                </Stack>
+                {barber.length !== 0 &&
+                  Math.ceil(total / searchFilter.limit) > 1 && (
+                    <Stack className="pagination-box">
+                      <Pagination
+                        page={searchFilter.page ?? 1}
+                        count={Math.ceil(total / searchFilter.limit)}
+                        onChange={paginationChangeHandler}
+                        shape="circular"
+                        sx={{
+                          "& .MuiPaginationItem-root": {
+                            color: "#004034", // text color
+                            borderColor: "#004034", // border color
+                          },
+                          "& .MuiPaginationItem-root.Mui-selected": {
+                            backgroundColor: "#C6D984", // selected background
+                            color: "#fff", // selected text
+                          },
+                          "& .MuiPaginationItem-root:hover": {
+                            backgroundColor: "#C6D984", // hover background
+                            color: "#fff",
+                          },
+                        }}
+                      />
+                    </Stack>
+                  )}
               </Stack>
-              <span>Total 8 agents available</span>
+              {barber.length !== 0 && (
+                <span>
+                  Total {total} agent{total > 1 ? "s" : ""} available
+                </span>
+              )}
             </Stack>
           </Stack>
         </Stack>

@@ -4,8 +4,9 @@ import withLayoutMain from "../libs/components/layout/LayoutHome";
 import Mission from "../libs/components/homepage/Mission";
 import Barbers from "../libs/components/homepage/TopBarber";
 import Journal from "../libs/components/homepage/Journal";
-import { Reviews } from "../libs/components/homepage/Review";
+import { UserReviews } from "../libs/components/homepage/Review";
 import useDeviceDetect from "../libs/hooks/useDeviceDetect";
+
 
 const Home: NextPage = () => {
   const device = useDeviceDetect();
@@ -17,7 +18,7 @@ const Home: NextPage = () => {
       <Stack className="home-page">
         <Mission />
         <Barbers />
-        <Reviews />
+        <UserReviews />
         <Journal />
       </Stack>
     );

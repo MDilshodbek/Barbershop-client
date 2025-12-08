@@ -5,13 +5,20 @@ import XIcon from "@mui/icons-material/X";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery, useReactiveVar } from "@apollo/client";
 import { GET_BARBERS } from "../../../apollo/user/query";
 import { useState } from "react";
 import { BarbersInquiry } from "../../types/member/member.input";
 import { Member } from "../../types/member/member";
 import { T } from "../../types/common";
 import Link from "next/link";
+import { LIKE_BARBER } from "../../../apollo/user/mutation";
+import { Message } from "../../enums/common.enum";
+import {
+  sweetMixinErrorAlert,
+  sweetTopSmallSuccessAlert,
+} from "../../sweetAlert";
+import { userVar } from "../../../apollo/store";
 
 interface TopBarbersProps {
   initialInput: BarbersInquiry;
@@ -20,6 +27,7 @@ interface TopBarbersProps {
 const Barbers = (props: TopBarbersProps) => {
   const [topBarber, setTopBarber] = useState<Member[]>([]);
   const { initialInput } = props;
+  const user = useReactiveVar(userVar);
 
   const {
     loading: getBarbersLoading,
@@ -34,6 +42,25 @@ const Barbers = (props: TopBarbersProps) => {
       setTopBarber(data?.getBarbers?.list);
     },
   });
+
+  const [likeTargetMember] = useMutation(LIKE_BARBER);
+
+  const likeMemberHandler = async (user: any, id: string) => {
+    try {
+      if (!id) return;
+      if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+
+      // execute likeTargetProperty Mutation
+      await likeTargetMember({ variables: { input: id } });
+
+      // execute getPropertiesRefetch
+      await getBarbersRefetch({ input: initialInput });
+      await sweetTopSmallSuccessAlert("success", 800);
+    } catch (error: any) {
+      console.log("Error, likePropertyHandler:", error.message);
+      sweetMixinErrorAlert(error.message).then();
+    }
+  };
 
   return (
     <Stack className="top-barbers">
@@ -81,7 +108,10 @@ const Barbers = (props: TopBarbersProps) => {
                       </Box>
                     </Link>
                     <Stack className="barber-media">
-                      <Box className="barber-like">
+                      <Box
+                        className="barber-like"
+                        onClick={() => likeMemberHandler(user, barber?._id)}
+                      >
                         {barber?.meLiked && barber?.meLiked[0]?.myFavorite ? (
                           <FavoriteIcon style={{ color: "red" }} />
                         ) : (

@@ -12,6 +12,7 @@ export interface ReviewInput {
 
 export interface RISearch {
   reviewRefId: string;
+  reviewGroup: ReviewGroup;
 }
 
 export interface ReviewInquiry {
@@ -28,4 +29,5 @@ export interface AllReviewInquiry {
   sort?: string;
   direction?: Direction;
   reviewStatus?: ReviewStatus;
+  reviewGroup: ReviewGroup;
 }

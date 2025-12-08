@@ -58,6 +58,11 @@ const withLayoutBasic = (Component: any) => {
           desc = "Our Barbers Info";
           bgImage = "/banner/b4.svg";
           break;
+        case "/account":
+          title = "Account Join";
+          desc = "Authentication process";
+          bgImage = "/banner/b8.svg";
+          break;
         default:
           break;
       }

@@ -256,7 +256,7 @@
                 color: #313e3b;
                 text-align: center;
                 font-family: "DM Sans";
-                font-size: 14px;
+                font-size: 20px;
                 font-style: normal;
                 font-weight: 500;
                 line-height: 20px; /* 142.857% */
@@ -274,6 +274,15 @@
                 flex-direction: row;
                 align-items: center;
                 gap: 10px;
+                .view-cnt {
+                  color: #313e3b;
+                  text-align: center;
+                  font-family: "DM Sans";
+                  font-size: 20px;
+                  font-style: normal;
+                  font-weight: 500;
+                  line-height: 20px;
+                }
               }
             }
             .bcontact-box {

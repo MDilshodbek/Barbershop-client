@@ -1,18 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Link, Menu, MenuItem, Stack } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import useDeviceDetect from "../hooks/useDeviceDetect";
+import { useReactiveVar } from "@apollo/client";
+import { userVar } from "../../apollo/store";
+import { getJwtToken, logOut, updateUserInfo } from "../auth";
+import { REACT_APP_API_URL } from "../config";
 
 const Top = () => {
   const device = useDeviceDetect();
-
+  const user = useReactiveVar(userVar);
   const [logoutAnchor, setLogoutAnchor] = React.useState<null | HTMLElement>(
     null
   );
   const logoutOpen = Boolean(logoutAnchor);
   const [colorChange, setColorChange] = useState(false);
   const [bgColor, setBgColor] = useState<boolean>(false);
+
+  useEffect(() => {
+    const jwt = getJwtToken();
+    if (jwt) updateUserInfo(jwt);
+  }, []);
 
   const changeNavbarColor = () => {
     if (window.scrollY >= 50) {
@@ -86,7 +95,7 @@ const Top = () => {
             <Link href="community">
               <div className="chosen-link-basic">Community</div>
             </Link>
-            {false && (
+            {user?._id && (
               <Link href={"/mypage"}>
                 <div className="chosen-link-basic">My Page</div>
               </Link>
@@ -96,11 +105,22 @@ const Top = () => {
             </Link>
           </Box>
           <Box className="user-box-basic">
-            {true ? (
+            {user?._id ? (
               <>
-                <div className="login-user-basic">
-                  <img src="/logo/defaultUser.svg" alt="" />
+                <div
+                  className={"login-user-basic"}
+                  onClick={(event: any) => setLogoutAnchor(event.currentTarget)}
+                >
+                  <img
+                    src={
+                      user?.memberImage
+                        ? `${REACT_APP_API_URL}/${user?.memberImage}`
+                        : "/logo/defaultUser.svg"
+                    }
+                    alt=""
+                  />
                 </div>
+
                 <Menu
                   id="basic-menu"
                   anchorEl={logoutAnchor}
@@ -110,16 +130,20 @@ const Top = () => {
                   }}
                   sx={{ mt: "5px" }}
                 >
-                  <MenuItem>
-                    <Logout />
+                  <MenuItem onClick={() => logOut()}>
+                    <Logout
+                      fontSize="small"
+                      style={{ color: "blue", marginRight: "10px" }}
+                    />
+                    Logout
                   </MenuItem>
                 </Menu>
               </>
             ) : (
-              <Link href={"/account/join"}>
+              <Link href={"/account"}>
                 <div className={"join-box-basic"}>
-                  <AccountCircleOutlinedIcon style={{ color: "#C6D984" }} />
-                  <span style={{ color: "#C6D984" }}>Login / Register</span>
+                  <AccountCircleOutlinedIcon style={{ color: "#c6d984" }} />
+                  <span>Login / Register</span>
                 </div>
               </Link>
             )}

@@ -1,9 +1,10 @@
-import { Member, TotalCounter } from '../member/member';
-import { ReviewStatus } from '../../enums/review.enum';
+import { Member, TotalCounter } from "../member/member";
+import { ReviewGroup, ReviewStatus } from "../../enums/review.enum";
 
 export interface Review {
   _id: string;
   reviewStatus: ReviewStatus;
+  reviewGroup: ReviewGroup;
   reviewContent: string;
   reviewRefId: string;
   memberId: string;
@@ -18,4 +19,3 @@ export interface Reviews {
   list: Review[];
   metaCounter?: TotalCounter[];
 }
-

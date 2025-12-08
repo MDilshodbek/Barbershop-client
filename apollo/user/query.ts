@@ -1,6 +1,48 @@
 import { gql } from "@apollo/client";
 
 // User
+export const GET_MEMBER = gql`
+  query GetMember($input: String!) {
+    getMember(memberId: $input) {
+      _id
+      memberType
+      memberStatus
+      memberAuthType
+      memberLevel
+      memberServices
+      memberPhone
+      memberNick
+      memberFullName
+      memberImage
+      memberAddress
+      memberDesc
+      memberArticles
+      memberFollowers
+      memberFollowings
+      memberPoints
+      memberLikes
+      memberViews
+      memberReviews
+      memberComments
+      memberRank
+      memberWarnings
+      memberBlocks
+      createdAt
+      updatedAt
+      accessToken
+      meLiked {
+        memberId
+        likeRefId
+        myFavorite
+      }
+      meFollowed {
+        followingId
+        followerId
+        myFollowing
+      }
+    }
+  }
+`;
 
 // Service
 export const GET_SERVICES = gql`
@@ -135,6 +177,7 @@ export const GET_AllREVIEWS = gql`
       list {
         _id
         reviewStatus
+        reviewGroup
         reviewContent
         reviewRefId
         memberId
@@ -169,6 +212,168 @@ export const GET_AllREVIEWS = gql`
           createdAt
           updatedAt
           accessToken
+        }
+      }
+      metaCounter {
+        total
+      }
+    }
+  }
+`;
+
+export const GET_REVIEWS = gql`
+  query GetReviews($input: ReviewInquiry!) {
+    getReviews(input: $input) {
+      list {
+        _id
+        reviewStatus
+        reviewGroup
+        reviewContent
+        reviewRefId
+        memberId
+        rating
+        reviewImages
+        createdAt
+        updatedAt
+        memberData {
+          _id
+          memberType
+          memberStatus
+          memberAuthType
+          memberLevel
+          memberServices
+          memberPhone
+          memberNick
+          memberFullName
+          memberImage
+          memberAddress
+          memberDesc
+          memberArticles
+          memberFollowers
+          memberFollowings
+          memberPoints
+          memberLikes
+          memberViews
+          memberReviews
+          memberComments
+          memberRank
+          memberWarnings
+          memberBlocks
+          createdAt
+          updatedAt
+          accessToken
+        }
+      }
+      metaCounter {
+        total
+      }
+    }
+  }
+`;
+
+// Follow
+
+export const GET_FOLLOWINGS = gql`
+  query GetMemberFollowings($input: FollowInquiry!) {
+    getMemberFollowings(input: $input) {
+      list {
+        _id
+        followingId
+        followerId
+        createdAt
+        updatedAt
+        followingData {
+          _id
+          memberType
+          memberStatus
+          memberAuthType
+          memberLevel
+          memberServices
+          memberPhone
+          memberNick
+          memberFullName
+          memberImage
+          memberAddress
+          memberDesc
+          memberArticles
+          memberFollowers
+          memberFollowings
+          memberPoints
+          memberLikes
+          memberViews
+          memberReviews
+          memberComments
+          memberRank
+          memberWarnings
+          memberBlocks
+          createdAt
+          updatedAt
+          accessToken
+        }
+        meLiked {
+          memberId
+          likeRefId
+          myFavorite
+        }
+        meFollowed {
+          followingId
+          followerId
+          myFollowing
+        }
+      }
+      metaCounter {
+        total
+      }
+    }
+  }
+`;
+
+export const GET_FOLLOWERS = gql`
+  query GetMemberFollowers($input: FollowInquiry!) {
+    getMemberFollowers(input: $input) {
+      list {
+        _id
+        followingId
+        followerId
+        createdAt
+        updatedAt
+        followerData {
+          _id
+          memberType
+          memberStatus
+          memberAuthType
+          memberLevel
+          memberServices
+          memberPhone
+          memberNick
+          memberFullName
+          memberImage
+          memberAddress
+          memberDesc
+          memberArticles
+          memberFollowers
+          memberFollowings
+          memberPoints
+          memberLikes
+          memberViews
+          memberReviews
+          memberComments
+          memberRank
+          memberWarnings
+          memberBlocks
+          createdAt
+          updatedAt
+          accessToken
+        }
+        meLiked {
+          memberId
+          likeRefId
+          myFavorite
+        }
+        meFollowed {
+          followingId
+          followerId
+          myFollowing
         }
       }
       metaCounter {

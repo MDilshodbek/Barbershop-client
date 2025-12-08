@@ -1,0 +1,389 @@
+#pc-wrap {
+  display: flex;
+  .join-page {
+    .join-title {
+      position: absolute;
+      color: #fff;
+      font-family: "Limelight";
+      font-size: 80px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 80px; /* 100% */
+      left: 300px;
+      top: 380px;
+    }
+    .container {
+      flex-direction: column;
+      justify-content: center;
+      .auth-container {
+        position: relative;
+        width: 960px;
+        // max-width: 100%;
+        min-height: 620px;
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+        font-family: "DM Sans", sans-serif;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        left: 170px;
+        margin-top: 80px;
+        margin-bottom: 80px;
+
+        .form-container {
+          position: absolute;
+          top: 0;
+          height: 100%;
+          width: 50%;
+          transition: all 0.6s ease-in-out;
+          // background: #004034;
+          font-family: "DM Sans", sans-serif;
+
+          form {
+            height: 100%;
+            padding: 0 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+
+            .title {
+              font-size: 24px;
+              font-weight: 700;
+              font-family: "Limelight";
+              color: #004034;
+              margin-bottom: 10px;
+            }
+            .register {
+              margin-top: 20px;
+              width: 100%;
+
+              .type-option {
+                margin-bottom: 20px;
+                text-align: left;
+
+                .text {
+                  font-size: 14px;
+                  font-weight: 600;
+                  color: #004034;
+                  margin-bottom: 10px;
+                  display: block;
+                }
+
+                .checkbox-column {
+                  display: flex;
+                  flex-direction: row;
+                  gap: 130px;
+                  // gap: 4px;
+
+                  .MuiFormControlLabel-label {
+                    font-size: 14px;
+                    color: #004034;
+                  }
+
+                  .MuiCheckbox-root {
+                    color: #004034;
+
+                    &.Mui-checked {
+                      color: #004034;
+                    }
+                  }
+                }
+              }
+
+              .social-container {
+                margin: 20px 0;
+                flex-direction: row;
+                justify-content: center;
+                gap: 20px;
+
+                .social {
+                  border: 1px solid #ccc;
+                  width: 42px;
+                  height: 42px;
+                  border-radius: 50%;
+                  color: #004034;
+
+                  &:hover {
+                    background: #c6d984;
+                  }
+                }
+              }
+              .subtitle {
+                font-size: 14px;
+                font-weight: 600;
+                color: #004034;
+              }
+            }
+
+            .forgot {
+              font-size: 13px;
+              margin: 10px 0;
+              cursor: pointer;
+              color: #004034;
+            }
+
+            .social-container {
+              margin: 20px 0;
+              flex-direction: row;
+              justify-content: center;
+              gap: 20px;
+
+              .social {
+                border: 1px solid #ccc;
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                color: #004034;
+
+                &:hover {
+                  background: #c6d984;
+                }
+              }
+            }
+            .subtitle {
+              font-size: 14px;
+              font-weight: 600;
+              color: #004034;
+              margin-top: 20px;
+            }
+
+            // INPUTS
+            .MuiTextField-root {
+              margin-top: 10px;
+
+              .MuiFilledInput-root {
+                background: #eee;
+                border-radius: 8px;
+              }
+            }
+            // INPUTS — override focus + underline color to #004034
+            .MuiTextField-root {
+              margin-top: 10px;
+
+              .MuiFilledInput-root {
+                background: #eee;
+                border-radius: 8px;
+
+                // Focus border underline color
+                &::before {
+                  border-bottom-color: #004034 !important;
+                }
+                &::after {
+                  border-bottom-color: #004034 !important;
+                }
+
+                // Hover color
+                &:hover:not(.Mui-disabled)::before {
+                  border-bottom-color: #004034 !important;
+                }
+              }
+
+              // Label color when focused
+              .MuiInputLabel-root.Mui-focused {
+                color: #004034 !important;
+              }
+            }
+
+            // MAIN BUTTON
+            .main-btn {
+              margin-top: 20px;
+              border-radius: 20px;
+              padding: 12px 40px;
+              background: #c6d984;
+              color: #004034;
+              font-weight: 700;
+              text-transform: uppercase;
+              border: none;
+
+              &:hover {
+                background: #a5c45e;
+              }
+            }
+          }
+        }
+
+        .sign-in-container {
+          left: 0;
+          width: 50%;
+          z-index: 2;
+          transform: translateX(0%); // login visible by default
+        }
+
+        .sign-up-container {
+          left: 0;
+          width: 50%;
+          opacity: 0;
+          z-index: 1;
+          transform: translateX(100%); // SIGNUP HIDDEN by default
+        }
+
+        // ------------------------------------------------
+        // OVERLAY CONTAINER
+        // ------------------------------------------------
+        .overlay-container {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          width: 50%;
+          height: 100%;
+          overflow: hidden;
+          transition: transform 0.6s ease-in-out;
+          z-index: 100;
+
+          .overlay {
+            background: linear-gradient(to right, #004034, #00604d);
+            color: #ffffff;
+            position: relative;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+
+            .overlay-panel {
+              position: absolute;
+              top: 0;
+              width: 50%;
+              height: 100%;
+              padding: 0 40px;
+
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              text-align: center;
+
+              .overlay-main {
+                flex-direction: column;
+                .brand-logo-box {
+                  flex-direction: row;
+                  justify-content: center;
+                  align-items: center;
+                  gap: 10px;
+                  margin-bottom: 50px;
+                  img {
+                    width: 33px;
+                  }
+                  span {
+                    color: #fff;
+                    text-align: center;
+                    font-family: "Limelight";
+                    font-size: 30px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 20px;
+                  }
+                }
+                .ghost-btn {
+                  margin-top: 20px;
+                  border-radius: 20px;
+                  padding: 10px 40px;
+                  background: transparent;
+                  border: 1px solid white;
+                  color: white;
+                  text-transform: uppercase;
+                  font-weight: 600;
+
+                  &:hover {
+                    background: #c6d984;
+                    border: 1px solid #004034;
+                    color: #004034;
+                  }
+                }
+              }
+              .overlay-main-left {
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                left: 90px;
+                .brand-logo-box {
+                  flex-direction: row;
+                  justify-content: center;
+                  align-items: center;
+                  gap: 10px;
+                  margin-bottom: 50px;
+                  img {
+                    width: 33px;
+                  }
+                  span {
+                    color: #fff;
+                    text-align: center;
+                    font-family: "Limelight";
+                    font-size: 30px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 20px;
+                  }
+                }
+                .ghost-btn {
+                  margin-top: 20px;
+                  width: 100%;
+                  border-radius: 20px;
+                  padding: 10px 40px;
+                  background: transparent;
+                  border: 1px solid white;
+                  color: white;
+                  text-transform: uppercase;
+                  font-weight: 600;
+
+                  &:hover {
+                    background: #c6d984;
+                    border: 1px solid #004034;
+                    color: #004034;
+                  }
+                }
+              }
+            }
+
+            .overlay-left {
+              transform: translateX(-20%);
+              left: 60px;
+            }
+
+            .overlay-right {
+              right: 0;
+              transform: translateX(0);
+              // right: 60px;
+            }
+          }
+        }
+
+        // ------------------------------------------------
+        // ACTIVE STATE ANIMATIONS
+        // ------------------------------------------------
+        &.right-panel-active {
+          .sign-in-container {
+            transform: translateX(0%);
+          }
+
+          .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+          }
+
+          .overlay-container {
+            transform: translateX(-100%);
+          }
+
+          .overlay {
+            transform: translateX(50%);
+          }
+
+          .overlay-left {
+            transform: translateX(0%);
+          }
+
+          .overlay-right {
+            transform: translateX(20%);
+          }
+        }
+      }
+    }
+  }
+}

@@ -9,19 +9,163 @@ import {
 } from "@mui/material";
 import { NextPage } from "next";
 import withLayoutBasic from "../../libs/components/layout/LayoutBasic";
-import { useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import XIcon from "@mui/icons-material/X";
 import StarIcon from "@mui/icons-material/Star";
 import ReviewCard from "../../libs/components/agent/ReviewCard";
 import useDeviceDetect from "../../libs/hooks/useDeviceDetect";
+import { useRouter } from "next/router";
+import { useMutation, useQuery, useReactiveVar } from "@apollo/client";
+import { userVar } from "../../apollo/store";
+import { Member } from "../../libs/types/member/member";
+import { BarbersInquiry } from "../../libs/types/member/member.input";
+import {
+  ReviewInput,
+  ReviewInquiry,
+} from "../../libs/types/review/review.input";
+import { Review } from "../../libs/types/review/review";
+import { ReviewGroup } from "../../libs/enums/review.enum";
+import { CREATE_REVIEW, LIKE_BARBER } from "../../apollo/user/mutation";
+import { Message } from "../../libs/enums/common.enum";
+import {
+  sweetErrorHandling,
+  sweetMixinErrorAlert,
+  sweetTopSmallSuccessAlert,
+} from "../../libs/sweetAlert";
+import { T } from "../../libs/types/common";
+import { GET_MEMBER, GET_REVIEWS } from "../../apollo/user/query";
+import { Messages } from "../../libs/config";
 
-const BarberDetail: NextPage = () => {
-  const [value, setValue] = useState<number | null>(2);
+const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
   const device = useDeviceDetect();
+  const router = useRouter();
+  const user = useReactiveVar(userVar);
+  const [barber, setBarber] = useState<Member | null>(null);
+  const [barberId, setBarberId] = useState<string | null>(null);
+  const [reviewInquiry, setReviewInquiry] =
+    useState<ReviewInquiry>(initialReview);
+  const [barberReviews, setBarberReviews] = useState<Review[]>([]);
+  const [reviewTotal, setReviewTotal] = useState<number>(0);
+  const [insertReviewData, setInsertReviewData] = useState<ReviewInput>({
+    reviewGroup: ReviewGroup.MEMBER,
+    reviewContent: "",
+    reviewRefId: "",
+    rating: 0,
+  });
+
+  /** APOLLO REQUESTS **/
+  const {
+    loading: getMemberLoading,
+    data: getMemberData,
+    error: getMemberError,
+    refetch: getMemberRefetch,
+  } = useQuery(GET_MEMBER, {
+    fetchPolicy: "cache-and-network",
+    variables: { input: barberId },
+    skip: !barberId,
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data: T) => {
+      setBarber(data?.getMember);
+      setReviewInquiry({
+        ...reviewInquiry,
+        search: {
+          reviewRefId: data?.getMember?._id,
+          reviewGroup: ReviewGroup.MEMBER,
+        },
+      });
+      setInsertReviewData({
+        ...insertReviewData,
+        reviewRefId: data?.getMember?._id,
+      });
+    },
+  });
+
+  const [likeTargetMember] = useMutation(LIKE_BARBER);
+
+  const {
+    loading: getReviewsLoading,
+    data: getReviewsData,
+    error: getReviewsError,
+    refetch: getReviewsRefetch,
+  } = useQuery(GET_REVIEWS, {
+    fetchPolicy: "network-only",
+    variables: {
+      input: reviewInquiry,
+    },
+    skip: !reviewInquiry.search.reviewRefId,
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data: T) => {
+      setBarberReviews(data?.getReviews?.list);
+      setReviewTotal(data?.getReviews?.metaCounter[0]?.total ?? 0);
+    },
+  });
+
+  console.log("barberReviews:", barberReviews);
+
+  const [createReview] = useMutation(CREATE_REVIEW);
+
+  /** LIFECYCLES **/
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const idFromQuery = router.query.barberId as string | undefined;
+
+    if (idFromQuery) {
+      setBarberId(idFromQuery);
+    }
+  }, [router.isReady, router.query.barberId]);
+
+  useEffect(() => {
+    if (!reviewInquiry.search.reviewRefId) return;
+
+    getReviewsRefetch({ input: reviewInquiry }).then();
+  }, [reviewInquiry, getReviewsRefetch]);
+
+  // Handlers
+  const likeMemberHandler = async (user: any, id: string) => {
+    try {
+      if (!id) return;
+      if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+
+      // execute likeTargetProperty Mutation
+      await likeTargetMember({ variables: { input: id } });
+
+      // execute getPropertiesRefetch
+      await getMemberRefetch({ input: barberId });
+      await sweetTopSmallSuccessAlert("success", 800);
+    } catch (error: any) {
+      console.log("Error, likePropertyHandler:", error.message);
+      sweetMixinErrorAlert(error.message).then();
+    }
+  };
+
+  const reviewPaginationChangeHandler = async (
+    event: ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setReviewInquiry((prev) => ({
+      ...prev,
+      page: value,
+    }));
+  };
+
+  const createReviewHandler = async () => {
+    try {
+      if (!user._id) throw new Error(Messages.error2);
+      if (user._id === barberId)
+        throw new Error(`Cannot write review for yourself`);
+
+      await createReview({ variables: { input: insertReviewData } });
+      await getReviewsRefetch({ input: reviewInquiry });
+    } catch (err: any) {
+      sweetErrorHandling(err).then();
+    }
+  };
 
   if (device === "mobile") {
     return <Stack>Barber Detail Page mobile</Stack>;
@@ -33,42 +177,61 @@ const BarberDetail: NextPage = () => {
           <Stack className="barber-detail-main">
             <Stack className="bdetail-box">
               <Box>
-                <img src="/img/barber3.png" alt="" />
+                <img
+                  src={
+                    barber?.memberImage
+                      ? `${process.env.REACT_APP_API_URL}/${barber?.memberImage}`
+                      : "/logo/defaultUser.svg"
+                  }
+                  alt=""
+                />
               </Box>
               <Stack className="bdetail-info">
-                <Typography className="barber-name">Dominik Rossi</Typography>
+                <Typography className="barber-name">
+                  {barber?.memberFullName}
+                </Typography>
                 <Stack className="barber-level">
                   <Typography className="barber-level1">Level:</Typography>
-                  <Typography className="barber-level2">Senior</Typography>
+                  <Typography className="barber-level2">
+                    {barber?.memberLevel}
+                  </Typography>
                 </Stack>
                 <Typography className="barber-desc">
-                  With over 25 years of experience, Dominick Rossi is a true
-                  master in the art of classic barbering. His skilled hands
-                  expertly blend time-honored techniques with a contemporary
-                  aesthetic, reinterpreting iconic cuts for the modern
-                  gentleman.
+                  {barber?.memberDesc}
                 </Typography>
                 <Stack className="breview-box">
                   <Rating
                     className="review-starts"
-                    value={value}
-                    onChange={(event, newValue) => {
-                      setValue(newValue);
+                    value={5}
+                    readOnly
+                    sx={{
+                      "& .MuiRating-iconFilled": {
+                        color: "#FFD700 !important",
+                      },
                     }}
                   />
-                  <Typography className="breview-number">10 reviews</Typography>
+                  <Typography className="breview-number">
+                    {barber?.memberReviews}
+                  </Typography>
                 </Stack>
                 <Stack className="blike-box">
                   <Box className="barber-like">
-                    <IconButton color={"default"}>
-                      <FavoriteBorderIcon
-                        style={{
-                          color: "#004034",
-                          fontSize: "30px",
-                        }}
-                      />
+                    <IconButton
+                      color={"default"}
+                      onClick={() => {
+                        if (!barber?._id) return;
+                        likeMemberHandler(user, barber._id);
+                      }}
+                    >
+                      {barber?.meLiked && barber?.meLiked[0]?.myFavorite ? (
+                        <FavoriteIcon style={{ color: "red" }} />
+                      ) : (
+                        <FavoriteBorderIcon style={{ color: "#004034" }} />
+                      )}
                     </IconButton>
-                    <Typography className="view-cnt">10</Typography>
+                    <Typography className="view-cnt">
+                      {barber?.memberLikes}
+                    </Typography>
                   </Box>
                   <Box className="barber-like">
                     <IconButton color={"default"}>
@@ -79,7 +242,9 @@ const BarberDetail: NextPage = () => {
                         }}
                       />
                     </IconButton>
-                    <Typography className="view-cnt">10</Typography>
+                    <Typography className="view-cnt">
+                      {barber?.memberViews}
+                    </Typography>
                   </Box>
                 </Stack>
                 <Stack className="bcontact-box">
@@ -113,43 +278,61 @@ const BarberDetail: NextPage = () => {
                 <p>we are glad to see you again</p>
               </Stack>
 
-              <Stack className={"review-wrap"}>
-                <Box component={"div"} className={"title-box"}>
-                  <StarIcon />
-                  <span>Total review 1</span>
-                </Box>
-                <ReviewCard />;
-                <Box component={"div"} className={"pagination-box"}>
-                  <Pagination
-                    page={1}
-                    // count={Math.ceil(commentTotal / commentInquiry.limit) || 1}
-                    // onChange={commentPaginationChangeHandler}
-                    shape="circular"
-                    color="primary"
-                  />
-                </Box>
-              </Stack>
+              {reviewTotal !== 0 && (
+                <Stack className={"review-wrap"}>
+                  <Box component={"div"} className={"title-box"}>
+                    <StarIcon />
+                    <span>
+                      {reviewTotal} review{reviewTotal > 1 ? "s" : ""}
+                    </span>
+                  </Box>
+                  {barberReviews?.map((review: Review) => {
+                    return <ReviewCard review={review} key={review?._id} />;
+                  })}
+                  <Box component={"div"} className={"pagination-box"}>
+                    <Pagination
+                      page={reviewInquiry.page}
+                      count={Math.ceil(reviewTotal / reviewInquiry.limit) || 1}
+                      onChange={reviewPaginationChangeHandler}
+                      shape="circular"
+                      sx={{
+                        "& .MuiPaginationItem-root": {
+                          color: "#004034", // text color
+                          borderColor: "#004034", // border color
+                        },
+                        "& .MuiPaginationItem-root.Mui-selected": {
+                          backgroundColor: "#C6D984", // selected background
+                          color: "#fff", // selected text
+                        },
+                        "& .MuiPaginationItem-root:hover": {
+                          backgroundColor: "#C6D984", // hover background
+                          color: "#fff",
+                        },
+                      }}
+                    />
+                  </Box>
+                </Stack>
+              )}
 
               <Stack className={"leave-review-config"}>
                 <Typography className={"main-title"}>Leave A Review</Typography>
                 <Typography className={"review-title"}>Review</Typography>
                 <textarea
                   onChange={({ target: { value } }: any) => {
-                    // setInsertCommentData({
-                    //   ...insertCommentData,
-                    //   commentContent: value,
-                    // });
+                    setInsertReviewData({
+                      ...insertReviewData,
+                      reviewContent: value,
+                    });
                   }}
-                  // value={insertCommentData.commentContent}
+                  value={insertReviewData.reviewContent}
                 ></textarea>
                 <Box className={"submit-btn"} component={"div"}>
                   <Button
                     className={"submit-review"}
                     disabled={
-                      true
-                      // insertCommentData.commentContent === "" || user?._id === ""
+                      insertReviewData.reviewContent === "" || user?._id === ""
                     }
-                    // onClick={createCommentHandler}
+                    onClick={createReviewHandler}
                   >
                     <Typography className={"title"}>Submit Review</Typography>
                     <svg
@@ -185,6 +368,19 @@ const BarberDetail: NextPage = () => {
       </Stack>
     );
   }
+};
+
+BarberDetail.defaultProps = {
+  initialReview: {
+    page: 1,
+    limit: 4,
+    sort: "createdAt",
+    direction: "ASC",
+    search: {
+      reviewRefId: "",
+      reviewGroup: ReviewGroup.MEMBER,
+    },
+  },
 };
 
 export default withLayoutBasic(BarberDetail);

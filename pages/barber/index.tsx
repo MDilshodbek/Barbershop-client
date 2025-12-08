@@ -436,7 +436,7 @@ const Barber: NextPage<BarbersProps> = (props) => {
               </Stack>
               {barber.length !== 0 && (
                 <span>
-                  Total {total} agent{total > 1 ? "s" : ""} available
+                  Total {total} barber{total > 1 ? "s" : ""} available
                 </span>
               )}
             </Stack>

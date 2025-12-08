@@ -2,6 +2,7 @@
 @import "/scss/pc/ourServices/service";
 @import "/scss/pc/barbers/barbers";
 @import "/scss/pc/appointment/appointment";
+@import "/scss/pc/account/join";
 
 #pc-wrap {
   #top {
@@ -34,7 +35,7 @@
           h1 {
             color: #004034;
             text-align: center;
-            font-family: Limelight;
+            font-family: "Limelight";
             font-size: 25px;
             font-style: normal;
             font-weight: 400;
@@ -169,6 +170,9 @@
             border-radius: 60px;
             border: 1px solid #c6d984;
             cursor: pointer;
+            span {
+              color: #c6d984;
+            }
           }
           .login-user-basic {
             img {

@@ -144,5 +144,6 @@ UserReviews.defaultProps = {
     page: 1,
     limit: 6,
     sort: "rating",
+    reviewGroup: "MEMBER",
   },
 };

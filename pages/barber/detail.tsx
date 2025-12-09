@@ -23,14 +23,18 @@ import { useRouter } from "next/router";
 import { useMutation, useQuery, useReactiveVar } from "@apollo/client";
 import { userVar } from "../../apollo/store";
 import { Member } from "../../libs/types/member/member";
-import { BarbersInquiry } from "../../libs/types/member/member.input";
 import {
   ReviewInput,
   ReviewInquiry,
 } from "../../libs/types/review/review.input";
 import { Review } from "../../libs/types/review/review";
 import { ReviewGroup } from "../../libs/enums/review.enum";
-import { CREATE_REVIEW, LIKE_BARBER } from "../../apollo/user/mutation";
+import {
+  CREATE_REVIEW,
+  LIKE_TARGET_MEMBER,
+  SUBSCRIBE,
+  UNSUBSCRIBE,
+} from "../../apollo/user/mutation";
 import { Message } from "../../libs/enums/common.enum";
 import {
   sweetErrorHandling,
@@ -40,6 +44,9 @@ import {
 import { T } from "../../libs/types/common";
 import { GET_MEMBER, GET_REVIEWS } from "../../apollo/user/query";
 import { Messages } from "../../libs/config";
+import MemberArticles from "../../libs/components/barberPage/MemberArticles";
+import MemberFollowers from "../../libs/components/barberPage/MemberFollowers";
+import MemberFollowings from "../../libs/components/barberPage/MemberFollowings";
 
 const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
   const device = useDeviceDetect();
@@ -51,6 +58,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
     useState<ReviewInquiry>(initialReview);
   const [barberReviews, setBarberReviews] = useState<Review[]>([]);
   const [reviewTotal, setReviewTotal] = useState<number>(0);
+  const category = (router.query.category as string) || "reviews";
   const [insertReviewData, setInsertReviewData] = useState<ReviewInput>({
     reviewGroup: ReviewGroup.MEMBER,
     reviewContent: "",
@@ -85,7 +93,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
     },
   });
 
-  const [likeTargetMember] = useMutation(LIKE_BARBER);
+  const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 
   const {
     loading: getReviewsLoading,
@@ -105,9 +113,9 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
     },
   });
 
-  console.log("barberReviews:", barberReviews);
-
   const [createReview] = useMutation(CREATE_REVIEW);
+  const [subscribe] = useMutation(SUBSCRIBE);
+  const [unsubscribe] = useMutation(UNSUBSCRIBE);
 
   /** LIFECYCLES **/
   useEffect(() => {
@@ -160,11 +168,75 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
       if (user._id === barberId)
         throw new Error(`Cannot write review for yourself`);
 
+      if (!insertReviewData.rating || insertReviewData.rating <= 0) {
+        throw new Error("Please add a rating before submitting your review");
+      }
+
       await createReview({ variables: { input: insertReviewData } });
       await getReviewsRefetch({ input: reviewInquiry });
     } catch (err: any) {
       sweetErrorHandling(err).then();
     }
+  };
+
+  const subscribeHandler = async (id: string, refetch: any, query: any) => {
+    try {
+      if (!id) throw new Error(Messages.error1);
+      if (!user._id) throw new Error(Messages.error2);
+
+      await subscribe({
+        variables: {
+          input: id,
+        },
+      });
+      await sweetTopSmallSuccessAlert("Subscribed!", 800);
+      await refetch({ input: query });
+    } catch (err: any) {
+      sweetErrorHandling(err).then();
+    }
+  };
+
+  const unsubscribeHandler = async (id: string, refetch: any, query: any) => {
+    try {
+      if (!id) throw new Error(Messages.error1);
+      if (!user._id) throw new Error(Messages.error2);
+
+      await unsubscribe({
+        variables: {
+          input: id,
+        },
+      });
+      await sweetTopSmallSuccessAlert("Unsubscribed!", 800);
+      await refetch({ input: query });
+    } catch (err: any) {
+      sweetErrorHandling(err).then();
+    }
+  };
+
+  const redirectToMemberPageHandler = async (memberId: string) => {
+    try {
+      if (memberId === user?._id)
+        await router.push(`/mypage?memberId=${memberId}`);
+      else await router.push(`/member?memberId=${memberId}`);
+    } catch (error) {
+      await sweetErrorHandling(error);
+    }
+  };
+
+  const handleCategoryChange = async (nextCategory: string) => {
+    if (!barberId) return;
+
+    await router.push(
+      {
+        pathname: "/barber/detail",
+        query: { barberId, category: nextCategory },
+      },
+      undefined,
+      {
+        shallow: true,
+        scroll: false,
+      }
+    );
   };
 
   if (device === "mobile") {
@@ -270,99 +342,225 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                     }}
                   />
                 </Stack>
+                {user?._id !== barber?._id && (
+                  <Stack className="bfollow-box">
+                    {barber?.meFollowed && barber.meFollowed[0]?.myFollowing ? (
+                      <>
+                        <Button
+                          sx={{
+                            background: "#004034",
+                            ":hover": {
+                              background: "#004034",
+                              border: "transparent",
+                            },
+                            color: "#fff",
+                            borderColor: "transparent",
+                          }}
+                          onClick={() =>
+                            unsubscribeHandler(
+                              barber?._id,
+                              getMemberRefetch,
+                              barberId
+                            )
+                          }
+                          className="follow-butt"
+                        >
+                          Unfollow
+                        </Button>
+                        <Typography className="follow-status">
+                          Following
+                        </Typography>
+                      </>
+                    ) : (
+                      <Button
+                        sx={{
+                          background: "#C6D984",
+                          ":hover": {
+                            background: "#C6D984",
+                            borderColor: "transparent",
+                          },
+                          color: "#004034",
+                        }}
+                        onClick={() => {
+                          if (barber?._id) {
+                            subscribeHandler(
+                              barber._id,
+                              getMemberRefetch,
+                              barberId
+                            );
+                          }
+                        }}
+                        className="follow-butt"
+                      >
+                        Follow
+                      </Button>
+                    )}
+                  </Stack>
+                )}
               </Stack>
             </Stack>
-            <Stack className={"review-box"}>
-              <Stack className={"main-intro"}>
-                <span>Reviews</span>
-                <p>we are glad to see you again</p>
-              </Stack>
 
-              {reviewTotal !== 0 && (
-                <Stack className={"review-wrap"}>
-                  <Box component={"div"} className={"title-box"}>
-                    <StarIcon />
-                    <span>
-                      {reviewTotal} review{reviewTotal > 1 ? "s" : ""}
-                    </span>
-                  </Box>
-                  {barberReviews?.map((review: Review) => {
-                    return <ReviewCard review={review} key={review?._id} />;
-                  })}
-                  <Box component={"div"} className={"pagination-box"}>
-                    <Pagination
-                      page={reviewInquiry.page}
-                      count={Math.ceil(reviewTotal / reviewInquiry.limit) || 1}
-                      onChange={reviewPaginationChangeHandler}
-                      shape="circular"
-                      sx={{
-                        "& .MuiPaginationItem-root": {
-                          color: "#004034", // text color
-                          borderColor: "#004034", // border color
-                        },
-                        "& .MuiPaginationItem-root.Mui-selected": {
-                          backgroundColor: "#C6D984", // selected background
-                          color: "#fff", // selected text
-                        },
-                        "& .MuiPaginationItem-root:hover": {
-                          backgroundColor: "#C6D984", // hover background
-                          color: "#fff",
-                        },
+            <Stack className="bdetail-tabs" direction="row" spacing={2} mb={3}>
+              <Button
+                className={
+                  category === "reviews" ? "active-butt" : "default-butt"
+                }
+                onClick={() => handleCategoryChange("reviews")}
+              >
+                Reviews
+                <span>({barber?.memberReviews})</span>
+              </Button>
+              <Button
+                className={
+                  category === "articles" ? "active-butt" : "default-butt"
+                }
+                onClick={() => handleCategoryChange("articles")}
+              >
+                Articles
+                <span>({barber?.memberArticles})</span>
+              </Button>
+              <Button
+                className={
+                  category === "followers" ? "active-butt" : "default-butt"
+                }
+                onClick={() => handleCategoryChange("followers")}
+              >
+                Followers
+                <span>({barber?.memberFollowers})</span>
+              </Button>
+              <Button
+                className={
+                  category === "followings" ? "active-butt" : "default-butt"
+                }
+                onClick={() => handleCategoryChange("followings")}
+              >
+                Followings
+                <span>({barber?.memberFollowings})</span>
+              </Button>
+            </Stack>
+
+            {category === "reviews" && (
+              <Stack className={"review-box"}>
+                <Stack className={"main-intro"}>
+                  <span>Reviews</span>
+                  <p>we are glad to see you again</p>
+                </Stack>
+
+                {reviewTotal !== 0 && (
+                  <Stack className={"review-wrap"}>
+                    <Box component={"div"} className={"title-box"}>
+                      <StarIcon />
+                      <span>
+                        {reviewTotal} review{reviewTotal > 1 ? "s" : ""}
+                      </span>
+                    </Box>
+                    {barberReviews?.map((review: Review) => {
+                      return <ReviewCard review={review} key={review?._id} />;
+                    })}
+                    <Box component={"div"} className={"pagination-box"}>
+                      <Pagination
+                        page={reviewInquiry.page}
+                        count={
+                          Math.ceil(reviewTotal / reviewInquiry.limit) || 1
+                        }
+                        onChange={reviewPaginationChangeHandler}
+                        shape="circular"
+                        sx={{
+                          "& .MuiPaginationItem-root": {
+                            color: "#004034",
+                            borderColor: "#004034",
+                          },
+                          "& .MuiPaginationItem-root.Mui-selected": {
+                            backgroundColor: "#C6D984",
+                            color: "#fff",
+                          },
+                          "& .MuiPaginationItem-root:hover": {
+                            backgroundColor: "#C6D984",
+                            color: "#fff",
+                          },
+                        }}
+                      />
+                    </Box>
+                  </Stack>
+                )}
+
+                <Stack className={"leave-review-config"}>
+                  <Typography className={"main-title"}>
+                    Leave A Review
+                  </Typography>
+                  <Typography className={"review-title"}>Rating</Typography>
+                  <Box className={"rating-row"}>
+                    <Rating
+                      value={insertReviewData.rating}
+                      onChange={(_, newValue) => {
+                        setInsertReviewData({
+                          ...insertReviewData,
+                          rating: newValue ?? 0,
+                        });
                       }}
+                      size="large"
                     />
+                    <Typography className={"rating-value"}>
+                      {insertReviewData.rating > 0
+                        ? `${insertReviewData.rating.toFixed(1)} / 5`
+                        : "No rating yet"}
+                    </Typography>
+                  </Box>
+                  <Typography className={"review-title"}>Review</Typography>
+                  <textarea
+                    className="review-content"
+                    onChange={({ target: { value } }: any) => {
+                      setInsertReviewData({
+                        ...insertReviewData,
+                        reviewContent: value,
+                      });
+                    }}
+                    value={insertReviewData.reviewContent}
+                  ></textarea>
+                  <Box className={"submit-btn"} component={"div"}>
+                    <Button
+                      className={"submit-review"}
+                      disabled={
+                        insertReviewData.reviewContent === "" ||
+                        user?._id === ""
+                      }
+                      onClick={createReviewHandler}
+                    >
+                      <Typography className={"title"}>Submit Review</Typography>
+                      {/* svg same as before */}
+                    </Button>
                   </Box>
                 </Stack>
-              )}
-
-              <Stack className={"leave-review-config"}>
-                <Typography className={"main-title"}>Leave A Review</Typography>
-                <Typography className={"review-title"}>Review</Typography>
-                <textarea
-                  onChange={({ target: { value } }: any) => {
-                    setInsertReviewData({
-                      ...insertReviewData,
-                      reviewContent: value,
-                    });
-                  }}
-                  value={insertReviewData.reviewContent}
-                ></textarea>
-                <Box className={"submit-btn"} component={"div"}>
-                  <Button
-                    className={"submit-review"}
-                    disabled={
-                      insertReviewData.reviewContent === "" || user?._id === ""
-                    }
-                    onClick={createReviewHandler}
-                  >
-                    <Typography className={"title"}>Submit Review</Typography>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="17"
-                      height="17"
-                      viewBox="0 0 17 17"
-                      fill="none"
-                    >
-                      <g clipPath="url(#clip0_6975_3642)">
-                        <path
-                          d="M16.1571 0.5H6.37936C6.1337 0.5 5.93491 0.698792 5.93491 0.944458C5.93491 1.19012 6.1337 1.38892 6.37936 1.38892H15.0842L0.731781 15.7413C0.558156 15.915 0.558156 16.1962 0.731781 16.3698C0.818573 16.4566 0.932323 16.5 1.04603 16.5C1.15974 16.5 1.27345 16.4566 1.36028 16.3698L15.7127 2.01737V10.7222C15.7127 10.9679 15.9115 11.1667 16.1572 11.1667C16.4028 11.1667 16.6016 10.9679 16.6016 10.7222V0.944458C16.6016 0.698792 16.4028 0.5 16.1571 0.5Z"
-                          fill="#181A20"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_6975_3642">
-                          <rect
-                            width="16"
-                            height="16"
-                            fill="white"
-                            transform="translate(0.601562 0.5)"
-                          />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                  </Button>
-                </Box>
               </Stack>
-            </Stack>
+            )}
+
+            {category === "articles" && (
+              <Stack className="button-router">
+                <MemberArticles />
+              </Stack>
+            )}
+
+            {category === "followers" && (
+              <Stack className="button-router">
+                <MemberFollowers
+                  subscribeHandler={subscribeHandler}
+                  unsubscribeHandler={unsubscribeHandler}
+                  redirectToMemberPageHandler={redirectToMemberPageHandler}
+                  likeMemberHandler={likeMemberHandler}
+                />
+              </Stack>
+            )}
+
+            {category === "followings" && (
+              <Stack className="button-router">
+                <MemberFollowings
+                  subscribeHandler={subscribeHandler}
+                  unsubscribeHandler={unsubscribeHandler}
+                  redirectToMemberPageHandler={redirectToMemberPageHandler}
+                  likeMemberHandler={likeMemberHandler}
+                />
+              </Stack>
+            )}
           </Stack>
         </Stack>
       </Stack>

@@ -12,7 +12,7 @@ import { BarbersInquiry } from "../../types/member/member.input";
 import { Member } from "../../types/member/member";
 import { T } from "../../types/common";
 import Link from "next/link";
-import { LIKE_BARBER } from "../../../apollo/user/mutation";
+import { LIKE_TARGET_MEMBER } from "../../../apollo/user/mutation";
 import { Message } from "../../enums/common.enum";
 import {
   sweetMixinErrorAlert,
@@ -43,7 +43,7 @@ const Barbers = (props: TopBarbersProps) => {
     },
   });
 
-  const [likeTargetMember] = useMutation(LIKE_BARBER);
+  const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 
   const likeMemberHandler = async (user: any, id: string) => {
     try {

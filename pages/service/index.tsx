@@ -113,8 +113,9 @@ const OurService: NextPage<ServiceProps> = (props) => {
                               },
                             }}
                           />
-                          <CommentIcon style={{ color: "#313e3b" }} />
-                          <span>{service.serviceReviews}</span>
+                          <span>
+                           ({service.serviceReviews})
+                          </span>
                         </Stack>
                       </Stack>
                       <Stack className="service-price">

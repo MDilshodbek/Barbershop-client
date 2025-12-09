@@ -77,7 +77,7 @@
             }
             button {
               margin-left: 10px;
-              color: #181a20;
+              color: #004034;
               font-family: "DM Sans";
               font-size: 14px;
               font-style: normal;
@@ -291,6 +291,29 @@
               gap: 20px;
               padding-top: 30px;
             }
+            .bfollow-box {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              justify-content: flex-start;
+              width: 300px;
+              margin-top: 40px;
+              gap: 10px;
+
+              .follow-butt {
+                width: 100%;
+                height: auto;
+                font-weight: 700px;
+                font-family: "DM Sans";
+                font-size: 34px;
+              }
+              .follow-status {
+                font-style: italic;
+                 font-weight: 600px;
+                font-family: "DM Sans";
+                font-size: 24px;
+              }
+            }
           }
         }
         .review-box {
@@ -306,7 +329,7 @@
             display: flex;
             flex-direction: column;
             span {
-              color: #181a20;
+              color: #004034;
               font-family: "DM Sans";
               font-size: 30px;
               font-style: normal;
@@ -316,7 +339,7 @@
               text-transform: capitalize;
             }
             p {
-              color: #181a20;
+              color: #121010;
               font-family: "DM Sans";
               font-size: 14px;
               font-style: normal;
@@ -339,7 +362,7 @@
               }
               span {
                 margin-left: 8px;
-                color: #181a20;
+                color: #004034;
                 font-family: "DM Sans";
                 font-size: 17px;
                 font-style: normal;
@@ -371,7 +394,7 @@
                     display: flex;
                     flex-direction: column;
                     strong {
-                      color: #181a20;
+                      color: #004034;
                       font-family: "DM Sans";
                       font-size: 15px;
                       font-style: normal;
@@ -380,7 +403,7 @@
                     }
                     span {
                       margin-top: 4px;
-                      color: #181a20;
+                      color: #121010;
                       font-family: "DM Sans";
                       font-size: 13px;
                       font-style: normal;
@@ -399,7 +422,7 @@
               }
               p {
                 margin-top: 10px;
-                color: #181a20;
+                color: #121010;
                 font-family: "DM Sans";
                 font-size: 14px;
                 font-style: normal;
@@ -422,7 +445,7 @@
             box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
             padding: 30px 38px;
             .main-title {
-              color: #181a20;
+              color: #004034;
               font-family: "DM Sans";
               font-size: 17px;
               font-style: normal;
@@ -431,12 +454,26 @@
             }
             .review-title {
               margin-top: 20px;
-              color: #181a20;
+              color: #121010;
               font-family: "DM Sans";
               font-size: 14px;
               font-style: normal;
               font-weight: 600;
               line-height: normal;
+              .review-content {
+                color: #121010;
+                font-family: "DM Sans";
+              }
+            }
+            .rating-row {
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              margin: 8px 0 16px;
+              .rating-value {
+                font-size: 14px;
+                color: #121010;
+              }
             }
             textarea {
               width: 100%;
@@ -471,7 +508,7 @@
                 border: 1px solid #c4c4c4;
                 cursor: pointer;
                 .title {
-                  color: #181a20;
+                  color: #004034;
                   font-family: "DM Sans";
                   font-size: 15px;
                   font-style: normal;
@@ -479,6 +516,42 @@
                   line-height: normal;
                 }
               }
+            }
+          }
+        }
+        .bdetail-tabs {
+          display: flex;
+          flex-direction: row;
+          gap: 30px;
+          margin-top: 50px;
+          .default-butt {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #004034;
+            gap: 10px;
+
+            font-family: "Limelight";
+            font-size: 34px;
+            color: #004034;
+            span {
+              color: #004034;
+            }
+          }
+          & .active-butt {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+
+            font-family: "Limelight";
+            font-size: 24px;
+            color: #fff;
+            background: #004034;
+            span {
+              color: #fff;
             }
           }
         }

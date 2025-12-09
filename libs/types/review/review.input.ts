@@ -3,7 +3,7 @@ import { ReviewGroup, ReviewStatus } from "../../enums/review.enum";
 
 export interface ReviewInput {
   reviewGroup: ReviewGroup;
-  reviewContent: string;
+  reviewContent?: string;
   reviewRefId: string;
   rating: number;
   memberId?: string;

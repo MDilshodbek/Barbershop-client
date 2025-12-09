@@ -83,16 +83,16 @@ const Top = () => {
             <Link href="/">
               <div className="chosen-link-basic">Home</div>
             </Link>
-            <Link href="service">
+            <Link href="/service">
               <div className="chosen-link-basic">Service</div>
             </Link>
-            <Link href="barber">
+            <Link href="/barber">
               <div className="chosen-link-basic">Barbers</div>
             </Link>
-            <Link href="appointment">
+            <Link href="/appointment">
               <div className="chosen-link-basic">Appointment</div>
             </Link>
-            <Link href="community">
+            <Link href="/community">
               <div className="chosen-link-basic">Community</div>
             </Link>
             {user?._id && (
@@ -100,7 +100,7 @@ const Top = () => {
                 <div className="chosen-link-basic">My Page</div>
               </Link>
             )}
-            <Link href="faq">
+            <Link href="/faq">
               <div className="chosen-link-basic">FAQ</div>
             </Link>
           </Box>

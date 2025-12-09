@@ -24,7 +24,7 @@ import { GET_BARBERS } from "../../apollo/user/query";
 import { T } from "../../libs/types/common";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useRouter } from "next/router";
-import { LIKE_BARBER } from "../../apollo/user/mutation";
+import { LIKE_TARGET_MEMBER } from "../../apollo/user/mutation";
 import { Direction, Message } from "../../libs/enums/common.enum";
 import {
   sweetMixinErrorAlert,
@@ -79,7 +79,7 @@ const Barber: NextPage<BarbersProps> = (props) => {
     },
   });
 
-  const [likeTargetMember] = useMutation(LIKE_BARBER);
+  const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 
   /** LIFECYCLES **/
   useEffect(() => {

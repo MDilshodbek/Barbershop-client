@@ -1,0 +1,302 @@
+.property-big-card-box {
+  position: relative;
+  margin-right: 8px;
+  margin-left: 8px;
+  margin-bottom: 35px;
+  width: 410px;
+  height: 455px;
+  display: flex;
+  flex-direction: column;
+  .card-img {
+    position: relative;
+    width: 100%;
+    height: 264px;
+    background-size: cover;
+    border-radius: 12px 12px 0px 0px;
+    cursor: pointer;
+    div.status {
+      position: absolute;
+      padding: 6px 34px;
+      left: 20px;
+      top: 20px;
+      display: flex;
+      align-items: center;
+      border-radius: 6px;
+      background: #eb6753;
+      img {
+        width: 14px;
+        height: 14px;
+      }
+      span {
+        margin-left: 5px;
+        color: #fff;
+        font-family: "Limelight";
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        text-transform: uppercase;
+      }
+    }
+    div.price {
+      position: absolute;
+      padding: 8px 12px;
+      left: 20px;
+      bottom: 20px;
+      border-radius: 6px;
+      background: #fff;
+      color: #181a20;
+      font-family: "Limelight";
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+    }
+  }
+  .info {
+    padding: 20px 22px 17px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border-radius: 0px 0px 12px 12px;
+    border: 1px solid #ddd;
+    border-top: none;
+    background: #fff;
+    .title {
+      overflow: hidden;
+      color: #181a20;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: "Limelight";
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      text-transform: capitalize;
+      cursor: pointer;
+    }
+    .desc {
+      margin-top: 5px;
+      overflow: hidden;
+      color: #717171;
+      font-family: "Limelight";
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .options {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      div {
+        display: flex;
+        flex-direction: row;
+        img {
+          margin-right: 5px;
+          width: 17px;
+          height: 17px;
+        }
+        span {
+          color: #181a20;
+          font-family: "Limelight";
+          font-size: 13px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+        }
+      }
+    }
+    .bott {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      div {
+        width: 65px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      p {
+        color: #181a20;
+        font-family: "Limelight";
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        text-transform: capitalize;
+      }
+      span {
+        margin-left: 6px;
+        color: rgba(143, 143, 143, 0.54);
+        font-family: "Limelight";
+        font-size: 15px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        text-transform: capitalize;
+      }
+      button {
+        margin-left: 15px;
+        width: 16px;
+        height: 16px;
+        box-sizing: border-box;
+      }
+      .buttons-box {
+        width: auto;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        gap: 7px;
+      }
+    }
+  }
+}
+.agent-general-card {
+  position: relative;
+  margin-right: 27px;
+  margin-bottom: 34px;
+  display: flex;
+  flex-direction: column;
+  .agent-img {
+    border-radius: 12px;
+    width: 233px;
+    height: 273px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    div {
+      position: absolute;
+      padding: 12px;
+      top: 12px;
+      left: 12px;
+      border-radius: 6px;
+      background: #eb6753;
+      color: #fff;
+      font-family: "Limelight";
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+    }
+  }
+  .agent-desc {
+    margin-top: 23px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    .agent-info {
+      display: flex;
+      flex-direction: column;
+      strong {
+        color: #181a20;
+        font-family: "Limelight";
+        font-size: 15px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        cursor: pointer;
+      }
+      span {
+        color: #181a20;
+        font-family: "Limelight";
+        font-size: 15px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 28px;
+      }
+    }
+    .buttons {
+      width: auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      svg {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+      }
+      .view-cnt {
+        font-size: 13px;
+      }
+    }
+  }
+}
+.journal-card {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  width: 420px;
+  margin-top: 20px;
+  background: transparent;
+  border: 10px solid transparent;
+  &:hover {
+    border-color: rgba(198, 217, 132, 1);
+    background: rgba(198, 217, 132, 1);
+  }
+  .journal-category {
+    position: relative;
+    display: flex;
+    height: 420px;
+    width: auto;
+    .journal-images {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .journal-category-title {
+      position: absolute;
+      width: 100px;
+      height: 40px;
+      flex-shrink: 0;
+      background-color: rgba(242, 205, 92, 1);
+      color: #004034;
+      text-align: center;
+      font-family: "DM Sans";
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 20px; /* 133.333% */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: 20px;
+      left: 20px;
+    }
+  }
+  .journal-title {
+    color: #004034;
+    font-family: "Limelight";
+    font-size: 26px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 30px; /* 115.385% */
+    margin-top: 15px;
+  }
+  .journal-info {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+    justify-content: flex-start;
+    gap: 20px;
+    .journal-date {
+      display: flex;
+      flex-direction: row;
+    }
+    .journal-comment {
+      display: flex;
+      flex-direction: row;
+    }
+    .journal-view {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+}

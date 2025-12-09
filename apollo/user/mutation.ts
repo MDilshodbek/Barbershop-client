@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
 
 // Member
-
 export const SIGN_UP = gql`
   mutation Signup($input: MemberInput!) {
     signup(input: $input) {
@@ -68,8 +67,41 @@ export const LOGIN = gql`
   }
 `;
 
+export const UPDATE_MEMBER = gql`
+  mutation UpdateMember($input: MemberUpdate!) {
+    updateMember(input: $input) {
+      _id
+      memberType
+      memberStatus
+      memberAuthType
+      memberLevel
+      memberServices
+      memberPhone
+      memberNick
+      memberFullName
+      memberImage
+      memberAddress
+      memberDesc
+      memberArticles
+      memberFollowers
+      memberFollowings
+      memberPoints
+      memberLikes
+      memberViews
+      memberReviews
+      memberComments
+      memberRank
+      memberWarnings
+      memberBlocks
+      createdAt
+      updatedAt
+      accessToken
+    }
+  }
+`;
+
 // Like
-export const LIKE_BARBER = gql`
+export const LIKE_TARGET_MEMBER = gql`
   mutation LikeTargetMember($input: String!) {
     likeTargetMember(memberId: $input) {
       _id
@@ -114,6 +146,170 @@ export const CREATE_REVIEW = gql`
       memberId
       rating
       reviewImages
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_REVIEW = gql`
+  mutation UpdateReview($input: ReviewUpdate!) {
+    updateReview(input: $input) {
+      _id
+      reviewStatus
+      reviewContent
+      reviewRefId
+      memberId
+      rating
+      reviewImages
+      createdAt
+      updatedAt
+      reviewGroup
+    }
+  }
+`;
+
+// Article
+export const LIKE_TARGET_BOARD_ARTICLE = gql`
+  mutation LikeTargetBoardArticle($input: String!) {
+    likeTargetBoardArticle(articleId: $input) {
+      _id
+      articleCategory
+      articleStatus
+      articleTitle
+      articleContent
+      articleImage
+      articleViews
+      articleLikes
+      articleComments
+      memberId
+      createdAt
+      updatedAt
+      meLiked {
+        memberId
+        likeRefId
+        myFavorite
+      }
+      memberData {
+        _id
+        memberType
+        memberStatus
+        memberAuthType
+        memberLevel
+        memberServices
+        memberPhone
+        memberNick
+        memberFullName
+        memberImage
+        memberAddress
+        memberDesc
+        memberArticles
+        memberFollowers
+        memberFollowings
+        memberPoints
+        memberLikes
+        memberViews
+        memberReviews
+        memberComments
+        memberRank
+        memberWarnings
+        memberBlocks
+        createdAt
+        updatedAt
+        accessToken
+      }
+    }
+  }
+`;
+
+export const CREATE_BOARD_ARTICLE = gql`
+  mutation CreateBoardArticle($input: BoardArticleInput!) {
+    createBoardArticle(input: $input) {
+      _id
+      articleCategory
+      articleStatus
+      articleTitle
+      articleContent
+      articleImage
+      articleViews
+      articleLikes
+      articleComments
+      memberId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_BOARD_ARTICLE = gql`
+  mutation UpdateBoardArticle($input: BoardArticleUpdate!) {
+    updateBoardArticle(input: $input) {
+      _id
+      articleCategory
+      articleStatus
+      articleTitle
+      articleContent
+      articleImage
+      articleViews
+      articleLikes
+      articleComments
+      memberId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+// Follow
+export const SUBSCRIBE = gql`
+  mutation Subscribe($input: String!) {
+    subscribe(input: $input) {
+      _id
+      followingId
+      followerId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UNSUBSCRIBE = gql`
+  mutation Unsubscribe($input: String!) {
+    unsubscribe(input: $input) {
+      _id
+      followingId
+      followerId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+// Comment
+export const CREATE_COMMENT = gql`
+  mutation CreateComment($input: CommentInput!) {
+    createComment(input: $input) {
+      _id
+      commentStatus
+      commentGroup
+      commentContent
+      commentTargetId
+      memberId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_COMMENT = gql`
+  mutation UpdateComment($input: CommentUpdate!) {
+    updateComment(input: $input) {
+      _id
+      commentStatus
+      commentGroup
+      commentContent
+      commentTargetId
+      memberId
       createdAt
       updatedAt
     }

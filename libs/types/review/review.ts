@@ -5,7 +5,7 @@ export interface Review {
   _id: string;
   reviewStatus: ReviewStatus;
   reviewGroup: ReviewGroup;
-  reviewContent: string;
+  reviewContent?: string;
   reviewRefId: string;
   memberId: string;
   rating: number;

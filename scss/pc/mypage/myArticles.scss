@@ -1,0 +1,32 @@
+#pc-wrap {
+  #my-articles-page {
+    width: 100%;
+    height: auto;
+    .article-list-box {
+      width: 100%;
+      height: auto;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 25px;
+      margin-top: 25px;
+      margin-bottom: 87px;
+    }
+    .pagination-conf {
+      width: 100%;
+      height: auto;
+      justify-content: center;
+      align-items: center;
+      margin-top: 30px;
+      .total {
+        p {
+          color: #181a20;
+          text-align: center;
+          font-family: "DM Sans" !important;
+          font-size: 18px !important;
+          font-weight: 700 !important;
+          line-height: 26px;
+        }
+      }
+    }
+  }
+}

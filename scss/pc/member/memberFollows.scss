@@ -48,9 +48,10 @@
         height: auto;
         flex-direction: row;
         flex: 1;
-        // justify-content: space-between;
+        flex-wrap: wrap;
+        justify-content: space-between;
         align-items: center;
-        gap: 189px;
+        // gap: 189px;
         border-bottom: 1px solid #ddd;
         .info {
           width: 300px;
@@ -59,8 +60,8 @@
           align-items: center;
           cursor: pointer;
           .image-box {
-            width: 110px;
-            height: 110px;
+            width: 100px;
+            height: 100px;
             overflow: hidden;
             margin-right: 25px;
             img {
@@ -122,6 +123,7 @@
           }
         }
         .action-box {
+          display: hide;
           width: 300px;
           height: 100%;
           flex-direction: row;
@@ -145,15 +147,15 @@
       height: auto;
       justify-content: center;
       align-items: center;
+      margin-top: 30px;
       margin-bottom: 30px;
       .total-result {
-        p {
+        .page-text {
           color: #181a20;
           text-align: center;
-          font-family: "DM Sans";
-          font-size: 18px;
-          font-style: normal;
-          font-weight: 600;
+          font-family: "DM Sans" !important;
+          font-size: 18px !important;
+          font-weight: 700 !important;
           line-height: 26px;
         }
       }

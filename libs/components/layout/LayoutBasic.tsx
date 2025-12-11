@@ -31,17 +31,17 @@ const withLayoutBasic = (Component: any) => {
           break;
         case "/mypage":
           title = "My page";
-          bgImage = "/banner/b4.svg";
+          bgImage = "/banner/b6.svg";
           break;
         case "/community":
           title = "Community";
           desc = "Wellcome to our community";
-          bgImage = "/banner/b6.svg";
+          bgImage = "/banner/b8.svg";
           break;
         case "/community/detail":
           title = "Community Detail";
           desc = "Wellcome to our community";
-          bgImage = "/banner/b7.svg";
+          bgImage = "/banner/b8.svg";
           break;
         case "/faq":
           title = "FAQ";
@@ -61,7 +61,7 @@ const withLayoutBasic = (Component: any) => {
         case "/account":
           title = "Account Join";
           desc = "Authentication process";
-          bgImage = "/banner/b8.svg";
+          bgImage = "/banner/b1.svg";
           break;
         default:
           break;

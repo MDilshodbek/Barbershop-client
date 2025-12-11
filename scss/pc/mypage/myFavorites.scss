@@ -1,0 +1,106 @@
+#pc-wrap {
+  #my-page {
+    #my-favorites-page {
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 50px;
+      gap: 57px;
+      .no-data {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        color: #c6d984;
+        padding-top: 300px;
+        padding-left: 350px;
+        font-weight: 700;
+        .info-icon {
+          font-size: 64px;
+        }
+      }
+      .favorites-list-box {
+        width: 100%;
+        height: auto;
+        flex-wrap: wrap;
+        flex-direction: row;
+        gap: 22px;
+
+        .barber-info {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
+          background: transparent;
+          border: 5px solid transparent;
+          &:hover {
+            border-color: rgba(198, 217, 132, 1);
+            background: rgba(198, 217, 132, 1);
+          }
+          .barber-img {
+            width: 100%;
+            cursor: pointer;
+          }
+          .barber-name {
+            color: #004034;
+            font-family: "Limelight";
+            font-size: 26px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 30px;
+            margin-top: 20px;
+            cursor: pointer;
+          }
+          .barber-media {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            width: 420px;
+            .barber-like {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              // padding-left: 50px;
+              cursor: pointer;
+            }
+            .barber-socialmedia {
+              display: flex;
+              flex-direction: row;
+              gap: 17px;
+            }
+            .barber-view {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              // padding-right: 50px;
+            }
+          }
+        }
+      }
+      .pagination-config {
+        width: 100%;
+        height: auto;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+        .total-result {
+          .page-text {
+            color: #181a20;
+            text-align: center;
+            font-family: "DM Sans" !important;
+            font-size: 18px !important;
+            font-weight: 700 !important;
+            line-height: 26px;
+          }
+        }
+      }
+    }
+  }
+}

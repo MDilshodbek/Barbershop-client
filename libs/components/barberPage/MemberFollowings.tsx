@@ -60,17 +60,22 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
   /** LIFECYCLES **/
 
   useEffect(() => {
-    const barberId = router.query.barberId as string | undefined;
+    if (!router.isReady) return;
 
-    if (!barberId) return;
+    const barberId = router.query.barberId as string | undefined;
+    const targetId = barberId ?? user?._id;
+
+    if (!targetId) return;
 
     setFollowInquiry((prev) => ({
       ...prev,
+      page: 1,
       search: {
-        followerId: barberId,
+        ...prev.search,
+        followerId: targetId,
       },
     }));
-  }, [router.query.barberId]);
+  }, [router.isReady, router.query.barberId, user?._id]);
 
   useEffect(() => {
     if (!followInquiry.search?.followerId) return;
@@ -168,48 +173,60 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
                   </Box>
                 </Stack>
 
-                {user?._id !== follow?.followingId && (
-                  <Stack className="action-box">
-                    {follow.meFollowed && follow.meFollowed[0]?.myFollowing ? (
-                      <>
-                        <Typography>Following</Typography>
-                        <Button
-                          variant="outlined"
-                          sx={{
-                            background: "#f78181",
-                            ":hover": { background: "#f06363" },
-                          }}
-                          onClick={() =>
-                            unsubscribeHandler(
-                              follow?.followingData?._id,
-                              getMemberFollowingsRefetch,
-                              followInquiry
-                            )
-                          }
-                        >
-                          Unfollow
-                        </Button>
-                      </>
-                    ) : (
+                <Stack className="action-box">
+                  {user?._id === follow?.followingId ? (
+                    <Button
+                      variant="outlined"
+                      disabled
+                      className="self-button"
+                      sx={{
+                        background: "#004034",
+                        color: "#fff !important",
+                        ":hover": { background: "#004034" },
+                      }}
+                    >
+                      Its You
+                    </Button>
+                  ) : follow.meFollowed && follow.meFollowed[0]?.myFollowing ? (
+                    <>
+                      <Typography>Following</Typography>
                       <Button
-                        variant="contained"
+                        variant="outlined"
                         sx={{
-                          background: "#C6D984",
-                          ":hover": { background: "#C6D984" },
+                          background: "#004034",
+                          ":hover": { background: "#004034" },
+                          color: "#fff !important",
                         }}
                         onClick={() =>
-                          subscribeHandler(
+                          unsubscribeHandler(
                             follow?.followingData?._id,
                             getMemberFollowingsRefetch,
                             followInquiry
                           )
                         }
                       >
-                        Follow
+                        Unfollow
                       </Button>
-                    )}
-                  </Stack>
-                )}
+                    </>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      sx={{
+                        background: "#C6D984",
+                        ":hover": { background: "#C6D984" },
+                      }}
+                      onClick={() =>
+                        subscribeHandler(
+                          follow?.followingData?._id,
+                          getMemberFollowingsRefetch,
+                          followInquiry
+                        )
+                      }
+                    >
+                      Follow
+                    </Button>
+                  )}
+                </Stack>
               </Stack>
             );
           })}
@@ -240,7 +257,7 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
               />
             </Stack>
             <Stack className="total-result">
-              <Typography>{total} followings</Typography>
+              <Typography className="page-text">{total} followings</Typography>
             </Stack>
           </Stack>
         )}

@@ -15,7 +15,7 @@ interface CommunityCardProps {
 }
 
 const CommunityCard = (props: CommunityCardProps) => {
-  const { boardArticle} = props;
+  const { boardArticle } = props;
   const device = useDeviceDetect();
   const router = useRouter();
   const user = useReactiveVar(userVar);
@@ -45,7 +45,11 @@ const CommunityCard = (props: CommunityCardProps) => {
     return <div>COMMUNITY CARD MOBILE</div>;
   } else {
     return (
-      <Stack key={boardArticle._id} className="journal-card">
+      <Stack
+        key={boardArticle._id}
+        className="journal-card"
+        onClick={(e: any) => chooseArticleHandler(e, boardArticle)}
+      >
         <Stack className="journal-category">
           <img
             className="journal-images"

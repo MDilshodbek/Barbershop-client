@@ -217,7 +217,7 @@ export const GET_ARTICLES = gql`
   }
 `;
 
-export const GET_ALL_BOARD_ARTICLE = gql`
+export const GET_BOARD_ARTICLE = gql`
   query GetBoardArticle($input: String!) {
     getBoardArticle(articleId: $input) {
       _id

@@ -18,6 +18,7 @@ export enum Message {
   PROVIDE_ALLOWED_FORMAT = "Please provide jpg, jpeg or png images!",
   SELF_SUBSCRIPTION_DENIED = "Self subscription is denied",
   DUPLICATE_BARBER_SERVICE = "This barber already has this service.",
+  INSERT_ALL_INPUTS = "Please fill in all the blanks!",
 }
 
 export enum NotificationMessage {

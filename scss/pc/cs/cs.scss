@@ -1,0 +1,109 @@
+#pc-wrap {
+  .cs-page {
+    position: relative;
+    padding: 60px 0px 60px;
+    width: 100%;
+    height: auto;
+    .hero-title {
+      position: absolute;
+      color: #fff;
+      font-family: "Limelight";
+      font-size: 80px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 80px; /* 100% */
+      left: 300px;
+      top: -180px;
+      z-index: 1000;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      .cs-main-info {
+        display: flex;
+        flex-direction: column;
+        .info {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          span {
+            color: #004034;
+            font-family: "Limelight";
+            font-size: 35px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            letter-spacing: 0.525px;
+          }
+        }
+      }
+      .cs-content {
+        margin-top: 25px;
+        display: flex;
+        flex-direction: column;
+        .faq-content {
+          margin-top: 25px;
+          display: flex;
+          flex-direction: column;
+          .categories {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            div {
+              width: 14%;
+              height: 40px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              color: #c6d984;
+              text-align: center;
+              font-family: "DM Sans";
+              font-size: 18px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: normal;
+              letter-spacing: -0.225px;
+              cursor: pointer;
+              &.active {
+                border-bottom: 1px solid #004034;
+                color: #004034;
+              }
+            }
+          }
+          .wrap {
+            margin-top: 50px;
+            .MuiAccordionDetails-root {
+              padding: 30px 20px;
+              background: #fafafa;
+            }
+            .badge {
+              margin: 0 24px;
+              display: inline-block;
+              padding: 4px 10px;
+              border: 1px solid #004034;
+              border-radius: 7px;
+              color: #004034;
+            }
+            .question {
+              .badge {
+                background: #004034;
+                color: #fff;
+              }
+            }
+            .answer {
+              margin-left: 80px;
+              display: flex;
+              white-space: nowrap;
+              align-items: center;
+              flex-direction: row;
+              .badge {
+                color: #c6d984;
+                border: 1px solid #c6d984;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

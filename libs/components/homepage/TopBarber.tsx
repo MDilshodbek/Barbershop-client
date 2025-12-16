@@ -19,6 +19,7 @@ import {
   sweetTopSmallSuccessAlert,
 } from "../../sweetAlert";
 import { userVar } from "../../../apollo/store";
+import useDeviceDetect from "../../hooks/useDeviceDetect";
 
 interface TopBarbersProps {
   initialInput: BarbersInquiry;
@@ -28,6 +29,7 @@ const Barbers = (props: TopBarbersProps) => {
   const [topBarber, setTopBarber] = useState<Member[]>([]);
   const { initialInput } = props;
   const user = useReactiveVar(userVar);
+  const device = useDeviceDetect();
 
   const {
     loading: getBarbersLoading,
@@ -62,105 +64,203 @@ const Barbers = (props: TopBarbersProps) => {
     }
   };
 
-  return (
-    <Stack className="top-barbers">
-      <Stack className="container">
-        <Stack className="top-barber-title">
-          Step Inside the Cropper
-          <br />
-          Masters
-        </Stack>
-        <Stack className="main-barbers">
-          {topBarber.length === 0 ? (
-            <Box component={"div"} className="empty-list">
-              Top Barbers are not available
-            </Box>
-          ) : (
-            <>
-              {topBarber.map((barber: Member) => {
-                return (
-                  <Stack key={barber._id} className="barber-info">
-                    <Box className="barber-img">
+  if (device === "mobile") {
+    return (
+      <Stack className="top-barbers top-barbers-mobile">
+        <Stack className="container">
+          <Stack className="top-barber-title">Cropper Masters</Stack>
+          <Stack className="main-barbers">
+            {topBarber.length === 0 ? (
+              <Box component={"div"} className="empty-list">
+                Top Barbers are not available
+              </Box>
+            ) : (
+              <>
+                {topBarber.map((barber: Member) => {
+                  return (
+                    <Stack key={barber._id} className="barber-card">
+                      <Box className="barber-img">
+                        <Link
+                          href={{
+                            pathname: "/barber/detail",
+                            query: { barberId: barber?._id },
+                          }}
+                        >
+                          <img
+                            src={
+                              barber?.memberImage
+                                ? `${process.env.REACT_APP_API_URL}/${barber?.memberImage}`
+                                : "/logo/defaultUser.svg"
+                            }
+                            alt=""
+                          />
+                        </Link>
+                      </Box>
                       <Link
                         href={{
                           pathname: "/barber/detail",
                           query: { barberId: barber?._id },
                         }}
                       >
-                        <img
-                          src={
-                            barber?.memberImage
-                              ? `${process.env.REACT_APP_API_URL}/${barber?.memberImage}`
-                              : "/logo/defaultUser.svg"
-                          }
-                          alt=""
-                        />
+                        <Box className="barber-name">
+                          {barber?.memberFullName ?? barber?.memberNick}
+                        </Box>
                       </Link>
-                    </Box>
-                    <Link
-                      href={{
-                        pathname: "/barber/detail",
-                        query: { barberId: barber?._id },
-                      }}
-                    >
-                      <Box className="barber-name">
-                        {barber?.memberFullName ?? barber?.memberNick}
-                      </Box>
-                    </Link>
-                    <Stack className="barber-media">
-                      <Box
-                        className="barber-like"
-                        onClick={() => likeMemberHandler(user, barber?._id)}
-                      >
-                        {barber?.meLiked && barber?.meLiked[0]?.myFavorite ? (
-                          <FavoriteIcon style={{ color: "red" }} />
-                        ) : (
-                          <FavoriteBorderIcon style={{ color: "#004034" }} />
-                        )}
-                        <span>{barber.memberLikes}</span>
-                      </Box>
+                      <Stack className="barber-stats">
+                        <Box
+                          className="stat-chip like"
+                          onClick={() => likeMemberHandler(user, barber?._id)}
+                        >
+                          {barber?.meLiked && barber?.meLiked[0]?.myFavorite ? (
+                            <FavoriteIcon style={{ color: "red" }} />
+                          ) : (
+                            <FavoriteBorderIcon style={{ color: "#004034" }} />
+                          )}
+                          <span>{barber.memberLikes}</span>
+                        </Box>
+                        <Box className="stat-chip views">
+                          <RemoveRedEyeIcon
+                            style={{
+                              color: "#004034",
+                              fontSize: "18px",
+                            }}
+                          />
+                          <span>{barber.memberViews}</span>
+                        </Box>
+                      </Stack>
                       <Stack className="barber-socialmedia">
                         <FacebookOutlinedIcon
                           style={{
                             color: "#004034",
-                            fontSize: "20px",
+                            fontSize: "18px",
                             cursor: "pointer",
                           }}
                         />
                         <InstagramIcon
                           style={{
                             color: "#004034",
-                            fontSize: "20px",
+                            fontSize: "18px",
                             cursor: "pointer",
                           }}
                         />
                         <XIcon
                           style={{
                             color: "#004034",
-                            fontSize: "20px",
+                            fontSize: "18px",
                             cursor: "pointer",
                           }}
                         />
                       </Stack>
-                      <Box className="barber-view">
-                        <RemoveRedEyeIcon
-                          style={{
-                            color: "#004034",
-                            fontSize: "20px",
-                          }}
-                        />
-                        <span>{barber.memberViews}</span>
-                      </Box>
                     </Stack>
-                  </Stack>
-                );
-              })}
-            </>
-          )}
+                  );
+                })}
+              </>
+            )}
+          </Stack>
         </Stack>
       </Stack>
-    </Stack>
-  );
+    );
+  } else {
+    return (
+      <Stack className="top-barbers">
+        <Stack className="container">
+          <Stack className="top-barber-title">
+            Step Inside the Cropper
+            <br />
+            Masters
+          </Stack>
+          <Stack className="main-barbers">
+            {topBarber.length === 0 ? (
+              <Box component={"div"} className="empty-list">
+                Top Barbers are not available
+              </Box>
+            ) : (
+              <>
+                {topBarber.map((barber: Member) => {
+                  return (
+                    <Stack key={barber._id} className="barber-info">
+                      <Box className="barber-img">
+                        <Link
+                          href={{
+                            pathname: "/barber/detail",
+                            query: { barberId: barber?._id },
+                          }}
+                        >
+                          <img
+                            src={
+                              barber?.memberImage
+                                ? `${process.env.REACT_APP_API_URL}/${barber?.memberImage}`
+                                : "/logo/defaultUser.svg"
+                            }
+                            alt=""
+                          />
+                        </Link>
+                      </Box>
+                      <Link
+                        href={{
+                          pathname: "/barber/detail",
+                          query: { barberId: barber?._id },
+                        }}
+                      >
+                        <Box className="barber-name">
+                          {barber?.memberFullName ?? barber?.memberNick}
+                        </Box>
+                      </Link>
+                      <Stack className="barber-media">
+                        <Box
+                          className="barber-like"
+                          onClick={() => likeMemberHandler(user, barber?._id)}
+                        >
+                          {barber?.meLiked && barber?.meLiked[0]?.myFavorite ? (
+                            <FavoriteIcon style={{ color: "red" }} />
+                          ) : (
+                            <FavoriteBorderIcon style={{ color: "#004034" }} />
+                          )}
+                          <span>{barber.memberLikes}</span>
+                        </Box>
+                        <Stack className="barber-socialmedia">
+                          <FacebookOutlinedIcon
+                            style={{
+                              color: "#004034",
+                              fontSize: "20px",
+                              cursor: "pointer",
+                            }}
+                          />
+                          <InstagramIcon
+                            style={{
+                              color: "#004034",
+                              fontSize: "20px",
+                              cursor: "pointer",
+                            }}
+                          />
+                          <XIcon
+                            style={{
+                              color: "#004034",
+                              fontSize: "20px",
+                              cursor: "pointer",
+                            }}
+                          />
+                        </Stack>
+                        <Box className="barber-view">
+                          <RemoveRedEyeIcon
+                            style={{
+                              color: "#004034",
+                              fontSize: "20px",
+                            }}
+                          />
+                          <span>{barber.memberViews}</span>
+                        </Box>
+                      </Stack>
+                    </Stack>
+                  );
+                })}
+              </>
+            )}
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  }
 };
 
 Barbers.defaultProps = {

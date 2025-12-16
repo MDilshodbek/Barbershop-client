@@ -76,23 +76,27 @@ const withLayoutBasic = (Component: any) => {
     }, [router.pathname]);
 
     if (device === "mobile") {
-      <>
-        <Head>
-          <title>Cropper</title>
-          <meta name={"title"} content={`Cropper`} />
-        </Head>
-        <Stack id="mobile-wrap">
-          <Stack id={"top"}>
-            <Top />
+      return (
+        <>
+          <Head>
+            <title>Cropper</title>
+            <meta name={"title"} content={`Cropper`} />
+          </Head>
+          <Stack id="mobile-wrap">
+            <Stack id={"top"}>
+              <Top />
+            </Stack>
+
+            <Stack id={"main"}>
+              <Component {...props} />
+            </Stack>
+
+            <Stack id={"footer"}>
+              <Footer />
+            </Stack>
           </Stack>
-          <Stack id={"main"}>
-            <Component {...props} />
-          </Stack>
-          <Stack id={"footer"}>
-            <Footer />
-          </Stack>
-        </Stack>
-      </>;
+        </>
+      );
     } else {
       return (
         <>

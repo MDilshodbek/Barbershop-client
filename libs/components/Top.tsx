@@ -139,20 +139,20 @@ const Top = () => {
 
   if (device === "mobile") {
     return (
-      <Stack className="navbar">
+      <Stack className="top">
         <Link href="/">
           <div className="chosen-link">Home</div>
         </Link>
-        <Link href="service">
+        <Link href="/service">
           <div className="chosen-link">Service</div>
         </Link>
-        <Link href="barber">
+        <Link href="/barber">
           <div className="chosen-link">Barbers</div>
         </Link>
-        <Link href="appointment">
+        <Link href="/appointment">
           <div className="chosen-link">Appointment</div>
         </Link>
-        <Link href="community">
+        <Link href="/community">
           <div className="chosen-link">Community</div>
         </Link>
         {false && (
@@ -160,7 +160,7 @@ const Top = () => {
             <div className="chosen-link">My Page</div>
           </Link>
         )}
-        <Link href="faq">
+        <Link href="/faq">
           <div className="chosen-link">FAQ</div>
         </Link>
       </Stack>

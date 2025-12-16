@@ -18,7 +18,14 @@ const Home: NextPage = () => {
   const device = useDeviceDetect();
 
   if (device === "mobile") {
-    return <Stack>HomePage Mobile</Stack>;
+    return (
+      <Stack className="home-page">
+        <Mission />
+        <Barbers />
+        <UserReviews />
+        <Journal />
+      </Stack>
+    );
   } else {
     return (
       <Stack className="home-page">

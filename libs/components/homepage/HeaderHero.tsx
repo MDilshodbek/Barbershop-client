@@ -7,27 +7,47 @@ const HeaderHero = () => {
   const { t, i18n } = useTranslation("common");
   const device = useDeviceDetect();
 
-  return (
-    <>
-      <Stack className="container">
+  if (device === "mobile") {
+    return (
+      <Stack className="container hero-mobile">
         <Stack className="hero-top">
           <Box className="hero-slogan">
-            <h1>{t("Curating Signature Aesthetics for Modern Gentlemen")}</h1>
+            <h1>{t("Signature looks")}</h1>
           </Box>
-          <Stack className="hero-action">
-            <Link href="/appointment">
-              <Box className="hero-butt">
-                <p>{t("Book an appointment")}</p>
-              </Box>
-            </Link>
-          </Stack>
+          <Link href="/appointment">
+            <Box className="hero-butt hero-butt-mobile">
+              <p>{t("Book an appointment")}</p>
+            </Box>
+          </Link>
         </Stack>
         <Stack className="hero-bottom">
           <img src="/img/bg16.png" alt="" />
         </Stack>
       </Stack>
-    </>
-  );
+    );
+  } else {
+    return (
+      <>
+        <Stack className="container">
+          <Stack className="hero-top">
+            <Box className="hero-slogan">
+              <h1>{t("Curating Signature Aesthetics for Modern Gentlemen")}</h1>
+            </Box>
+            <Stack className="hero-action">
+              <Link href="/appointment">
+                <Box className="hero-butt">
+                  <p>{t("Book an appointment")}</p>
+                </Box>
+              </Link>
+            </Stack>
+          </Stack>
+          <Stack className="hero-bottom">
+            <img src="/img/bg16.png" alt="" />
+          </Stack>
+        </Stack>
+      </>
+    );
+  }
 };
 
 export default HeaderHero;

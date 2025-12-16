@@ -685,3 +685,55 @@ export const GET_SELECTED_BARBER_SCHEDULES = gql`
     }
   }
 `;
+
+// Notification
+export const GET_MEMBER_ALL_NOTIFICATIONS = gql`
+  query GetMemberAllNotifications($input: NotificationInquiry!) {
+    getMemberAllNotifications(input: $input) {
+      list {
+        _id
+        notificationStatus
+        notificationType
+        notificationMessage
+        authorId
+        receiverId
+        entityId
+        readAt
+        createdAt
+        updatedAt
+        entityData
+        memberData {
+          _id
+          memberType
+          memberStatus
+          memberAuthType
+          memberLevel
+          memberServices
+          memberPhone
+          memberNick
+          memberFullName
+          memberImage
+          memberAddress
+          memberDesc
+          memberArticles
+          memberFollowers
+          memberFollowings
+          memberPoints
+          memberLikes
+          memberViews
+          memberReviews
+          memberComments
+          memberRank
+          memberWarnings
+          memberBlocks
+          createdAt
+          updatedAt
+          accessToken
+        }
+      }
+      metaCounter {
+        total
+      }
+    }
+  }
+`;

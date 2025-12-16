@@ -19,6 +19,7 @@
 @import "/scss/pc/community/community.scss";
 @import "/scss/pc/community/detail.scss";
 @import "/scss/pc/cs/cs.scss";
+@import "/scss/pc/notification/notification.scss";
 
 #pc-wrap {
   #top {
@@ -103,6 +104,24 @@
               height: 42px;
               border-radius: 50%;
               object-fit: cover;
+            }
+          }
+          .lan-box {
+            margin-left: 28px;
+            display: flex;
+            align-items: center;
+            .notification-icon {
+              color: white;
+            }
+            .btn-lang {
+              border-radius: 4px;
+              .flag {
+                img {
+                  width: 24px;
+                  height: 17px;
+                  border-radius: 2px;
+                }
+              }
             }
           }
         }
@@ -196,6 +215,30 @@
               height: 42px;
               border-radius: 50%;
               object-fit: cover;
+            }
+          }
+          .lan-box {
+            margin-left: 28px;
+            display: flex;
+            align-items: center;
+            .notification-icon {
+              color: white;
+            }
+            .btn-lang {
+              border-radius: 4px;
+              .flag {
+                img {
+                  width: 24px;
+                  height: 17px;
+                  border-radius: 2px;
+                }
+              }
+            }
+            .img-flag {
+              width: 24px;
+              height: 17px;
+              border-radius: 2px;
+              margin-right: 8px;
             }
           }
         }

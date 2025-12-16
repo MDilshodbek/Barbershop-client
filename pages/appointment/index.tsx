@@ -37,6 +37,8 @@ import {
 import { Messages } from "../../libs/config";
 import { ServiceStatus } from "../../libs/enums/service.enum";
 import { ReserveStatus } from "../../libs/enums/reservation.enum";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "react-i18next";
 
 interface AppointmentProps {
   barberInput?: BarbersInquiry;
@@ -113,14 +115,19 @@ const combineYmdAndTime = (ymd: string, time: string): Date | null => {
   return base;
 };
 
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
+
 const Appointment: NextPage<AppointmentProps> = (props) => {
   const router = useRouter();
   const device = useDeviceDetect();
   const user = useReactiveVar(userVar);
-
+  const { t, i18n } = useTranslation("common");
   const [barbers, setBarbers] = useState<Member[]>([]);
   const [services, setServices] = useState<Service[]>([]);
-
   const [selectedDate, setSelectedDate] = useState<string>(todayLocalYmd());
   const [selectedTime, setSelectedTime] = useState<string | null>(
     TIME_SLOTS[0]?.time ?? null
@@ -312,7 +319,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
 
   return (
     <Stack className="appointment-page">
-      <Typography className="hero-title">Appointment</Typography>
+      <Typography className="hero-title">{t("Appointment")}</Typography>
 
       <Stack className="container">
         <Stack className="appoint-main">

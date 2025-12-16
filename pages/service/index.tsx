@@ -10,12 +10,21 @@ import { useQuery } from "@apollo/client";
 import { GET_SERVICES } from "../../apollo/user/query";
 import { T } from "../../libs/types/common";
 import { useRouter } from "next/router";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "react-i18next";
 
 interface ServiceProps {
   initialInput?: ServiceInquiry;
 }
 
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
+
 const OurService: NextPage<ServiceProps> = (props) => {
+  const { t, i18n } = useTranslation("common");
   const device = useDeviceDetect();
   const [service, setService] = useState<Service[]>([]);
   const router = useRouter();
@@ -80,7 +89,7 @@ const OurService: NextPage<ServiceProps> = (props) => {
   } else {
     return (
       <Stack className="service-page">
-        <Typography className="hero-title">Services</Typography>
+        <Typography className="hero-title">{t("Services")}</Typography>
         <Stack className="container">
           <Stack className="service-main">
             <Stack className="service-main-title">Our Signature Services</Stack>
@@ -113,9 +122,7 @@ const OurService: NextPage<ServiceProps> = (props) => {
                               },
                             }}
                           />
-                          <span>
-                           ({service.serviceReviews})
-                          </span>
+                          <span>({service.serviceReviews})</span>
                         </Stack>
                       </Stack>
                       <Stack className="service-price">

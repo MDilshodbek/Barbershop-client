@@ -180,9 +180,9 @@ const Faquestions = () => {
       {
         id: "00f5a45ed8897f8090116a77",
         subject:
-          "What happens if I change my mind about a service after booking?",
+          "What happens if I CHANGE my mind about a service after booking?",
         content:
-          "You can update or modify your reservation depending on availability. Contact us early so we can adjust your appointment smoothly.",
+          "You can only cancel your reservation!. But keep in mind that if you cancel 3 times, your account will be BLOCKED",
       },
     ],
     barbers: [

@@ -48,8 +48,17 @@ import { Messages } from "../../libs/config";
 import MemberArticles from "../../libs/components/barberPage/MemberArticles";
 import MemberFollowers from "../../libs/components/barberPage/MemberFollowers";
 import MemberFollowings from "../../libs/components/barberPage/MemberFollowings";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "react-i18next";
+
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
 
 const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
+  const { t, i18n } = useTranslation("common");
   const device = useDeviceDetect();
   const router = useRouter();
   const user = useReactiveVar(userVar);
@@ -265,13 +274,12 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
     await getReviewsRefetch({ input: reviewInquiry });
   };
 
-
   if (device === "mobile") {
     return <Stack>Barber Detail Page mobile</Stack>;
   } else {
     return (
       <Stack className="bdetail-page">
-        <Typography className="hero-title">Barber Page</Typography>
+        <Typography className="hero-title">{t("Barber Page")}</Typography>
         <Stack className="container">
           <Stack className="barber-detail-main">
             <Stack className="bdetail-box">

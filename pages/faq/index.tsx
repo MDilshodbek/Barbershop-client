@@ -6,10 +6,18 @@ import useDeviceDetect from "../../libs/hooks/useDeviceDetect";
 import withLayoutBasic from "../../libs/components/layout/LayoutBasic";
 import Faquestions from "../../libs/components/cs/Faquestions";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "react-i18next";
+
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
 
 const FAQ: NextPage = () => {
   const device = useDeviceDetect();
-  const router = useRouter();
+	const { t, i18n } = useTranslation('common');
+
 
   /** HANDLERS **/
 
@@ -18,7 +26,7 @@ const FAQ: NextPage = () => {
   } else {
     return (
       <Stack className={"cs-page"}>
-        <Typography className="hero-title">Cs Center</Typography>
+        <Typography className="hero-title">{t("Cs Center")}</Typography>
         <Stack className={"container"}>
           <Box component={"div"} className={"cs-main-info"}>
             <Box component={"div"} className={"info"}>

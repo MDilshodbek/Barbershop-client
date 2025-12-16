@@ -6,7 +6,13 @@ import Barbers from "../libs/components/homepage/TopBarber";
 import Journal from "../libs/components/homepage/Journal";
 import { UserReviews } from "../libs/components/homepage/Review";
 import useDeviceDetect from "../libs/hooks/useDeviceDetect";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
 
 const Home: NextPage = () => {
   const device = useDeviceDetect();

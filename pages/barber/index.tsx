@@ -34,6 +34,14 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import Link from "next/link";
 import { userVar } from "../../apollo/store";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
+import { useTranslation } from "react-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
 
 interface BarbersProps {
   initialInput: BarbersInquiry;
@@ -50,6 +58,7 @@ const Barber: NextPage<BarbersProps> = (props) => {
   const [searchText, setSearchText] = useState<string>("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const user = useReactiveVar(userVar);
+  const { t, i18n } = useTranslation("common");
 
   const {
     initialInput = {
@@ -213,7 +222,7 @@ const Barber: NextPage<BarbersProps> = (props) => {
   } else {
     return (
       <Stack className="barber-page">
-        <Typography className="hero-title">Masters</Typography>
+        <Typography className="hero-title">{t("Masters")}</Typography>
         <Stack className="container">
           <Stack className="barber-main">
             <Stack className="barber-main-title">

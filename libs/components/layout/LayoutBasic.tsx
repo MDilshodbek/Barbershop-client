@@ -48,6 +48,11 @@ const withLayoutBasic = (Component: any) => {
           desc = "Frequently asked questions";
           bgImage = "/banner/b3.svg";
           break;
+        case "/notification":
+          title = "Notification";
+          desc = "Notification messages";
+          bgImage = "/banner/b5.svg";
+          break;
         case "/barber":
           title = "Barber Page";
           desc = "Our Barbers";

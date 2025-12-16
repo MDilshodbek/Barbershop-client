@@ -21,14 +21,16 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GoogleIcon from "@mui/icons-material/Google";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import { useTranslation } from "react-i18next";
 
-// export const getStaticProps = async ({ locale }: any) => ({
-// 	props: {
-// 		...(await serverSideTranslations(locale, ['common'])),
-// 	},
-// });
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
 
 const Join: NextPage = () => {
+  const { t, i18n } = useTranslation("common");
   const router = useRouter();
   const device = useDeviceDetect();
   const [rightActive, setRightActive] = useState(false);
@@ -84,7 +86,7 @@ const Join: NextPage = () => {
   } else {
     return (
       <Stack className="join-page">
-        <Typography className="join-title">Welcome</Typography>
+        <Typography className="join-title">{t("Welcome")}</Typography>
         <Stack className="container">
           <Box
             className={`auth-container ${

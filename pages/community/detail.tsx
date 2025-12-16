@@ -39,19 +39,25 @@ import {
   sweetMixinSuccessAlert,
 } from "../../libs/sweetAlert";
 import { CommentUpdate } from "../../libs/types/comment/comment.update";
+import { useTranslation } from "react-i18next";
 const ToastViewerComponent = dynamic(
   () => import("../../libs/components/community/TViewer"),
   { ssr: false }
 );
 
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
+
 const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
+  const { t, i18n } = useTranslation("common");
   const device = useDeviceDetect();
   const router = useRouter();
   const { query } = router;
-
   const articleId = query?.id as string;
   const articleCategory = query?.articleCategory as string;
-
   const [comment, setComment] = useState<string>("");
   const [wordsCnt, setWordsCnt] = useState<number>(0);
   const [updatedCommentWordsCnt, setUpdatedCommentWordsCnt] =
@@ -239,7 +245,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
   } else {
     return (
       <div id="community-detail-page">
-        <Typography className="hero-title">Community detail</Typography>
+        <Typography className="hero-title">{t("Community detail")}</Typography>
         <div className="container">
           <Stack className="main-box">
             <Stack className="left-config">

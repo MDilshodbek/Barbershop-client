@@ -11,15 +11,18 @@ import { T } from "../../libs/types/common";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { BoardArticlesInquiry } from "../../libs/types/board-article/board-article.input";
 import { BoardArticleCategory } from "../../libs/enums/board-article.enum";
-import { useMutation, useQuery } from "@apollo/client";
 import { GET_ARTICLES } from "../../apollo/user/query";
-import { Messages } from "../../libs/config";
-import {
-  sweetMixinErrorAlert,
-  sweetTopSmallSuccessAlert,
-} from "../../libs/sweetAlert";
+import { useQuery } from "@apollo/client";
+import { useTranslation } from "react-i18next";
+
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
 
 const Community: NextPage = ({ initialInput, ...props }: T) => {
+  const { t, i18n } = useTranslation("common");
   const device = useDeviceDetect();
   const router = useRouter();
   const { query } = router;
@@ -87,7 +90,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
   } else {
     return (
       <div id="community-list-page">
-        <Typography className="hero-title">Community</Typography>
+        <Typography className="hero-title">{t('Community')}</Typography>
         <div className="container">
           <TabContext value={searchCommunity.search.articleCategory}>
             <Stack className="main-box">

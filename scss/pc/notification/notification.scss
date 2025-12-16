@@ -1,0 +1,114 @@
+.notification-page {
+  display: flex;
+  flex-direction: column;
+  .hero-title {
+    position: absolute;
+    color: #fff;
+    font-family: "Limelight";
+    font-size: 80px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 80px; /* 100% */
+    left: 300px;
+    top: 380px;
+  }
+  .container {
+    .notice-content {
+      flex-direction: column;
+      gap: 50px;
+      margin-bottom: 50px;
+      .title-box {
+        justify-content: space-between;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 80px;
+        .title {
+          color: #004034;
+          font-family: "Limelight";
+          font-size: 28px;
+          font-style: normal;
+          font-weight: 900;
+        }
+        .read-all {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          width: 100px;
+          border: 1px solid #c6d984;
+          border-radius: 25px;
+          color: #c6d984;
+          font-family: "DM Sans";
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 700;
+          &:hover {
+            color: #fff !important;
+            border: #004034 !important;
+            background: #004034 !important;
+          }
+        }
+      }
+      .main {
+        border: 1px solid #eee;
+        .top {
+          padding: 25px 33px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          span {
+            color: #181a20;
+            font-family: "Limelight";
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            text-transform: capitalize;
+          }
+        }
+        .bottom {
+          display: flex;
+          flex-direction: column;
+          .notice-card {
+            padding: 20px 14px 20px 30px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            border: 1px solid #eee;
+            cursor: pointer;
+            &.unread {
+              background: #c6d984;
+            }
+            .notice-number {
+              margin-left: 18px;
+              width: 39px;
+              color: #181a20;
+              font-family: "DM Sans";
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: normal;
+            }
+            .notice-title {
+              width: 1060px;
+              color: #004034;
+              font-family: "DM Sans";
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: normal;
+            }
+            .notice-date {
+              color: #181a20;
+              font-family: "DM Sans";
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: normal;
+            }
+          }
+        }
+      }
+    }
+  }
+}

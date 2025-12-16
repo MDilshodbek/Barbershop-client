@@ -28,8 +28,16 @@ import {
 import { Messages } from "../../libs/config";
 import MySchedule from "../../libs/components/mypage/MySchedule";
 import ReservationCard from "../../libs/components/mypage/MyReservations";
+import { useTranslation } from "react-i18next";
+
+export const getStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ["common"])),
+  },
+});
 
 const MyPage: NextPage = () => {
+  const { t, i18n } = useTranslation("common");
   const device = useDeviceDetect();
   const user = useReactiveVar(userVar);
   const router = useRouter();
@@ -39,11 +47,6 @@ const MyPage: NextPage = () => {
   const [subscribe] = useMutation(SUBSCRIBE);
   const [unsubscribe] = useMutation(UNSUBSCRIBE);
   const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
-
-  /** LIFECYCLES **/
-  // useEffect(() => {
-  // 	if (!user._id) router.push('/').then();
-  // }, [user]);
 
   /** HANDLERS **/
   const likeMemberHandler = async (id: string, refetch: any, query: any) => {
@@ -111,7 +114,7 @@ const MyPage: NextPage = () => {
   } else {
     return (
       <div id="my-page" style={{ position: "relative" }}>
-        <Typography className="hero-title">My Page</Typography>
+        <Typography className="hero-title">{t("My Page")}</Typography>
         <div className="container">
           <Stack className={"my-page"}>
             <Stack className={"back-frame"}>

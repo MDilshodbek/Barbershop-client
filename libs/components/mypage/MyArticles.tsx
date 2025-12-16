@@ -8,6 +8,7 @@ import { userVar } from "../../../apollo/store";
 import { T } from "../../types/common";
 import { BoardArticle } from "../../types/board-article/board-article";
 import { GET_ARTICLES } from "../../../apollo/user/query";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
   const device = useDeviceDetect();
@@ -58,8 +59,8 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
             })
           ) : (
             <div className={"no-data"}>
-              <img src="/img/icons/icoAlert.svg" alt="" />
-              <p>No Articles found!</p>
+              <InfoOutlinedIcon className="info-icon" />
+              <p>No articles found!</p>
             </div>
           )}
         </Stack>

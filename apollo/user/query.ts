@@ -528,3 +528,160 @@ export const GET_COMMENTS = gql`
     }
   }
 `;
+
+// Reservation
+export const GET_MY_RESERVATIONS = gql`
+  query GetMyReservations($input: ReserveInquiry!) {
+    getMyReservations(input: $input) {
+      list {
+        _id
+        reserveStatus
+        barberId
+        serviceId
+        serviceTitle
+        servicePrice
+        serviceDurationMin
+        reserveRefId
+        reserveTime
+        reserveEndTime
+        reserveDay
+        reserveNotes
+        cancelReason
+        cancelledAt
+        cancelledById
+        createdAt
+        updatedAt
+        barberData {
+          _id
+          memberType
+          memberStatus
+          memberAuthType
+          memberLevel
+          memberServices
+          memberPhone
+          memberNick
+          memberFullName
+          memberImage
+          memberAddress
+          memberDesc
+          memberArticles
+          memberFollowers
+          memberFollowings
+          memberPoints
+          memberLikes
+          memberViews
+          memberReviews
+          memberComments
+          memberRank
+          memberWarnings
+          memberBlocks
+          createdAt
+          updatedAt
+          accessToken
+        }
+        serviceData {
+          _id
+          serviceType
+          serviceStatus
+          serviceTitle
+          serviceDuration
+          servicePrice
+          serviceImages
+          serviceDesc
+          serviceReviews
+          createdAt
+          updatedAt
+        }
+      }
+      metaCounter {
+        total
+      }
+    }
+  }
+`;
+
+export const GET_BARBER_SCHEDULES = gql`
+  query GetBarberSchedules($input: BarberScheduleInquiry) {
+    getBarberSchedules(input: $input) {
+      list {
+        _id
+        reserveStatus
+        barberId
+        serviceId
+        serviceTitle
+        servicePrice
+        reserveRefId
+        reserveTime
+        reserveEndTime
+        reserveDay
+        serviceDurationMin
+        reserveNotes
+        cancelReason
+        cancelledAt
+        cancelledById
+        createdAt
+        updatedAt
+        clientData {
+          _id
+          memberType
+          memberStatus
+          memberAuthType
+          memberLevel
+          memberServices
+          memberPhone
+          memberNick
+          memberFullName
+          memberImage
+          memberAddress
+          memberDesc
+          memberArticles
+          memberFollowers
+          memberFollowings
+          memberPoints
+          memberLikes
+          memberViews
+          memberReviews
+          memberComments
+          memberRank
+          memberWarnings
+          memberBlocks
+          createdAt
+          updatedAt
+          accessToken
+        }
+      }
+      metaCounter {
+        total
+      }
+    }
+  }
+`;
+
+export const GET_SELECTED_BARBER_SCHEDULES = gql`
+  query GetSelectedBarberSchedules($input: SelectedBarberScheduleInquiry) {
+    getSelectedBarberSchedules(input: $input) {
+      list {
+        _id
+        reserveStatus
+        barberId
+        serviceId
+        serviceTitle
+        servicePrice
+        serviceDurationMin
+        reserveRefId
+        reserveTime
+        reserveEndTime
+        reserveDay
+        reserveNotes
+        cancelReason
+        cancelledAt
+        cancelledById
+        createdAt
+        updatedAt
+      }
+      metaCounter {
+        total
+      }
+    }
+  }
+`;

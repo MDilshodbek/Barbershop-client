@@ -12,7 +12,6 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { BoardArticlesInquiry } from "../../libs/types/board-article/board-article.input";
 import { BoardArticleCategory } from "../../libs/enums/board-article.enum";
 import { useMutation, useQuery } from "@apollo/client";
-import { LIKE_TARGET_BOARD_ARTICLE } from "../../apollo/user/mutation";
 import { GET_ARTICLES } from "../../apollo/user/query";
 import { Messages } from "../../libs/config";
 import {
@@ -32,8 +31,6 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
   if (articleCategory) initialInput.search.articleCategory = articleCategory;
 
   /** APOLLO REQUESTS **/
-  const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
-
   const {
     loading: boardArticlesLoading,
     data: boardArticlesData,

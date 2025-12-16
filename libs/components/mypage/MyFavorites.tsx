@@ -74,7 +74,7 @@ const MyFavorites: NextPage = () => {
   };
 
   if (device === "mobile") {
-    return <div>NESTAR MY FAVORITES MOBILE</div>;
+    return <div>Cropper MY FAVORITES MOBILE</div>;
   } else {
     return (
       <div id="my-favorites-page">
@@ -116,11 +116,7 @@ const MyFavorites: NextPage = () => {
                       className="barber-like"
                       onClick={() => likeMemberHandler(user, barber?._id)}
                     >
-                      {barber?.meLiked && barber?.meLiked[0]?.myFavorite ? (
-                        <FavoriteIcon style={{ color: "red" }} />
-                      ) : (
-                        <FavoriteBorderIcon style={{ color: "#004034" }} />
-                      )}
+                      <FavoriteIcon style={{ color: "red" }} />
                       <span>{barber.memberLikes}</span>
                     </Box>
                     <Stack className="barber-socialmedia">

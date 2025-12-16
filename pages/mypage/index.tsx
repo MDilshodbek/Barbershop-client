@@ -26,6 +26,8 @@ import {
   UNSUBSCRIBE,
 } from "../../apollo/user/mutation";
 import { Messages } from "../../libs/config";
+import MySchedule from "../../libs/components/mypage/MySchedule";
+import ReservationCard from "../../libs/components/mypage/MyReservations";
 
 const MyPage: NextPage = () => {
   const device = useDeviceDetect();
@@ -120,7 +122,8 @@ const MyPage: NextPage = () => {
                 <Stack className={"list-config"}>
                   {/* {category === 'addService' && <AddProperty />} */}
                   {/* {category === 'ourServices' && <AddProperty />} */}
-                  {/* {category === 'myResrvations' && <AddProperty />} */}
+                  {category === "myReservations" && <ReservationCard />}
+                  {category === "mySchedule" && <MySchedule />}
                   {category === "myFavorites" && <MyFavorites />}
                   {category === "myArticles" && <MyArticles />}
                   {category === "writeArticle" && <WriteArticle />}

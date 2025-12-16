@@ -1,0 +1,56 @@
+#pc-wrap {
+  #mySchedule {
+    width: 100%;
+    height: auto;
+    .main-box {
+      width: 100%;
+      height: auto;
+      flex-direction: column;
+      flex-wrap: wrap;
+      gap: 25px;
+      margin-top: 45px;
+      margin-bottom: 87px;
+      .top {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .title {
+          font-size: 32px;
+          font-family: "Limelight";
+          font-weight: 900;
+          color: #004034;
+        }
+        .week-pagination {
+          display: flex;
+          flex-direction: row;
+          gap: 5px;
+          .week-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "DM Sans";
+            font-size: 14px;
+            font-weight: 700;
+            border: 1px solid #c6d984;
+            color: #004034;
+          }
+          & .active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "DM Sans";
+            font-size: 14px;
+            font-weight: 700;
+            border: 1px solid #004034;
+            background: #004034;
+            color: #fff;
+          }
+        }
+      }
+      .bottom {
+        display: flex;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}

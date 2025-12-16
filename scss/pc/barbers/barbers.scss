@@ -108,13 +108,17 @@
             justify-content: space-between;
             align-items: center;
             background: transparent;
+            width: 430px;
+
             border: 5px solid transparent;
             &:hover {
               border-color: rgba(198, 217, 132, 1);
               background: rgba(198, 217, 132, 1);
             }
             .barber-img {
-              width: 100%;
+              width: 420px;
+              height: 470px;
+              object-fit: cover;
               cursor: pointer;
             }
             .barber-name {
@@ -309,7 +313,7 @@
               }
               .follow-status {
                 font-style: italic;
-                 font-weight: 600px;
+                font-weight: 600px;
                 font-family: "DM Sans";
                 font-size: 24px;
               }

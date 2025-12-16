@@ -14,6 +14,7 @@ import {
   Pagination,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
 import { useMutation, useQuery, useReactiveVar } from "@apollo/client";
 import Moment from "react-moment";
 import { userVar } from "../../apollo/store";
@@ -27,7 +28,6 @@ import { Comment } from "../../libs/types/comment/comment";
 import dynamic from "next/dynamic";
 import { CommentGroup, CommentStatus } from "../../libs/enums/comment.enum";
 import { T } from "../../libs/types/common";
-import EditIcon from "@mui/icons-material/Edit";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { BoardArticle } from "../../libs/types/board-article/board-article";
 import { CREATE_COMMENT, UPDATE_COMMENT } from "../../apollo/user/mutation";
@@ -37,7 +37,6 @@ import {
   sweetConfirmAlert,
   sweetMixinErrorAlert,
   sweetMixinSuccessAlert,
-  sweetTopSmallSuccessAlert,
 } from "../../libs/sweetAlert";
 import { CommentUpdate } from "../../libs/types/comment/comment.update";
 const ToastViewerComponent = dynamic(
@@ -173,6 +172,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 
       const updateData: CommentUpdate = {
         _id: commentId,
+        commentTargetId: articleId,
         ...(commentStatus && { commentStatus: commentStatus }),
         ...(updatedComment && { commentContent: updatedComment }),
       };
@@ -198,7 +198,6 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
         await sweetMixinSuccessAlert("Successfully updated!");
       }
       await getCommentsRefetch({ input: searchFilter });
-      await getCommentsRefetch({ input: searchFilter });
     } catch (error: any) {
       await sweetMixinErrorAlert(error.message);
     } finally {
@@ -211,7 +210,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 
   const getCommentMemberImage = (imageUrl: string | undefined) => {
     if (imageUrl) return `${process.env.REACT_APP_API_URL}/${imageUrl}`;
-    else return "/img/community/articleImg.png";
+    else return "/logo/defaultUser.svg";
   };
 
   const goMemberPage = (id: any) => {

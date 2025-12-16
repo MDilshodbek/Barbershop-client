@@ -170,58 +170,6 @@ export const UPDATE_REVIEW = gql`
 `;
 
 // Article
-export const LIKE_TARGET_BOARD_ARTICLE = gql`
-  mutation LikeTargetBoardArticle($input: String!) {
-    likeTargetBoardArticle(articleId: $input) {
-      _id
-      articleCategory
-      articleStatus
-      articleTitle
-      articleContent
-      articleImage
-      articleViews
-      articleLikes
-      articleComments
-      memberId
-      createdAt
-      updatedAt
-      meLiked {
-        memberId
-        likeRefId
-        myFavorite
-      }
-      memberData {
-        _id
-        memberType
-        memberStatus
-        memberAuthType
-        memberLevel
-        memberServices
-        memberPhone
-        memberNick
-        memberFullName
-        memberImage
-        memberAddress
-        memberDesc
-        memberArticles
-        memberFollowers
-        memberFollowings
-        memberPoints
-        memberLikes
-        memberViews
-        memberReviews
-        memberComments
-        memberRank
-        memberWarnings
-        memberBlocks
-        createdAt
-        updatedAt
-        accessToken
-      }
-    }
-  }
-`;
-
 export const CREATE_BOARD_ARTICLE = gql`
   mutation CreateBoardArticle($input: BoardArticleInput!) {
     createBoardArticle(input: $input) {
@@ -312,6 +260,76 @@ export const UPDATE_COMMENT = gql`
       memberId
       createdAt
       updatedAt
+    }
+  }
+`;
+
+// reservation
+export const CREATE_RESERVATION = gql`
+  mutation CreateReservation($input: ReserveInput!) {
+    createReservation(input: $input) {
+      _id
+      reserveStatus
+      barberId
+      reserveRefId
+      reserveTime
+      reserveDay
+      reserveNotes
+      createdAt
+      updatedAt
+      reserveEndTime
+      serviceDurationMin
+      serviceId
+      serviceTitle
+      servicePrice
+    }
+  }
+`;
+
+export const UPDATE_RESERVATION = gql`
+  mutation UpdateReservation($input: ReserveUpdate!) {
+    updateReservation(input: $input) {
+      _id
+      reserveStatus
+      barberId
+      serviceId
+      serviceTitle
+      servicePrice
+      serviceDurationMin
+      reserveRefId
+      reserveTime
+      reserveEndTime
+      reserveDay
+      reserveNotes
+      cancelReason
+      cancelledAt
+      cancelledById
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const CANCEL_RESERVATION = gql`
+  mutation CancelReservation($input: CancelReservationInput!) {
+    cancelReservation(input: $input) {
+      _id
+      reserveStatus
+      barberId
+      reserveRefId
+      reserveTime
+      reserveDay
+      reserveNotes
+      createdAt
+      updatedAt
+      serviceId
+      serviceTitle
+      servicePrice
+      serviceDurationMin
+      reserveEndTime
+      cancelReason
+      cancelledAt
+      cancelledById
     }
   }
 `;

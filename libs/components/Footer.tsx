@@ -6,9 +6,12 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import XIcon from "@mui/icons-material/X";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import useDeviceDetect from "../hooks/useDeviceDetect";
+import { useReactiveVar } from "@apollo/client";
+import { userVar } from "../../apollo/store";
 
 const Footer = () => {
   const device = useDeviceDetect();
+  const user = useReactiveVar(userVar);
 
   if (device === "mobile") {
     return <Stack className="footer-container">Footer Mobile</Stack>;
@@ -56,7 +59,7 @@ const Footer = () => {
             <ArrowRightIcon style={{ color: "#c6d984" }} />
             <p>Community</p>
           </Link>
-          {false && (
+          {user?._id && (
             <Link href={"/mypage"} className="footer-link">
               <ArrowRightIcon style={{ color: "#c6d984" }} />
               <p>My Page</p>

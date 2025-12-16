@@ -28,9 +28,10 @@ import {
   ReviewInquiry,
 } from "../../libs/types/review/review.input";
 import { Review } from "../../libs/types/review/review";
-import { ReviewGroup } from "../../libs/enums/review.enum";
+import { ReviewGroup, ReviewStatus } from "../../libs/enums/review.enum";
 import {
   CREATE_REVIEW,
+  UPDATE_REVIEW,
   LIKE_TARGET_MEMBER,
   SUBSCRIBE,
   UNSUBSCRIBE,
@@ -114,6 +115,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
   });
 
   const [createReview] = useMutation(CREATE_REVIEW);
+  const [updateReview] = useMutation(UPDATE_REVIEW);
   const [subscribe] = useMutation(SUBSCRIBE);
   const [unsubscribe] = useMutation(UNSUBSCRIBE);
 
@@ -238,6 +240,31 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
       }
     );
   };
+
+  /** COMMENT: update or delete a review (content only) */
+  const handleUpdateReview = async (args: {
+    reviewId: string;
+    reviewContent?: string;
+    reviewStatus?: ReviewStatus;
+  }) => {
+    if (!user?._id) throw new Error(Messages.error2);
+    if (!barberId) throw new Error(Messages.error1);
+    const { reviewId, reviewContent, reviewStatus } = args;
+
+    await updateReview({
+      variables: {
+        input: {
+          _id: reviewId,
+          reviewRefId: barberId,
+          ...(reviewContent && { reviewContent }),
+          ...(reviewStatus && { reviewStatus }),
+        },
+      },
+    });
+
+    await getReviewsRefetch({ input: reviewInquiry });
+  };
+
 
   if (device === "mobile") {
     return <Stack>Barber Detail Page mobile</Stack>;
@@ -455,7 +482,13 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                       </span>
                     </Box>
                     {barberReviews?.map((review: Review) => {
-                      return <ReviewCard review={review} key={review?._id} />;
+                      return (
+                        <ReviewCard
+                          review={review}
+                          key={review?._id}
+                          onUpdate={handleUpdateReview}
+                        />
+                      );
                     })}
                     <Box component={"div"} className={"pagination-box"}>
                       <Pagination

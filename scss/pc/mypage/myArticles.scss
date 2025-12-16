@@ -10,6 +10,21 @@
       gap: 25px;
       margin-top: 25px;
       margin-bottom: 87px;
+      .no-data {
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        color: #c6d984;
+        margin-top: 50px;
+        font-weight: 700;
+        .info-icon {
+          font-size: 64px;
+        }
+      }
     }
     .pagination-conf {
       width: 100%;

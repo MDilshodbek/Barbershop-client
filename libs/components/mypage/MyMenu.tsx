@@ -23,6 +23,7 @@ const MyMenu = () => {
   const logoutHandler = async () => {
     try {
       if (await sweetConfirmAlert("Do you want to logout?")) logOut();
+      await router.push(`${router.query.referrer ?? "/"}`);
     } catch (err: any) {
       console.log("ERROR, logoutHandler:", err.message);
     }
@@ -154,12 +155,12 @@ const MyMenu = () => {
               )}
               {user.memberType === "USER" && (
                 <ListItem
-                  className={pathname === "myResrvations" ? "focus" : ""}
+                  className={pathname === "myReservations" ? "focus" : ""}
                 >
                   <Link
                     href={{
                       pathname: "/mypage",
-                      query: { category: "myResrvations" },
+                      query: { category: "myReservations" },
                     }}
                     scroll={false}
                   >
@@ -181,9 +182,7 @@ const MyMenu = () => {
                 </ListItem>
               )}
               {user.memberType === "BARBER" && (
-                <ListItem
-                  className={pathname === "mySchedule" ? "focus" : ""}
-                >
+                <ListItem className={pathname === "mySchedule" ? "focus" : ""}>
                   <Link
                     href={{
                       pathname: "/mypage",

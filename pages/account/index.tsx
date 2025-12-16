@@ -199,6 +199,9 @@ const Join: NextPage = () => {
                   label="Password"
                   type="password"
                   onChange={(e) => handleInput("password", e.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key == "Enter") doLogin();
+                  }}
                 />
 
                 <Typography className="subtitle">login with</Typography>
@@ -241,8 +244,8 @@ const Join: NextPage = () => {
                     </Stack>
                     <Typography variant="h4">Welcome Back!</Typography>
                     <Typography>
-                      To keep connected with us <br /> please login with your personal
-                      info
+                      To keep connected with us <br /> please login with your
+                      personal info
                     </Typography>
                     <Button
                       className="ghost-btn"
@@ -256,12 +259,13 @@ const Join: NextPage = () => {
                 <Box className="overlay-panel overlay-right">
                   <Stack className="overlay-main">
                     <Stack className="brand-logo-box">
-                      <img  src="/logo/Logo2.png" alt="" />
+                      <img src="/logo/Logo2.png" alt="" />
                       <span className="brand-name">Cropper</span>
                     </Stack>
                     <Typography variant="h4">Hello, Gentleman!</Typography>
                     <Typography>
-                      Enter your personal details and start your <br /> journey with us.
+                      Enter your personal details and start your <br /> journey
+                      with us.
                     </Typography>
                     <Button
                       className="ghost-btn"

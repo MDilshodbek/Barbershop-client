@@ -30,18 +30,23 @@ const TuiEditor = () => {
     BoardArticleCategory.FREE
   );
 
+  const [articleTitle, setArticleTitle] = useState<string>("");
+  const [articleContent, setArticleContent] = useState<string>("");
+  const [articleImage, setArticleImage] = useState<string>("");
+
   /** APOLLO REQUESTS **/
   const [createBoardArticle] = useMutation(CREATE_BOARD_ARTICLE);
 
-  const memoizedValues = useMemo(() => {
-    const articleTitle = "",
-      articleContent = "",
-      articleImage = "";
+  // const memoizedValues = useMemo(() => {
+  //   const articleTitle = "",
+  //     articleContent = "",
+  //     articleImage = "";
 
-    return { articleTitle, articleContent, articleImage };
-  }, []);
+  //   return { articleTitle, articleContent, articleImage };
+  // }, []);
 
   /** HANDLERS **/
+
   const uploadImage = async (image: any) => {
     try {
       const formData = new FormData();
@@ -79,7 +84,7 @@ const TuiEditor = () => {
 
       const responseImage = response.data.data.imageUploader;
       console.log("=responseImage: ", responseImage);
-      memoizedValues.articleImage = responseImage;
+      setArticleImage(responseImage);
 
       return `${REACT_APP_API_URL}/${responseImage}`;
     } catch (err) {
@@ -93,25 +98,27 @@ const TuiEditor = () => {
 
   const articleTitleHandler = (e: T) => {
     console.log(e.target.value);
-    memoizedValues.articleTitle = e.target.value;
+    setArticleTitle(e.target.value);
   };
 
   const handleRegisterButton = async () => {
     try {
       const editor = editorRef.current;
       const articleContent = editor?.getInstance().getHTML() as string;
-      memoizedValues.articleContent = articleContent;
+      setArticleContent(articleContent);
 
-      if (
-        memoizedValues.articleContent === "" &&
-        memoizedValues.articleTitle === ""
-      ) {
+      if (!articleContent.trim() && !articleTitle.trim()) {
         throw new Error(Message.INSERT_ALL_INPUTS);
       }
 
       await createBoardArticle({
         variables: {
-          input: { ...memoizedValues, articleCategory },
+          input: {
+            articleTitle,
+            articleContent,
+            articleImage,
+            articleCategory,
+          },
         },
       });
 
@@ -129,12 +136,7 @@ const TuiEditor = () => {
   };
 
   const doDisabledCheck = () => {
-    if (
-      memoizedValues.articleContent === "" ||
-      memoizedValues.articleTitle === ""
-    ) {
-      return true;
-    }
+    return !articleContent.trim() && !articleTitle.trim();
   };
 
   return (
@@ -184,7 +186,6 @@ const TuiEditor = () => {
           <TextField
             onChange={articleTitleHandler}
             id="filled-basic"
-            label="Type Title"
             sx={{
               width: "300px",
               background: "white",
@@ -226,7 +227,8 @@ const TuiEditor = () => {
             width: "250px",
             height: "45px",
             backgroundColor: "#004034 !important",
-            color: "#fff",
+            color: "#fff !important",
+            cursor: "pointer !important",
           }}
           onClick={handleRegisterButton}
           disabled={doDisabledCheck()}

@@ -110,5 +110,41 @@
         }
       }
     }
+    .empty-list {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .no-data {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        color: #c6d984;
+        width: 100%;
+        font-weight: 700;
+        .info-icon {
+          font-size: 64px;
+        }
+      }
+    }
+    .pagination {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+      span {
+        margin-top: 20px;
+        color: #004034;
+        font-family: "DM Sans";
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 26px; /* 185.714% */
+      }
+    }
   }
 }

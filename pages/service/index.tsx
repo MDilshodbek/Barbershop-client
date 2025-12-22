@@ -144,7 +144,7 @@ const OurService: NextPage<ServiceProps> = (props) => {
             )}
             <Stack className={"pagination"}>
               <Stack className="pagination-box">
-                {service.length !== 0 &&
+                {service.length > 0 &&
                   Math.ceil(total / pageFilter.limit) > 1 && (
                     <Stack className="pagination-box">
                       <Pagination

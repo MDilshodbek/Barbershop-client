@@ -8,6 +8,7 @@ export enum ServiceType {
   PERM = "PERM",
   COLOR = "COLOR",
   MASSAGE = "MASSAGE",
+  OTHER = "OTHER",
 }
 
 export enum ServiceStatus {

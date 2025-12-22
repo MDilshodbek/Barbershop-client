@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { Stack, Typography } from "@mui/material";
 import useDeviceDetect from "../../libs/hooks/useDeviceDetect";
 import withLayoutBasic from "../../libs/components/layout/LayoutBasic";
 import MyFavorites from "../../libs/components/mypage/MyFavorites";
-import AddProperty from "../../libs/components/mypage/AddNewProperty";
 import MyProfile from "../../libs/components/mypage/MyProfile";
 import MyArticles from "../../libs/components/mypage/MyArticles";
 import { useMutation, useReactiveVar } from "@apollo/client";
@@ -29,6 +28,11 @@ import { Messages } from "../../libs/config";
 import MySchedule from "../../libs/components/mypage/MySchedule";
 import ReservationCard from "../../libs/components/mypage/MyReservations";
 import { useTranslation } from "react-i18next";
+import AddService from "../../libs/components/mypage/AddNewService";
+import OurServiceList from "../../libs/components/mypage/OurService";
+import OurMemberList from "../../libs/components/mypage/OurMembers";
+import OurCommunityArticle from "../../libs/components/mypage/OurCommunityArticle";
+import { OurStatistics } from "../../libs/components/mypage/OurStatistics";
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
@@ -123,8 +127,11 @@ const MyPage: NextPage = () => {
               </Stack>
               <Stack className="main-config" mb={"76px"}>
                 <Stack className={"list-config"}>
-                  {/* {category === 'addService' && <AddProperty />} */}
-                  {/* {category === 'ourServices' && <AddProperty />} */}
+                  {category === "addService" && <AddService />}
+                  {category === "ourServices" && <OurServiceList />}
+                  {category === "ourMembers" && <OurMemberList />}
+                  {category === "ourArticles" && <OurCommunityArticle />}
+                  {category === "ourStatistics" && <OurStatistics />}
                   {category === "myReservations" && <ReservationCard />}
                   {category === "mySchedule" && <MySchedule />}
                   {category === "myFavorites" && <MyFavorites />}

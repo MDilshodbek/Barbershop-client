@@ -3,13 +3,13 @@ import { ServiceStatus, ServiceType } from '../../enums/service.enum';
 
 export interface Service {
   _id: string;
-  serviceType: ServiceType;
   serviceStatus: ServiceStatus;
   serviceTitle: string;
-  serviceDuration: number;
   servicePrice: number;
-  serviceImages: string[];
+  serviceType: ServiceType;
+  serviceDuration: number;
   serviceDesc?: string;
+  serviceImages: string[];
   serviceReviews: number;
   createdAt: Date;
   updatedAt: Date;

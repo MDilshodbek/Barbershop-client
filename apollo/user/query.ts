@@ -621,6 +621,12 @@ export const GET_BARBER_SCHEDULES = gql`
         cancelledById
         createdAt
         updatedAt
+        barberData {
+          _id
+          memberFullName
+          memberNick
+          memberImage
+        }
         clientData {
           _id
           memberType
@@ -678,6 +684,12 @@ export const GET_SELECTED_BARBER_SCHEDULES = gql`
         cancelledById
         createdAt
         updatedAt
+        barberData {
+          _id
+          memberFullName
+          memberNick
+          memberImage
+        }
       }
       metaCounter {
         total

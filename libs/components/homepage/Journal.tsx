@@ -11,6 +11,7 @@ import { T } from "../../types/common";
 import useDeviceDetect from "../../hooks/useDeviceDetect";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { Autoplay, Pagination } from "swiper";
+import Link from "next/link";
 SwiperCore.use([Autoplay, Pagination]);
 
 interface NewArticlesProps {
@@ -51,21 +52,23 @@ const Journal = (props: NewArticlesProps) => {
                 return (
                   <Stack key={article._id} className="journal-card">
                     <Stack className="journal-category">
-                      <img
-                        className="journal-images"
-                        src={
-                          article?.articleImage
-                            ? `${process.env.REACT_APP_API_URL}/${article?.articleImage[0]}`
-                            : "/logo/Logo.svg"
-                        }
-                        alt=""
-                      />
+                      <Link href="/community">
+                        <img
+                          className="journal-images"
+                          src={
+                            article?.articleImage
+                              ? `${process.env.REACT_APP_API_URL}/${article?.articleImage[0]}`
+                              : "/logo/Logo.svg"
+                          }
+                          alt=""
+                        />
+                      </Link>
                       <Box className="journal-category-title">
                         {article.articleCategory}
                       </Box>
                     </Stack>
                     <Stack className="journal-title">
-                      {article.articleTitle}
+                      <Link href="/community">{article.articleTitle}</Link>
                     </Stack>
                     <Stack className="journal-info">
                       <Stack className="journal-date">
@@ -109,7 +112,7 @@ const Journal = (props: NewArticlesProps) => {
                   <Stack key={article._id} className="journal-card">
                     <Stack className="journal-category">
                       <img
-                      className="journal-images"
+                        className="journal-images"
                         src={
                           article?.articleImage
                             ? `${process.env.REACT_APP_API_URL}/${article?.articleImage[0]}`

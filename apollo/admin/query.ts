@@ -81,8 +81,7 @@ export const GET_ALL_SERVICES_BY_ADMIN = gql`
   }
 `;
 
-
-// BOARD-ARTICLE     
+// BOARD-ARTICLE
 export const GET_ALL_BOARD_ARTICLES_BY_ADMIN = gql`
   query GetAllBoardArticlesByAdmin($input: AllBoardArticlesInquiry!) {
     getAllBoardArticlesByAdmin(input: $input) {
@@ -140,7 +139,7 @@ export const GET_ALL_BOARD_ARTICLES_BY_ADMIN = gql`
   }
 `;
 
-// COMMENT        
+// COMMENT
 export const GET_COMMENTS = gql`
   query GetComments($input: CommentsInquiry!) {
     getComments(input: $input) {
@@ -179,6 +178,62 @@ export const GET_COMMENTS = gql`
       }
       metaCounter {
         total
+      }
+    }
+  }
+`;
+
+// Reservation
+
+export const GET_ALL_BARBER_SCHEDULES_BY_ADMIN = gql`
+  query GetAllBarberSchedules($input: AllBarberScheduleInquiry) {
+    getAllBarberSchedules(input: $input) {
+      list {
+        _id
+        reserveStatus
+        barberId
+        serviceId
+        serviceTitle
+        servicePrice
+        serviceDurationMin
+        reserveRefId
+        reserveTime
+        reserveEndTime
+        reserveDay
+        reserveNotes
+        cancelReason
+        cancelledAt
+        cancelledById
+        createdAt
+        updatedAt
+        barberData {
+          _id
+          memberType
+          memberStatus
+          memberAuthType
+          memberLevel
+          memberServices
+          memberPhone
+          memberNick
+          memberFullName
+          memberImage
+          memberAddress
+          memberDesc
+          memberArticles
+          memberFollowers
+          memberFollowings
+          memberPoints
+          memberLikes
+          memberViews
+          memberReviews
+          memberComments
+          memberRank
+          memberWarnings
+          memberBlocks
+          createdAt
+          updatedAt
+          accessToken
+        }
       }
     }
   }

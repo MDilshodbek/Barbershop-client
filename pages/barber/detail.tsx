@@ -317,9 +317,6 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                       },
                     }}
                   />
-                  <Typography className="breview-number">
-                    {barber?.memberReviews}
-                  </Typography>
                 </Stack>
                 <Stack className="blike-box">
                   <Box className="barber-like">

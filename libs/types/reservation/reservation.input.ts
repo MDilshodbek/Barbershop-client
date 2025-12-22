@@ -36,3 +36,8 @@ export interface CancelReservationInput {
   reservationId: string;
   cancelReason?: string;
 }
+
+export interface AllBarberScheduleInquiry {
+  sort?: string;
+  direction?: Direction;
+}

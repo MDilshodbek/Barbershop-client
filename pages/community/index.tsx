@@ -12,8 +12,10 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { BoardArticlesInquiry } from "../../libs/types/board-article/board-article.input";
 import { BoardArticleCategory } from "../../libs/enums/board-article.enum";
 import { GET_ARTICLES } from "../../apollo/user/query";
-import { useQuery } from "@apollo/client";
+import { useQuery, useReactiveVar } from "@apollo/client";
 import { useTranslation } from "react-i18next";
+import { MemberType } from "../../libs/enums/member.enum";
+import { userVar } from "../../apollo/store";
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {
@@ -23,6 +25,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 
 const Community: NextPage = ({ initialInput, ...props }: T) => {
   const { t, i18n } = useTranslation("common");
+  const user = useReactiveVar(userVar);
   const device = useDeviceDetect();
   const router = useRouter();
   const { query } = router;
@@ -90,7 +93,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
   } else {
     return (
       <div id="community-list-page">
-        <Typography className="hero-title">{t('Community')}</Typography>
+        <Typography className="hero-title">{t("Community")}</Typography>
         <div className="container">
           <TabContext value={searchCommunity.search.articleCategory}>
             <Stack className="main-box">
@@ -153,19 +156,22 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
                         restrictions
                       </Typography>
                     </Stack>
-                    <Button
-                      onClick={() =>
-                        router.push({
-                          pathname: "/mypage",
-                          query: {
-                            category: "writeArticle",
-                          },
-                        })
-                      }
-                      className="right"
-                    >
-                      Write
-                    </Button>
+                    {(user.memberType === "ADMIN" ||
+                      user.memberType === "BARBER") && (
+                      <Button
+                        onClick={() =>
+                          router.push({
+                            pathname: "/mypage",
+                            query: {
+                              category: "writeArticle",
+                            },
+                          })
+                        }
+                        className="right"
+                      >
+                        Write
+                      </Button>
+                    )}
                   </Stack>
 
                   <TabPanel value="FREE">

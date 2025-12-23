@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 import useDeviceDetect from "../../hooks/useDeviceDetect";
 import Top from "../Top";
+import Chat from "../Chat";
 
 const withLayoutBasic = (Component: any) => {
   return (props: any) => {
@@ -119,6 +120,9 @@ const withLayoutBasic = (Component: any) => {
             <Stack id={"main"}>
               <Component {...props} />
             </Stack>
+
+            <Chat />
+
             <Stack id={"footer"}>
               <Footer />
             </Stack>

@@ -258,7 +258,7 @@ const Top = () => {
                   {unread > 0 ? (
                     <Badge
                       badgeContent={unread}
-                      sx={{ color: "#c6d984 !important" }}
+                      sx={{ color: "#ff0000ff !important"}}
                     >
                       <NotificationsOutlinedIcon
                         className={"notification-icon"}

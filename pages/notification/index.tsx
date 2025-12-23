@@ -116,7 +116,7 @@ const NotificationPage: NextPage<NoticeProps> = (props) => {
           </Stack>
           {notice.length !== 0 && (
             <span>
-              Total {total} notifications{total > 1 ? "s" : ""} available
+              Total {total} notification{total > 1 ? "s" : ""} available
             </span>
           )}
         </Stack>

@@ -4,6 +4,7 @@ import Top from "../Top";
 import Footer from "../Footer";
 import HeaderHero from "../homepage/HeaderHero";
 import useDeviceDetect from "../../hooks/useDeviceDetect";
+import Chat from "../Chat";
 
 const withLayoutMain = (Component: any) => {
   return (props: any) => {
@@ -52,6 +53,8 @@ const withLayoutMain = (Component: any) => {
             <Stack id={"main"}>
               <Component {...props} />
             </Stack>
+
+            <Chat />
 
             <Stack id={"footer"}>
               <Footer />

@@ -130,7 +130,6 @@ const OurCommunityArticle: NextPage = ({ initialInquiry, ...props }: any) => {
 
   const updateArticleHandler = async (updateData: BoardArticleUpdate) => {
     try {
-      console.log("+updateData: ", updateData);
       await updateBoardArticleByAdmin({
         variables: {
           input: updateData,
@@ -160,9 +159,6 @@ const OurCommunityArticle: NextPage = ({ initialInquiry, ...props }: any) => {
       sweetErrorHandling(err).then();
     }
   };
-
-  console.log("+communityInquiry", communityInquiry);
-  console.log("+articles", articles);
 
   return (
     <Box className={"service-list"}>

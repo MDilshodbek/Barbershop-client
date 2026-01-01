@@ -79,8 +79,6 @@ const Join: NextPage = () => {
     }
   }, [input]);
 
-  console.log("+input: ", input);
-
   if (device === "mobile") {
     return <div>LOGIN MOBILE</div>;
   } else {

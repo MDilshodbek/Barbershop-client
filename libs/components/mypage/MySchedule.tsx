@@ -43,9 +43,6 @@ const MySchedule: FC<ScheduleProps> = (props) => {
     },
   });
 
-  console.log("schedule:", schedule);
-  console.log("total:", total);
-
   const [updateReservation] = useMutation(UPDATE_RESERVATION);
 
   // Handlers

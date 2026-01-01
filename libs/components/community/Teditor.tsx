@@ -83,7 +83,6 @@ const TuiEditor = () => {
       );
 
       const responseImage = response.data.data.imageUploader;
-      console.log("=responseImage: ", responseImage);
       setArticleImage(responseImage);
 
       return `${REACT_APP_API_URL}/${responseImage}`;
@@ -97,7 +96,6 @@ const TuiEditor = () => {
   };
 
   const articleTitleHandler = (e: T) => {
-    console.log(e.target.value);
     setArticleTitle(e.target.value);
   };
 
@@ -130,7 +128,6 @@ const TuiEditor = () => {
         },
       });
     } catch (error: any) {
-      console.log(error);
       sweetErrorHandling(new Error(Message.INSERT_ALL_INPUTS)).then();
     }
   };

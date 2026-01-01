@@ -118,13 +118,11 @@ const AddService = ({ initialValues, ...props }: any) => {
 
       const responseImages = response.data.data.imagesUploader;
 
-      console.log("+responseImages: ", responseImages);
       setInsertServiceData({
         ...insertServiceData,
         serviceImages: responseImages,
       });
     } catch (err: any) {
-      console.log("err: ", err.message);
       await sweetMixinErrorAlert(err.message);
     }
   }
@@ -191,8 +189,6 @@ const AddService = ({ initialValues, ...props }: any) => {
   if (user?.memberType !== "ADMIN") {
     router.back();
   }
-
-  console.log("+insertServiceData", insertServiceData);
 
   if (device === "mobile") {
     return <div>ADD NEW PROPERTY MOBILE PAGE</div>;

@@ -130,7 +130,6 @@ const Barber: NextPage<BarbersProps> = (props) => {
       await getBarbersRefetch({ input: searchFilter });
       await sweetTopSmallSuccessAlert("success", 800);
     } catch (error: any) {
-      console.log("Error, likePropertyHandler:", error.message);
       sweetMixinErrorAlert(error.message).then();
     }
   };

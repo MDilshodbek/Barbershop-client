@@ -158,7 +158,6 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
       await getMemberRefetch({ input: barberId });
       await sweetTopSmallSuccessAlert("success", 800);
     } catch (error: any) {
-      console.log("Error, likePropertyHandler:", error.message);
       sweetMixinErrorAlert(error.message).then();
     }
   };

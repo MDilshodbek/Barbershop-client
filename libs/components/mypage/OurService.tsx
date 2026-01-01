@@ -101,7 +101,6 @@ const OurServiceList: NextPage = ({ initialInquiry, ...props }: any) => {
 
   const updateServiceHandler = async (updateData: ServiceUpdate) => {
     try {
-      console.log("+updateData: ", updateData);
       await updateService({
         variables: { input: updateData },
       });

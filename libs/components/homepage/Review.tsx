@@ -41,8 +41,6 @@ export function UserReviews(props: ReviewProps) {
     },
   });
 
-  console.log("review", review);
-
   if (device === "mobile") {
     return (
       <div className={"review-frame review-frame-mobile"}>

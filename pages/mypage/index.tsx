@@ -64,7 +64,6 @@ const MyPage: NextPage = () => {
       await sweetTopSmallSuccessAlert("success", 800);
       await refetch({ input: query });
     } catch (error: any) {
-      console.log("Error, likePropertyHandler:", error.message);
       sweetMixinErrorAlert(error.message).then();
     }
   };

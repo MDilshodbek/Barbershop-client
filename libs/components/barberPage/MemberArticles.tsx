@@ -8,7 +8,6 @@ import { T } from "../../types/common";
 import { BoardArticle } from "../../types/board-article/board-article";
 import { BoardArticlesInquiry } from "../../types/board-article/board-article.input";
 import { useMutation, useQuery } from "@apollo/client";
-import { LIKE_TARGET_BOARD_ARTICLE } from "../../../apollo/user/mutation";
 import { GET_ARTICLES } from "../../../apollo/user/query";
 import { Messages } from "../../config";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";

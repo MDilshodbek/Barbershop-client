@@ -68,7 +68,6 @@ const MyFavorites: NextPage = () => {
       await getFavoritesRefetch({ input: searchFavorites });
       await sweetTopSmallSuccessAlert("success", 800);
     } catch (error: any) {
-      console.log("Error, likeMemberHandler:", error.message);
       sweetMixinErrorAlert(error.message).then();
     }
   };

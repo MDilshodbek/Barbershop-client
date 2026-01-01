@@ -59,7 +59,6 @@ const Barbers = (props: TopBarbersProps) => {
       await getBarbersRefetch({ input: initialInput });
       await sweetTopSmallSuccessAlert("success", 800);
     } catch (error: any) {
-      console.log("Error, likePropertyHandler:", error.message);
       sweetMixinErrorAlert(error.message).then();
     }
   };

@@ -34,8 +34,8 @@ export const signUp = async (
       updateUserInfo(jwtToken);
     }
   } catch (err) {
-    console.warn("login err", err);
-    logOut();
+    console.warn("signup err", err);
+    throw err;
   }
 };
 
@@ -49,7 +49,7 @@ export const logIn = async (nick: string, password: string): Promise<void> => {
     }
   } catch (err) {
     console.warn("login err", err);
-    logOut();
+    throw err;
   }
 };
 
@@ -118,15 +118,29 @@ const requestSignUpJwtToken = async ({
 
     return { jwtToken: accessToken };
   } catch (err: any) {
-    switch (err.graphQLErrors[0].message) {
-      case "Definer: login and password do not match":
-        await sweetMixinErrorAlert("Please check your password again");
-        break;
-      case "Definer: user has been blocked!":
-        await sweetMixinErrorAlert("User has been blocked!");
-        break;
+    const rawMessage =
+      err?.graphQLErrors?.[0]?.message ??
+      err?.message ??
+      "Signup failed. Please try again.";
+    const normalized = rawMessage.toLowerCase();
+
+    const isDuplicate =
+      normalized.includes("used") ||
+      normalized.includes("exists") ||
+      normalized.includes("duplicate") ||
+      normalized.includes("already") ||
+      normalized.includes("taken") ||
+      normalized.includes("registered");
+
+    if (isDuplicate && normalized.includes("nick")) {
+      throw new Error("This nickname is already in use. Try another one.");
     }
-    throw new Error("token error");
+
+    if (isDuplicate && normalized.includes("phone")) {
+      throw new Error("This phone number is already registered.");
+    }
+
+    throw new Error(rawMessage.replace("Definer: ", ""));
   }
 };
 

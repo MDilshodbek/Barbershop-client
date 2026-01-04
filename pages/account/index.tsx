@@ -12,7 +12,6 @@ import {
 	FormGroup,
 	FormControlLabel,
 	Checkbox,
-	Popover,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { logIn, signUp } from '../../libs/auth';
@@ -65,7 +64,8 @@ const Join: NextPage = () => {
 			await logIn(input.nick, input.password);
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
-			await sweetMixinErrorAlert(err.message);
+			const message = 'Username or Password is wrong! Please try again';
+			await sweetMixinErrorAlert(message, 1500);
 		}
 	}, [input]);
 
@@ -75,7 +75,8 @@ const Join: NextPage = () => {
 			await signUp(input.nick, input.password, input.phone, input.type);
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
-			await sweetMixinErrorAlert(err.message);
+			const message = 'Used Nickname or Phone number! Please try again';
+			await sweetMixinErrorAlert(message, 1500);
 		}
 	}, [input]);
 

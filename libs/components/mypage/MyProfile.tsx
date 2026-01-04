@@ -96,12 +96,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	}, [updateData]);
 
 	const doDisabledCheck = () => {
-		if (
-			updateData.memberNick === '' ||
-			updateData.memberPhone === '' ||
-			updateData.memberAddress === '' ||
-			updateData.memberImage === ''
-		) {
+		if (updateData.memberNick === '' || updateData.memberPhone === '') {
 			return true;
 		}
 	};
@@ -172,7 +167,6 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 					<Stack className="about-me-box">
 						<Button className="update-button" onClick={updatePropertyHandler} disabled={doDisabledCheck()}>
 							<Typography>Update Profile</Typography>
-							
 						</Button>
 					</Stack>
 				</Stack>

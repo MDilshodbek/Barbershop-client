@@ -105,6 +105,25 @@
 						}
 					}
 
+					.notesRow {
+						display: flex;
+						flex-direction: row;
+						gap: 4px;
+						font-family: 'DM Sans';
+						color: #004034;
+
+						.notesLabel {
+							font-weight: 800;
+							font-size: 13px;
+						}
+
+						.notesText {
+							font-weight: 600;
+							font-size: 13px;
+							word-break: break-word;
+						}
+					}
+
 					.statusRow {
 						display: flex;
 						flex-direction: row;
@@ -147,12 +166,25 @@
 						justify-content: flex-end;
 
 						.reviewBtn {
-							background: #c6d984 !important;
+							background: #fff !important;
 							color: #004034 !important;
+							border: 1px solid #c6d984 !important;
 							border-radius: 12px !important;
 							padding: 8px 12px !important;
 							text-transform: none !important;
 							font-weight: 800 !important;
+
+							&.reviewBtn--active {
+								background: #c6d984 !important;
+								color: #004034 !important;
+							}
+
+							&:disabled {
+								background: #f2f2f2 !important;
+								color: #9e9e9e !important;
+								border-color: #e0e0e0 !important;
+								cursor: not-allowed !important;
+							}
 
 							&:hover {
 								background: #c6d984 !important;

@@ -27,6 +27,13 @@ const ReservationCard: FC<ReservationItemProps> = ({
 }) => {
   const [statusAnchor, setStatusAnchor] = useState<null | HTMLElement>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [hasSubmittedReview, setHasSubmittedReview] = useState<boolean>(() => {
+    const reviewMeta =
+      (reservation as any)?.reviewId ||
+      (reservation as any)?.reviewed ||
+      (reservation as any)?.hasReview;
+    return Boolean(reviewMeta);
+  });
   const [reviewRating, setReviewRating] = useState<number>(0);
   const [reviewContent, setReviewContent] = useState("");
   const [cancelReason, setCancelReason] = useState(
@@ -43,7 +50,18 @@ const ReservationCard: FC<ReservationItemProps> = ({
 
   useEffect(() => {
     setCancelReason(reservation.cancelReason ?? "");
-  }, [reservation.cancelReason]);
+    const reviewMeta =
+      (reservation as any)?.reviewId ||
+      (reservation as any)?.reviewed ||
+      (reservation as any)?.hasReview;
+    const alreadyReviewed = Boolean(reviewMeta);
+    setHasSubmittedReview(alreadyReviewed);
+    setReviewOpen(
+      reservation.reserveStatus === ReserveStatus.FINISH && !alreadyReviewed
+    );
+    setReviewRating(0);
+    setReviewContent("");
+  }, [reservation._id, reservation.reserveStatus, reservation.cancelReason]);
 
   const openStatusMenu = (e: ReactMouseEvent<HTMLElement>) => {
     if (isCancelled) return;
@@ -69,6 +87,7 @@ const ReservationCard: FC<ReservationItemProps> = ({
   };
 
   const submitReview = async () => {
+    if (hasSubmittedReview) return;
     if (reviewSubmitting) return;
     if (!reviewRating || reviewRating <= 0) return;
     const reviewRefId =
@@ -87,6 +106,7 @@ const ReservationCard: FC<ReservationItemProps> = ({
       setReviewRating(0);
       setReviewContent("");
       setReviewOpen(false);
+      setHasSubmittedReview(true);
     } catch (error) {
       console.error("Error submitting review", error);
     } finally {
@@ -97,7 +117,6 @@ const ReservationCard: FC<ReservationItemProps> = ({
   const cancelReasonSubmit = async () => {
     if (pendingStatus !== ReserveStatus.CANCELLED) return;
     const trimmedReason = cancelReason.trim();
-    if (!trimmedReason) return;
     await onCancel(reservation._id, trimmedReason);
     setCancelReason("");
     setPendingStatus(null);
@@ -110,10 +129,14 @@ const ReservationCard: FC<ReservationItemProps> = ({
   const reserveTimeDate = reservation?.reserveTime
     ? new Date(reservation.reserveTime)
     : null;
+  const reserveNotes = reservation?.reserveNotes?.toString().trim();
 
   const serviceImage = reservation.serviceData?.serviceImages
     ? `${process.env.REACT_APP_API_URL}/${reservation.serviceData?.serviceImages?.[0]}`
     : "/logo/Logo.svg";
+
+  const isFinished = reservation.reserveStatus === ReserveStatus.FINISH;
+  const canWriteReview = isFinished && !isCancelled && !hasSubmittedReview;
 
   return (
     <Stack>
@@ -156,6 +179,13 @@ const ReservationCard: FC<ReservationItemProps> = ({
               </Typography>
             </Stack>
 
+            {reserveNotes && (
+              <Stack className="notesRow">
+                <Typography className="notesLabel">Notes:</Typography>
+                <Typography className="notesText">{reserveNotes}</Typography>
+              </Stack>
+            )}
+
             {/* COMMENT: status row */}
             <Stack className="statusRow">
               <Typography className="statusText">Status:</Typography>
@@ -172,9 +202,12 @@ const ReservationCard: FC<ReservationItemProps> = ({
             {/* COMMENT: right-bottom button: Write Review */}
             <Stack className="actionsRow">
               <Button
-                className="reviewBtn"
-                onClick={() => !isCancelled && setReviewOpen((p) => !p)}
-                disabled={isCancelled}
+                className={`reviewBtn ${canWriteReview ? "reviewBtn--active" : ""}`}
+                onClick={() => {
+                  if (!canWriteReview) return;
+                  setReviewOpen(true);
+                }}
+                disabled={!canWriteReview}
               >
                 Write Review
               </Button>
@@ -231,7 +264,7 @@ const ReservationCard: FC<ReservationItemProps> = ({
               className="reviewSubmitBtn"
               onClick={submitReview}
               disabled={
-                reviewSubmitting || !reviewRating
+                reviewSubmitting || !reviewRating || hasSubmittedReview
               }
             >
               Submit Review

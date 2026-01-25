@@ -64,10 +64,11 @@ const Join: NextPage = () => {
 			await logIn(input.nick, input.password);
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
-			const message = 'Username or Password is wrong! Please try again';
+			const message = err?.graphQLErrors?.[0]?.message || err?.message || 'Login failed';
+
 			await sweetMixinErrorAlert(message, 1500);
 		}
-	}, [input]);
+	}, [input, router]);
 
 	const doSignUp = useCallback(async () => {
 		console.warn(input);
@@ -75,10 +76,11 @@ const Join: NextPage = () => {
 			await signUp(input.nick, input.password, input.phone, input.type);
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
-			const message = 'Used Nickname or Phone number! Please try again';
+			const message = err?.graphQLErrors?.[0]?.message || err?.message || 'Signup failed';
+
 			await sweetMixinErrorAlert(message, 1500);
 		}
-	}, [input]);
+	}, [input, router]);
 
 	if (device === 'mobile') {
 		return <div>LOGIN MOBILE</div>;

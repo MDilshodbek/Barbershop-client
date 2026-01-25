@@ -321,14 +321,13 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    background: url("/banner/b1.svg");
     background-size: cover;
   }
   .chatting {
     .chat-button {
       border: none;
       position: fixed;
-      bottom: 90px;
+      bottom: 50px;
       right: 30px;
       height: 50px;
       width: 50px;
@@ -352,7 +351,7 @@
       right: -380px;
       transition: right 0.7s ease-in-out;
       width: 380px;
-      height: 500px;
+      height: 450px;
       display: flex;
       flex-direction: column;
       background: rgb(233, 243, 255);

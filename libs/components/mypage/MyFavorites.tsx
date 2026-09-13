@@ -21,8 +21,10 @@ import XIcon from "@mui/icons-material/X";
 import Link from "next/link";
 import { userVar } from "../../../apollo/store";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useTranslation } from "react-i18next";
 
 const MyFavorites: NextPage = () => {
+  const { t } = useTranslation("common");
   const device = useDeviceDetect();
   const user = useReactiveVar(userVar);
   const [favoriteMembers, setFavoriteMembers] = useState<Member[]>([]);
@@ -66,14 +68,105 @@ const MyFavorites: NextPage = () => {
 
       await likeTargetMember({ variables: { input: id } });
       await getFavoritesRefetch({ input: searchFavorites });
-      await sweetTopSmallSuccessAlert("success", 800);
+      await sweetTopSmallSuccessAlert(t("success"), 800);
     } catch (error: any) {
       sweetMixinErrorAlert(error.message).then();
     }
   };
 
   if (device === "mobile") {
-    return <div>Cropper MY FAVORITES MOBILE</div>;
+    return (
+      <div id="my-favorites-page-mobile">
+        <Stack className="favorites-list-box barber-box">
+          {favoriteMembers?.length ? (
+            favoriteMembers.map((barber: Member) => {
+              return (
+                <Stack key={barber._id} className="barber-info">
+                  <Box className="barber-img">
+                    <Link
+                      href={{
+                        pathname: "/barber/detail",
+                        query: { barberId: barber?._id },
+                      }}
+                    >
+                      <img
+                        src={
+                          barber?.memberImage
+                            ? `${REACT_APP_API_URL}/${barber?.memberImage}`
+                            : "/logo/defaultUser.svg"
+                        }
+                        alt=""
+                      />
+                    </Link>
+                  </Box>
+                  <Stack className="barber-info-col">
+                    <Link
+                      href={{
+                        pathname: "/barber/detail",
+                        query: { barberId: barber?._id },
+                      }}
+                    >
+                      <Box className="barber-name">
+                        {barber?.memberFullName ?? barber?.memberNick}
+                      </Box>
+                    </Link>
+                    <Stack className="barber-media">
+                      <Box
+                        className="barber-like"
+                        onClick={() => likeMemberHandler(user, barber?._id)}
+                      >
+                        <FavoriteIcon style={{ color: "red" }} />
+                        <span>{barber.memberLikes}</span>
+                      </Box>
+                      <Box className="barber-view">
+                        <RemoveRedEyeIcon style={{ color: "#004034" }} />
+                        <span>{barber.memberViews}</span>
+                      </Box>
+                      <Stack className="barber-socialmedia">
+                        <FacebookOutlinedIcon style={{ color: "#004034" }} />
+                        <InstagramIcon style={{ color: "#004034" }} />
+                        <XIcon style={{ color: "#004034" }} />
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </Stack>
+              );
+            })
+          ) : (
+            <div className={"no-data"}>
+              <InfoOutlinedIcon className="info-icon" />
+              <p>{t("No Favorites found!")}</p>
+            </div>
+          )}
+        </Stack>
+
+        {favoriteMembers?.length ? (
+          <Stack className="pagination-config-mobile">
+            <Pagination
+              count={Math.ceil(total / searchFavorites.limit)}
+              page={searchFavorites.page}
+              shape="circular"
+              size="small"
+              onChange={paginationHandler}
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  color: "#004034",
+                  borderColor: "#004034",
+                },
+                "& .MuiPaginationItem-root.Mui-selected": {
+                  backgroundColor: "#C6D984",
+                  color: "#fff",
+                },
+              }}
+            />
+            <span className="page-text">
+              {t("Total")} {total} {t("favorite")}{" "}
+              {total > 1 ? t("barbers") : t("barber")}
+            </span>
+          </Stack>
+        ) : null}
+      </div>
+    );
   } else {
     return (
       <div id="my-favorites-page">
@@ -157,7 +250,7 @@ const MyFavorites: NextPage = () => {
           ) : (
             <div className={"no-data"}>
               <InfoOutlinedIcon className="info-icon" />
-              <p>No Favorites found!</p>
+              <p>{t("No Favorites found!")}</p>
             </div>
           )}
         </Stack>
@@ -188,7 +281,7 @@ const MyFavorites: NextPage = () => {
             </Stack>
             <Stack className="total-result">
               <Typography className="page-text">
-                Total {total} favorite barber{total > 1 ? "s" : ""}
+                {t("Total")} {total} {t("favorite")} {total > 1 ? t("barbers") : t("barber")}
               </Typography>
             </Stack>
           </Stack>

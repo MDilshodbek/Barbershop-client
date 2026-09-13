@@ -58,7 +58,7 @@ const TIME_SLOTS: TimeSlot[] = [
   { time: "10:30" },
   { time: "11:00" },
   { time: "11:30" },
-  { time: "12:00", label: "Lunch Time", disabled: true },
+  { time: "12:00", label: "__LUNCH_TIME__", disabled: true },
   { time: "13:00" },
   { time: "13:30" },
   { time: "14:00" },
@@ -283,13 +283,13 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
   const handleCreateReservation = async () => {
     try {
       if (!user?._id) throw new Error(Messages.error2);
-      if (!selectedService?._id) throw new Error("Please select a service.");
-      if (!selectedBarber?._id) throw new Error("Please select a barber.");
-      if (!selectedDate) throw new Error("Please select a date.");
-      if (!selectedTime) throw new Error("Please select a time slot.");
+      if (!selectedService?._id) throw new Error(t("Please select a service."));
+      if (!selectedBarber?._id) throw new Error(t("Please select a barber."));
+      if (!selectedDate) throw new Error(t("Please select a date."));
+      if (!selectedTime) throw new Error(t("Please select a time slot."));
 
       const reserveTime = combineYmdAndTime(selectedDate, selectedTime);
-      if (!reserveTime) throw new Error("Invalid time slot.");
+      if (!reserveTime) throw new Error(t("Invalid time slot."));
 
       const reserveDay = new Date(`${selectedDate}T00:00:00`);
 
@@ -305,7 +305,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
 
       await createReservation({ variables: { input: reserveInput } });
 
-      await sweetTopSmallSuccessAlert("Reservation created!", 1200);
+      await sweetTopSmallSuccessAlert(t("Reservation created!"), 1200);
       await router.push({
         pathname: "/mypage",
         query: { category: "myReservations" },
@@ -315,21 +315,15 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
     }
   };
 
-  if (device === "mobile") return <Stack>Appointment Page mobile</Stack>;
-
-  return (
-    <Stack className="appointment-page">
-      <Typography className="hero-title">{t("Appointment")}</Typography>
-
-      <Stack className="container">
+  const appointmentBody = (
+    <Stack className="container">
         <Stack className="appoint-main">
           <Stack className="reservation">
             <Typography className="appoint-title">
-              Make Your Cropper Reservation
+              {t("Make Your Cropper Reservation")}
             </Typography>
             <Typography className="appoint-subtitle">
-              Step into an elevated grooming experience tailored just for you.
-              Our master barbers await to craft your signature look.
+              {t("Step into an elevated grooming experience tailored just for you. Our master barbers await to craft your signature look.")}
             </Typography>
 
             <Stack className="inputs-main">
@@ -341,7 +335,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                 >
                   <Box className="step-block">
                     <Typography className="step-title">
-                      01. Select Service
+                      {t("01. Select Service")}
                     </Typography>
 
                     <Autocomplete
@@ -350,7 +344,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                       value={selectedService}
                       onChange={(_, value) => setSelectedService(value)}
                       getOptionLabel={(option) =>
-                        option?.serviceTitle ?? "Choose a service"
+                        option?.serviceTitle ?? t("Choose a service")
                       }
                       isOptionEqualToValue={(option, value) =>
                         option?._id === value?._id
@@ -364,7 +358,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                         <TextField
                           {...params}
                           variant="outlined"
-                          placeholder="Choose a service"
+                          placeholder={t("Choose a service")}
                         />
                       )}
                     />
@@ -372,7 +366,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
 
                   <Box className="step-block">
                     <Typography className="step-title">
-                      02. Select Barber
+                      {t("02. Select Barber")}
                     </Typography>
 
                     <Autocomplete
@@ -383,7 +377,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                       getOptionLabel={(option) =>
                         option?.memberFullName ||
                         option?.memberNick ||
-                        "Choose a barber"
+                        t("Choose a barber")
                       }
                       isOptionEqualToValue={(option, value) =>
                         option?._id === value?._id
@@ -392,7 +386,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                         <TextField
                           {...params}
                           variant="outlined"
-                          placeholder="Choose a barber"
+                          placeholder={t("Choose a barber")}
                         />
                       )}
                     />
@@ -406,7 +400,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                 >
                   <Box className="date-section">
                     <Typography className="step-title">
-                      03. Select Date
+                      {t("03. Select Date")}
                     </Typography>
 
                     <TextField
@@ -422,7 +416,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
 
                   <Box className="time-section">
                     <Typography className="step-title">
-                      04. Select Time
+                      {t("04. Select Time")}
                     </Typography>
 
                     <Box className="time-grid">
@@ -466,7 +460,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                               .join(" ")}
                           >
                             {slot.label
-                              ? `${slot.time} (${slot.label})`
+                              ? `${slot.time} (${slot.label === "__LUNCH_TIME__" ? t("Lunch Time") : slot.label})`
                               : slot.time}
                           </Button>
                         );
@@ -478,7 +472,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                 <Stack className="notes-top">
                   <Box className="note-section">
                     <Typography className="step-title">
-                      05. Leave Notes
+                      {t("05. Leave Notes")}
                     </Typography>
 
                     <Box className="notes-input">
@@ -486,7 +480,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                         fullWidth
                         multiline
                         minRows={2}
-                        placeholder="Share any preferences or requests for your appointment"
+                        placeholder={t("Share any preferences or requests for your appointment")}
                         value={reservationNote}
                         onChange={(e) => setReservationNote(e.target.value)}
                       />
@@ -502,7 +496,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                   spacing={{ xs: 4, md: 0 }}
                 >
                   <Box className="total-box">
-                    <Typography className="total-label">TOTAL</Typography>
+                    <Typography className="total-label">{t("TOTAL")}</Typography>
                     <Typography className="total-value">
                       {totalPrice}
                     </Typography>
@@ -515,7 +509,7 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
                     disabled={makeAppointmentDisabled}
                     onClick={handleCreateReservation}
                   >
-                    MAKE AN APPOINTMENT
+                    {t("MAKE AN APPOINTMENT")}
                   </Button>
                 </Stack>
               </Box>
@@ -523,6 +517,21 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
           </Stack>
         </Stack>
       </Stack>
+  );
+
+  if (device === "mobile") {
+    return (
+      <Stack className="appointment-page-mobile">
+        <Typography className="hero-title">{t("Appointment")}</Typography>
+        {appointmentBody}
+      </Stack>
+    );
+  }
+
+  return (
+    <Stack className="appointment-page">
+      <Typography className="hero-title">{t("Appointment")}</Typography>
+      {appointmentBody}
     </Stack>
   );
 };

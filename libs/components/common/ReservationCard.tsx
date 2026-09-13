@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { ReviewInput } from "../../types/review/review.input";
 import { ReviewGroup } from "../../enums/review.enum";
+import { useTranslation } from "react-i18next";
 
 interface ReservationItemProps {
   reservation: Reservation;
@@ -25,6 +26,7 @@ const ReservationCard: FC<ReservationItemProps> = ({
   onCancel,
   createReviewHandler,
 }) => {
+  const { t } = useTranslation("common");
   const [statusAnchor, setStatusAnchor] = useState<null | HTMLElement>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [hasSubmittedReview, setHasSubmittedReview] = useState<boolean>(() => {
@@ -175,27 +177,27 @@ const ReservationCard: FC<ReservationItemProps> = ({
                 ${reservation.servicePrice}
               </Typography>
               <Typography className="price">
-                {reservation.serviceDurationMin}min
+                {reservation.serviceDurationMin}{t("min")}
               </Typography>
             </Stack>
 
             {reserveNotes && (
               <Stack className="notesRow">
-                <Typography className="notesLabel">Notes:</Typography>
+                <Typography className="notesLabel">{t("Notes:")}</Typography>
                 <Typography className="notesText">{reserveNotes}</Typography>
               </Stack>
             )}
 
             {/* COMMENT: status row */}
             <Stack className="statusRow">
-              <Typography className="statusText">Status:</Typography>
+              <Typography className="statusText">{t("Status:")}</Typography>
               <Typography
                 className="statusValue"
                 onClick={openStatusMenu}
                 aria-haspopup={!isCancelled}
                 style={{ cursor: isCancelled ? "default" : "pointer" }}
               >
-                {pendingStatus ?? reservation.reserveStatus}
+                {t(pendingStatus ?? reservation.reserveStatus)}
               </Typography>
             </Stack>
 
@@ -209,7 +211,7 @@ const ReservationCard: FC<ReservationItemProps> = ({
                 }}
                 disabled={!canWriteReview}
               >
-                Write Review
+                {t("Write Review")}
               </Button>
             </Stack>
           </Stack>
@@ -221,7 +223,7 @@ const ReservationCard: FC<ReservationItemProps> = ({
           onClose={closeStatusMenu}
         >
           <MenuItem onClick={() => changeStatus(ReserveStatus.CANCELLED)}>
-            CANCELLED
+            {t(ReserveStatus.CANCELLED)}
           </MenuItem>
         </Menu>
       </Box>
@@ -229,15 +231,15 @@ const ReservationCard: FC<ReservationItemProps> = ({
         {/* COMMENT: if status becomes CANCELLED, show cancel reason input */}
         {showCancelInput && pendingStatus === ReserveStatus.CANCELLED && (
           <Stack className="cancelBox">
-            <Typography className="cancelTitle">Cancellation reason</Typography>
+            <Typography className="cancelTitle">{t("Cancellation reason")}</Typography>
             <textarea
               className="cancelInput"
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
-              placeholder="Write the reason..."
+              placeholder={t("Write the reason...")}
             />
             <Button className="cancelSubmitBtn" onClick={cancelReasonSubmit}>
-              Confirm
+              {t("Confirm")}
             </Button>
           </Stack>
         )}
@@ -245,19 +247,19 @@ const ReservationCard: FC<ReservationItemProps> = ({
         {/* COMMENT: review input opens under the card */}
         {reviewOpen && reservation.reserveStatus !== ReserveStatus.CANCELLED && (
           <Stack className="reviewBox">
-            <Typography className="reviewTitle">Your Rating</Typography>
+            <Typography className="reviewTitle">{t("Your Rating")}</Typography>
             <Rating
               value={reviewRating}
               onChange={(_, v) => setReviewRating(v ?? 0)}
               className="ratingStars"
             />
 
-            <Typography className="reviewTitle">Your Review</Typography>
+            <Typography className="reviewTitle">{t("Your Review")}</Typography>
             <textarea
               className="reviewInput"
               value={reviewContent}
               onChange={(e) => setReviewContent(e.target.value)}
-              placeholder="Write your review..."
+              placeholder={t("Write your review...")}
             />
 
             <Button
@@ -267,7 +269,7 @@ const ReservationCard: FC<ReservationItemProps> = ({
                 reviewSubmitting || !reviewRating || hasSubmittedReview
               }
             >
-              Submit Review
+              {t("Submit Review")}
             </Button>
           </Stack>
         )}

@@ -3,3 +3,9 @@
 
 $font: 'Limelight', sans-serif;
 $fontSecondary: 'DM Sans', sans-serif;
+
+/** MOBILE LAYOUT **/
+// Canonical side padding for every mobile page/section so cards and text
+// never sit flush against the screen edge. Reuse this everywhere instead
+// of hardcoding a new value.
+$mobile-side-padding: 16px;

@@ -9,8 +9,10 @@ import { T } from "../../types/common";
 import { BoardArticle } from "../../types/board-article/board-article";
 import { GET_ARTICLES } from "../../../apollo/user/query";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useTranslation } from "react-i18next";
 
 const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
+  const { t } = useTranslation("common");
   const device = useDeviceDetect();
   const user = useReactiveVar(userVar);
   const [searchCommunity, setSearchCommunity] = useState({
@@ -43,7 +45,53 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
   };
 
   if (device === "mobile") {
-    return <>ARTICLE PAGE MOBILE</>;
+    return (
+      <div id="my-articles-page-mobile">
+        <Stack className="articles-list-mobile">
+          {boardArticles?.length > 0 ? (
+            boardArticles?.map((boardArticle: BoardArticle) => {
+              return (
+                <CommunityCard
+                  boardArticle={boardArticle}
+                  key={boardArticle?._id}
+                />
+              );
+            })
+          ) : (
+            <div className={"no-data"}>
+              <InfoOutlinedIcon className="info-icon" />
+              <p>{t("No articles found!")}</p>
+            </div>
+          )}
+        </Stack>
+
+        {boardArticles?.length > 0 && (
+          <Stack className="pagination-config-mobile">
+            <Pagination
+              count={Math.ceil(totalCount / searchCommunity.limit)}
+              page={searchCommunity.page}
+              shape="circular"
+              size="small"
+              onChange={paginationHandler}
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  color: "#004034",
+                  borderColor: "#004034",
+                },
+                "& .MuiPaginationItem-root.Mui-selected": {
+                  backgroundColor: "#C6D984",
+                  color: "#fff",
+                },
+              }}
+            />
+            <span className="page-text">
+              {t("Total")} {totalCount}{" "}
+              {totalCount > 1 ? t("articles") : t("article")} {t("available")}
+            </span>
+          </Stack>
+        )}
+      </div>
+    );
   } else
     return (
       <div id="my-articles-page">
@@ -60,7 +108,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
           ) : (
             <div className={"no-data"}>
               <InfoOutlinedIcon className="info-icon" />
-              <p>No articles found!</p>
+              <p>{t("No articles found!")}</p>
             </div>
           )}
         </Stack>
@@ -91,8 +139,8 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
             </Stack>
             <Stack className="total">
               <Typography>
-                Total {totalCount} article{totalCount === 0 ? "" : "s"}{" "}
-                available
+                {t("Total")} {totalCount} {totalCount > 1 ? t("articles") : t("article")}{" "}
+                {t("available")}
               </Typography>
             </Stack>
           </Stack>

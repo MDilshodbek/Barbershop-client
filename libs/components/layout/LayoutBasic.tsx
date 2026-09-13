@@ -8,11 +8,13 @@ import { useMemo } from 'react';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Top from '../Top';
 import Chat from '../Chat';
+import { useTranslation } from 'react-i18next';
 
 const withLayoutBasic = (Component: any) => {
 	return (props: any) => {
 		const device = useDeviceDetect();
 		const router = useRouter();
+		const { t } = useTranslation('common');
 
 		const memoizedValues = useMemo(() => {
 			let title = '',
@@ -21,59 +23,59 @@ const withLayoutBasic = (Component: any) => {
 
 			switch (router.pathname) {
 				case '/service':
-					title = 'Services';
-					desc = 'We are glad to see you again!';
-					bgImage = '/banner/b1.jpg'; 
+					title = t('Services');
+					desc = t('We are glad to see you again!');
+					bgImage = '/banner/b1.jpg';
 					break;
 				case '/appointment':
-					title = 'Appointment';
-					desc = 'Home / Appointment';
-					bgImage = '/banner/b5.jpg'; 
+					title = t('Appointment');
+					desc = t('Home / Appointment');
+					bgImage = '/banner/b5.jpg';
 					break;
 				case '/mypage':
-					title = 'My page';
-					bgImage = '/banner/b6.jpg'; 
+					title = t('My Page');
+					bgImage = '/banner/b6.jpg';
 					break;
 				case '/community':
-					title = 'Community';
-					desc = 'Wellcome to our community';
-					bgImage = '/banner/b8.jpg'; 
+					title = t('Community');
+					desc = t('Welcome to our community');
+					bgImage = '/banner/b8.jpg';
 					break;
 				case '/community/detail':
-					title = 'Community Detail';
-					desc = 'Wellcome to our community';
-					bgImage = '/banner/b8.jpg'; 
+					title = t('Community Detail');
+					desc = t('Welcome to our community');
+					bgImage = '/banner/b8.jpg';
 					break;
 				case '/faq':
-					title = 'FAQ';
-					desc = 'Frequently asked questions';
-					bgImage = '/banner/b3.jpg'; 
+					title = t('FAQ');
+					desc = t('Frequently Asked Questions');
+					bgImage = '/banner/b3.jpg';
 					break;
 				case '/notification':
-					title = 'Notification';
-					desc = 'Notification messages';
-					bgImage = '/banner/b5.jpg'; 
+					title = t('Notification');
+					desc = t('Notification messages');
+					bgImage = '/banner/b5.jpg';
 					break;
 				case '/barber':
-					title = 'Barber Page';
-					desc = 'Our Barbers';
-					bgImage = '/banner/b4.jpg'; 
+					title = t('Barber Page');
+					desc = t('Our Barbers');
+					bgImage = '/banner/b4.jpg';
 					break;
 				case '/barber/detail':
-					title = 'Barber Detail Page';
-					desc = 'Our Barbers Info';
-					bgImage = '/banner/b4.jpg'; 
+					title = t('Barber Detail Page');
+					desc = t('Our Barbers Info');
+					bgImage = '/banner/b4.jpg';
 				case '/account':
-					title = 'Account Join';
-					desc = 'Authentication process';
-					bgImage = '/banner/b1.jpg'; 
+					title = t('Account Join');
+					desc = t('Authentication process');
+					bgImage = '/banner/b1.jpg';
 					break;
 				default:
 					break;
 			}
 
 			return { title, desc, bgImage };
-		}, [router.pathname]);
+		}, [router.pathname, t]);
 
 		if (device === 'mobile') {
 			return (
@@ -121,7 +123,7 @@ const withLayoutBasic = (Component: any) => {
 						>
 							<Image
 								src={memoizedValues.bgImage}
-								alt={memoizedValues.title ? `${memoizedValues.title} banner` : 'Banner'}
+								alt={memoizedValues.title ? `${memoizedValues.title} ${t('Banner')}` : t('Banner')}
 								fill 
 								priority 
 								sizes="100vw" 

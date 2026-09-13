@@ -8,8 +8,10 @@ const nextConfig = {
   },
   // Ensure assets are served correctly
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
-  // Output standalone for better Docker performance
-  output: 'standalone',
+  // Output standalone for better Docker performance (production builds only —
+  // enabling this during `next dev` on Windows causes file tracing to race
+  // with HMR writes to .next/static/chunks, producing UNKNOWN open errors)
+  ...(process.env.NODE_ENV === 'production' ? { output: 'standalone' } : {}),
 };
 
 const { i18n } = require("./next-i18next.config");

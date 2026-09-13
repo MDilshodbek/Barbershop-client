@@ -87,7 +87,129 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
   };
 
   if (device === "mobile") {
-    return <h1>COMMUNITY PAGE MOBILE</h1>;
+    return (
+      <div id="community-list-page-mobile">
+        <Typography className="hero-title">{t("Community")}</Typography>
+        <div className="container">
+          <TabContext value={searchCommunity.search.articleCategory}>
+            <Stack className="community-header-mobile">
+              <img
+                src={"/logo/Logo.svg"}
+                alt=""
+                className="community-logo"
+              />
+              <span className="community-name">{t("Cropper Community")}</span>
+            </Stack>
+
+            <TabList
+              className="tabs-mobile"
+              aria-label={t("Board categories")}
+              TabIndicatorProps={{ style: { display: "none" } }}
+              onChange={tabChangeHandler}
+              variant="scrollable"
+              scrollButtons={false}
+            >
+              <Tab
+                value={"FREE"}
+                label={t("Free Board")}
+                className={`tab-button-mobile ${
+                  searchCommunity.search.articleCategory == "FREE"
+                    ? "active"
+                    : ""
+                }`}
+              />
+              <Tab
+                value={"LIFESTYLE"}
+                label={t("Lifestyle")}
+                className={`tab-button-mobile ${
+                  searchCommunity.search.articleCategory == "LIFESTYLE"
+                    ? "active"
+                    : ""
+                }`}
+              />
+              <Tab
+                value={"NEWS"}
+                label={t("News")}
+                className={`tab-button-mobile ${
+                  searchCommunity.search.articleCategory == "NEWS"
+                    ? "active"
+                    : ""
+                }`}
+              />
+            </TabList>
+
+            <Stack className="title-box-mobile">
+              <Typography className="title">
+                {searchCommunity.search.articleCategory} {t("BOARD")}
+              </Typography>
+              {(user.memberType === "ADMIN" ||
+                user.memberType === "BARBER") && (
+                <Button
+                  onClick={() =>
+                    router.push({
+                      pathname: "/mypage",
+                      query: { category: "writeArticle" },
+                    })
+                  }
+                  className="write-btn-mobile"
+                >
+                  {t("Write")}
+                </Button>
+              )}
+            </Stack>
+
+            {(["FREE", "LIFESTYLE", "NEWS"] as const).map((cat) => (
+              <TabPanel value={cat} key={cat} className="tab-panel-mobile">
+                <Stack className="list-box-mobile">
+                  {totalCount ? (
+                    boardArticles?.map((boardArticle: BoardArticle) => {
+                      return (
+                        <CommunityCard
+                          boardArticle={boardArticle}
+                          key={boardArticle?._id}
+                        />
+                      );
+                    })
+                  ) : (
+                    <Stack className={"no-data"}>
+                      <img src="/img/icons/icoAlert.svg" alt="" />
+                      <p>{t("No Article found!")}</p>
+                    </Stack>
+                  )}
+                </Stack>
+              </TabPanel>
+            ))}
+          </TabContext>
+
+          {totalCount > 0 && (
+            <Stack className="pagination-config-mobile">
+              <Pagination
+                count={Math.ceil(totalCount / searchCommunity.limit)}
+                page={searchCommunity.page}
+                shape="circular"
+                size="small"
+                onChange={paginationHandler}
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    color: "#004034",
+                    borderColor: "#004034",
+                  },
+                  "& .MuiPaginationItem-root.Mui-selected": {
+                    backgroundColor: "#C6D984",
+                    color: "#fff",
+                  },
+                }}
+              />
+              <span className="page-text">
+                {t("Total")} {totalCount}{" "}
+                {totalCount > 1 ? t("articles") : t("article")}{" "}
+                {t("available")}
+              </span>
+            </Stack>
+          )}
+        </div>
+      </div>
+    );
   } else {
     return (
       <div id="community-list-page">
@@ -100,14 +222,14 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
                   <img src={"/logo/Logo.svg"} />
                   <Stack className={"community-name"}>
                     <Typography className={"name"}>
-                      Cropper Community
+                      {t("Cropper Community")}
                     </Typography>
                   </Stack>
                 </Stack>
 
                 <TabList
                   orientation="vertical"
-                  aria-label="lab API tabs example"
+                  aria-label={t("Board categories")}
                   TabIndicatorProps={{
                     style: { display: "none" },
                   }}
@@ -115,7 +237,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
                 >
                   <Tab
                     value={"FREE"}
-                    label={"Free Board"}
+                    label={t("Free Board")}
                     className={`tab-button ${
                       searchCommunity.search.articleCategory == "FREE"
                         ? "active"
@@ -124,7 +246,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
                   />
                   <Tab
                     value={"LIFESTYLE"}
-                    label={"Lifestyle"}
+                    label={t("Lifestyle")}
                     className={`tab-button ${
                       searchCommunity.search.articleCategory == "LIFESTYLE"
                         ? "active"
@@ -133,7 +255,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
                   />
                   <Tab
                     value={"NEWS"}
-                    label={"News"}
+                    label={t("News")}
                     className={`tab-button ${
                       searchCommunity.search.articleCategory == "NEWS"
                         ? "active"
@@ -147,11 +269,10 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
                   <Stack className="title-box">
                     <Stack className="left">
                       <Typography className="title">
-                        {searchCommunity.search.articleCategory} BOARD
+                        {searchCommunity.search.articleCategory} {t("BOARD")}
                       </Typography>
                       <Typography className="sub-title">
-                        Express your opinions freely here without content
-                        restrictions
+                        {t("Express your opinions freely here without content restrictions")}
                       </Typography>
                     </Stack>
                     {(user.memberType === "ADMIN" ||
@@ -167,7 +288,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
                         }
                         className="right"
                       >
-                        Write
+                        {t("Write")}
                       </Button>
                     )}
                   </Stack>
@@ -186,7 +307,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
                       ) : (
                         <Stack className={"no-data"}>
                           <img src="/img/icons/icoAlert.svg" alt="" />
-                          <p>No Article found!</p>
+                          <p>{t("No Article found!")}</p>
                         </Stack>
                       )}
                     </Stack>
@@ -205,7 +326,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
                       ) : (
                         <Stack className={"no-data"}>
                           <img src="/img/icons/icoAlert.svg" alt="" />
-                          <p>No Article found!</p>
+                          <p>{t("No Article found!")}</p>
                         </Stack>
                       )}
                     </Stack>
@@ -224,7 +345,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
                       ) : (
                         <Stack className={"no-data"}>
                           <img src="/img/icons/icoAlert.svg" alt="" />
-                          <p>No Article found!</p>
+                          <p>{t("No Article found!")}</p>
                         </Stack>
                       )}
                     </Stack>
@@ -260,8 +381,8 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
               </Stack>
               <Stack className="total-result">
                 <Typography>
-                  Total {totalCount} article{totalCount > 1 ? "s" : ""}{" "}
-                  available
+                  {t("Total")} {totalCount} {totalCount > 1 ? t("articles") : t("article")}{" "}
+                  {t("available")}
                 </Typography>
               </Stack>
             </Stack>

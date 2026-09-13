@@ -11,12 +11,14 @@ import { GET_BARBER_SCHEDULES } from "../../../apollo/user/query";
 import { UPDATE_RESERVATION } from "../../../apollo/user/mutation";
 import { T } from "../../types/common";
 import { ReserveStatus } from "../../enums/reservation.enum";
+import { useTranslation } from "react-i18next";
 
 interface ScheduleProps {
   initialInput?: BarberScheduleInquiry;
 }
 
 const MySchedule: FC<ScheduleProps> = (props) => {
+  const { t } = useTranslation("common");
   const [schedule, setSchedule] = useState<Reservations[]>([]);
   const [total, setTotal] = useState<number>(0);
   const {
@@ -78,7 +80,7 @@ const MySchedule: FC<ScheduleProps> = (props) => {
     <Stack id="mySchedule">
       <Stack className="main-box">
         <Stack className="top">
-          <Typography className="title">My Schedules</Typography>
+          <Typography className="title">{t("My Schedules")}</Typography>
 
           <Stack className="week-pagination">
             {/* COMMENT: active when viewing past weeks */}
@@ -86,7 +88,7 @@ const MySchedule: FC<ScheduleProps> = (props) => {
               className={weekOffset < 0 ? "active" : "week-btn"}
               onClick={goPrevWeek}
             >
-              Prev Week
+              {t("Prev Week")}
             </Button>
 
             {/* COMMENT: active only for current week */}
@@ -94,7 +96,7 @@ const MySchedule: FC<ScheduleProps> = (props) => {
               className={weekOffset === 0 ? "active" : "week-btn"}
               onClick={goThisWeek}
             >
-              This Week
+              {t("This Week")}
             </Button>
 
             {/* COMMENT: active when viewing future weeks */}
@@ -102,7 +104,7 @@ const MySchedule: FC<ScheduleProps> = (props) => {
               className={weekOffset > 0 ? "active" : "week-btn"}
               onClick={goNextWeek}
             >
-              Next Week
+              {t("Next Week")}
             </Button>
           </Stack>
         </Stack>

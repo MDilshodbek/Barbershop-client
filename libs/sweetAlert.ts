@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 import 'animate.css';
+import i18next from 'i18next';
 import { Messages } from './config';
 
 export const sweetErrorHandling = async (err: any) => {
@@ -59,7 +60,7 @@ export const sweetLoginConfirmAlert = (msg: string) => {
 			color: '#212121',
 			confirmButtonColor: '#e92C28',
 			cancelButtonColor: '#bdbdbd',
-			confirmButtonText: 'Login',
+			confirmButtonText: i18next.t('Login'),
 		}).then((response) => {
 			if (response?.isConfirmed) resolve(true);
 			else resolve(false);

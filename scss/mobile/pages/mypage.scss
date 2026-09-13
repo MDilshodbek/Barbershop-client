@@ -1,0 +1,511 @@
+#mobile-wrap {
+	#my-page-mobile {
+		padding: 24px $mobile-side-padding 40px $mobile-side-padding;
+		display: flex;
+		flex-direction: column;
+
+		.hero-title {
+			color: #004034;
+			font-family: 'Limelight', serif;
+			font-size: 26px;
+			text-align: center;
+			margin-bottom: 16px;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			gap: 18px;
+		}
+	}
+
+	.list-config-mobile {
+		display: flex;
+		flex-direction: column;
+	}
+
+	// MyMenu.tsx mobile — profile summary + horizontal scrollable menu pills
+	.my-menu-mobile {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.my-menu-profile-mobile {
+		flex-direction: row;
+		align-items: center;
+		gap: 12px;
+		background: #ffffff;
+		border: 1px solid #e3ead9;
+		border-radius: 16px;
+		padding: 14px;
+		box-shadow: 0 12px 24px rgba(0, 64, 52, 0.08);
+
+		img {
+			width: 52px;
+			height: 52px;
+			border-radius: 50%;
+			object-fit: cover;
+			flex-shrink: 0;
+		}
+	}
+
+	.my-menu-profile-info {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+
+		.name {
+			color: #004034;
+			font-family: 'DM Sans';
+			font-size: 15px;
+			font-weight: 700;
+		}
+
+		.phone {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			color: #7c887f;
+			font-family: 'DM Sans';
+			font-size: 12px;
+		}
+	}
+
+	.my-menu-tabs-mobile {
+		flex-direction: row;
+		gap: 8px;
+		overflow-x: auto;
+		scrollbar-width: none;
+		padding-bottom: 2px;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+
+	.my-menu-pill {
+		flex: 0 0 auto;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 6px;
+		padding: 9px 14px;
+		border-radius: 999px;
+		background: #f7f9f4;
+		border: 1px solid #e3ead9;
+		white-space: nowrap;
+		cursor: pointer;
+
+		img {
+			width: 14px;
+			height: 14px;
+			object-fit: contain;
+		}
+
+		span {
+			color: #004034;
+			font-family: 'DM Sans';
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		&.active {
+			background: #004034;
+			border-color: #004034;
+
+			span {
+				color: #ffffff;
+			}
+
+			img {
+				filter: brightness(0) invert(1);
+			}
+		}
+
+		&.logout-pill {
+			background: #fdf1f1;
+			border-color: #f3caca;
+
+			span {
+				color: #c0392b;
+			}
+		}
+	}
+
+	// MyProfile.tsx mobile
+	#my-profile-page-mobile {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+
+		.photo-box-mobile {
+			align-items: center;
+			text-align: center;
+			gap: 8px;
+
+			.image-box {
+				width: 88px;
+				height: 88px;
+				border-radius: 50%;
+				overflow: hidden;
+				border: 3px solid #f7f9f4;
+				box-shadow: 0 10px 22px rgba(0, 64, 52, 0.1);
+
+				img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+				}
+			}
+
+			.labeler {
+				color: #004034;
+				font-family: 'DM Sans';
+				font-size: 13px;
+				font-weight: 700;
+				text-decoration: underline;
+				cursor: pointer;
+			}
+
+			.upload-text {
+				color: #9fae9c;
+				font-family: 'DM Sans';
+				font-size: 11px;
+			}
+		}
+
+		.form-mobile {
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+
+			.input-box {
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+
+				.title {
+					color: #7c887f;
+					font-family: 'DM Sans';
+					font-size: 12px;
+					font-weight: 700;
+					text-transform: uppercase;
+				}
+
+				input {
+					width: 100%;
+					box-sizing: border-box;
+					height: 44px;
+					border-radius: 12px;
+					border: 1px solid #e3ead9;
+					background: #f9fbf6;
+					padding: 0 14px;
+					font-family: 'DM Sans';
+					font-size: 14px;
+					color: #14231d;
+				}
+			}
+
+			.update-button {
+				width: 100%;
+				padding: 13px;
+				border-radius: 999px;
+				background: #004034 !important;
+				color: #ffffff !important;
+				font-family: 'DM Sans';
+				font-weight: 700;
+				text-transform: none;
+
+				&.Mui-disabled {
+					opacity: 0.5;
+					color: #ffffff !important;
+				}
+			}
+		}
+	}
+
+	// MyReservations.tsx + ReservationCard.tsx mobile
+	#my-reservations {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+
+		.main-box {
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+	}
+
+	.reservationCard {
+		background: #ffffff;
+		border: 1px solid #e3ead9;
+		border-radius: 16px;
+		box-shadow: 0 12px 24px rgba(0, 64, 52, 0.08);
+		padding: 12px;
+
+		.cardTop {
+			flex-direction: row;
+			gap: 12px;
+		}
+
+		.serviceImage {
+			flex-shrink: 0;
+			width: 76px;
+			height: 76px;
+			border-radius: 12px;
+			overflow: hidden;
+
+			img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+		}
+
+		.cardInfo {
+			flex: 1;
+			min-width: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 3px;
+		}
+
+		.dateTime {
+			color: #9fae9c;
+			font-family: 'DM Sans';
+			font-size: 11px;
+		}
+
+		.serviceName {
+			color: #004034;
+			font-family: 'DM Sans';
+			font-size: 14px;
+			font-weight: 700;
+		}
+
+		.barberRow {
+			flex-direction: row;
+			gap: 8px;
+			flex-wrap: wrap;
+
+			.barberNick,
+			.price {
+				color: #7c887f;
+				font-family: 'DM Sans';
+				font-size: 11px;
+				font-weight: 600;
+			}
+		}
+
+		.notesRow,
+		.statusRow {
+			flex-direction: row;
+			gap: 4px;
+			margin-top: 2px;
+
+			.notesLabel,
+			.statusText {
+				color: #9fae9c;
+				font-family: 'DM Sans';
+				font-size: 11px;
+				font-weight: 700;
+			}
+
+			.notesText,
+			.statusValue {
+				color: #004034;
+				font-family: 'DM Sans';
+				font-size: 11px;
+				font-weight: 700;
+			}
+		}
+
+		.actionsRow {
+			margin-top: 8px;
+
+			.reviewBtn {
+				width: 100%;
+				border-radius: 999px;
+				background: #f7f9f4;
+				border: 1px solid #e3ead9;
+				color: #9fae9c;
+				font-family: 'DM Sans';
+				font-size: 12px;
+				font-weight: 700;
+				text-transform: none;
+				padding: 8px;
+
+				&.reviewBtn--active {
+					background: #c6d984;
+					border-color: #c6d984;
+					color: #004034;
+				}
+			}
+		}
+	}
+
+	#my-reservations .review-box {
+		margin-top: 10px;
+	}
+
+	.cancelBox,
+	.reviewBox {
+		background: #ffffff;
+		border: 1px solid #e3ead9;
+		border-radius: 14px;
+		padding: 14px;
+		gap: 10px;
+		margin-top: 8px;
+
+		.cancelTitle,
+		.reviewTitle {
+			color: #004034;
+			font-family: 'DM Sans';
+			font-size: 13px;
+			font-weight: 700;
+		}
+
+		.cancelInput,
+		.reviewInput {
+			width: 100%;
+			box-sizing: border-box;
+			min-height: 70px;
+			border-radius: 10px;
+			border: 1px solid #e3ead9;
+			background: #f9fbf6;
+			padding: 10px;
+			font-family: 'DM Sans';
+			font-size: 13px;
+		}
+
+		.cancelSubmitBtn,
+		.reviewSubmitBtn {
+			width: 100%;
+			border-radius: 999px;
+			background: #004034;
+			color: #ffffff;
+			font-family: 'DM Sans';
+			font-weight: 700;
+			text-transform: none;
+			padding: 10px;
+		}
+	}
+
+	// MySchedule.tsx + DailySchedule.tsx mobile
+	#mySchedule {
+		.main-box {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+		}
+
+		.top {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 10px;
+
+			.title {
+				color: #004034;
+				font-family: 'Limelight', serif;
+				font-size: 20px;
+			}
+
+			.week-pagination {
+				width: 100%;
+
+				button {
+					flex: 1;
+					font-size: 11px;
+					padding: 7px 4px;
+					border-radius: 999px;
+				}
+			}
+		}
+	}
+
+	.dailySchedule {
+		.schedule-layout {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 12px;
+			margin-top: 8px;
+		}
+
+		.week-dates {
+			width: 100%;
+			max-height: unset;
+			overflow-x: auto;
+			scrollbar-width: none;
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+		}
+
+		.week-dates-inner {
+			flex-direction: row;
+			gap: 8px;
+		}
+
+		.week-date-btn {
+			flex: 0 0 auto;
+			min-width: 58px;
+			font-size: 11px;
+			padding: 8px 10px;
+		}
+
+		.schedule-right {
+			width: 100%;
+		}
+
+		.main {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 8px;
+		}
+
+		.events {
+			width: 100%;
+			border-left: none !important;
+		}
+
+		.events-detail li,
+		.event-item {
+			flex-direction: column !important;
+			align-items: stretch !important;
+			gap: 8px !important;
+		}
+
+		.event-link {
+			flex-direction: column !important;
+			align-items: flex-start !important;
+			gap: 4px !important;
+		}
+
+		.update-btn {
+			width: 100%;
+		}
+	}
+
+	// AddNewService.tsx, WriteArticle.tsx mobile titles
+	#write-article-page-mobile {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+
+		.main-title {
+			color: #004034;
+			font-family: 'Limelight', serif;
+			font-size: 20px;
+		}
+
+		.sub-title {
+			color: #7c887f;
+			font-family: 'DM Sans';
+			font-size: 13px;
+			margin-bottom: 8px;
+		}
+	}
+}

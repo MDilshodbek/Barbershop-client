@@ -11,6 +11,7 @@ import { socketVar, userVar } from "../../apollo/store";
 import { Member } from "../types/member/member";
 import { Messages, REACT_APP_API_URL } from "../config";
 import { sweetErrorAlert } from "../sweetAlert";
+import { useTranslation } from "react-i18next";
 
 const NewMessage = (type: any) => {
   if (type === "right") {
@@ -55,6 +56,7 @@ interface InfoPayload {
 }
 
 const Chat = () => {
+  const { t } = useTranslation("common");
   const chatContentRef = useRef<HTMLDivElement>(null);
   const [messagesList, setMessagesList] = useState<MessagePayload[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<number>(0);
@@ -144,7 +146,7 @@ const Chat = () => {
       ) : null}
       <Stack className={`chat-frame ${open ? "open" : ""}`}>
         <Box className={"chat-top"} component={"div"}>
-          <div style={{ fontFamily: "Limelight" }}>Online Chat</div>
+          <div style={{ fontFamily: "Limelight" }}>{t("Online Chat")}</div>
           <RippleBadge
             style={{ margin: "-18px 0 0 21px" }}
             badgeContent={onlineUsers}
@@ -164,7 +166,7 @@ const Chat = () => {
                 sx={{ m: "10px 0px" }}
                 component={"div"}
               >
-                <div className={"welcome"}>Welcome to Live chat!</div>
+                <div className={"welcome"}>{t("Welcome to Live chat!")}</div>
               </Box>
               {messagesList.map((ele: MessagePayload) => {
                 const { text, memberData } = ele;
@@ -191,7 +193,7 @@ const Chat = () => {
                     component={"div"}
                   >
                     <div className="member-nick">
-                      {memberData?.memberNick ?? "Guest"}
+                      {memberData?.memberNick ?? t("Guest")}
                     </div>
                     <Box
                       flexDirection={"row"}
@@ -214,7 +216,7 @@ const Chat = () => {
             type={"text"}
             name={"message"}
             className={"msg-input"}
-            placeholder={"Type message"}
+            placeholder={t("Type message")}
             value={messageInput}
             onChange={getInputMessageHandler}
             onKeyDown={getKeyHandler}

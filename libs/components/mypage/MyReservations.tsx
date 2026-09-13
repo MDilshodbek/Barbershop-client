@@ -18,6 +18,7 @@ import {
 } from "../../sweetAlert";
 import { Messages } from "../../config";
 import { ReviewInput } from "../../types/review/review.input";
+import { useTranslation } from "react-i18next";
 
 interface MyReservationsProps {
   initialInput?: ReserveInquiry;
@@ -25,6 +26,7 @@ interface MyReservationsProps {
 }
 
 const MyReservations: FC<MyReservationsProps> = (props) => {
+  const { t } = useTranslation("common");
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [total, setTotal] = useState<number>(0);
   const {
@@ -90,9 +92,9 @@ const MyReservations: FC<MyReservationsProps> = (props) => {
     } = reviewInput;
 
     try {
-      if (!reviewRefId) throw new Error("Missing review target");
+      if (!reviewRefId) throw new Error(t("Missing review target"));
       if (!rating || rating <= 0)
-        throw new Error("Please add a rating before submitting your review");
+        throw new Error(t("Please add a rating before submitting your review"));
       await createReview({
         variables: {
           input: {
@@ -103,7 +105,7 @@ const MyReservations: FC<MyReservationsProps> = (props) => {
           },
         },
       });
-      await sweetTopSmallSuccessAlert("Review submitted!", 800);
+      await sweetTopSmallSuccessAlert(t("Review submitted!"), 800);
       await getReservationsRefetch({ input: searchFilter });
     } catch (err) {
       await sweetErrorHandling(err);
@@ -117,7 +119,7 @@ const MyReservations: FC<MyReservationsProps> = (props) => {
         {reservations?.length === 0 ? (
           <div className={"no-data"}>
             <InfoOutlinedIcon className="info-icon" />
-            <p>No reservations found</p>
+            <p>{t("No reservations found")}</p>
           </div>
         ) : (
           reservations.map((reservation) => (
@@ -159,7 +161,7 @@ const MyReservations: FC<MyReservationsProps> = (props) => {
           )}
         {reservations.length !== 0 && (
           <span>
-            Total {total} reservation{total > 1 ? "s" : ""}
+            {t("Total")} {total} {total > 1 ? t("reservations") : t("reservation")}
           </span>
         )}
       </Stack>

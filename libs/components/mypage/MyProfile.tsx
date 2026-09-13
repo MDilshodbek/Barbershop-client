@@ -10,8 +10,10 @@ import { userVar } from '../../../apollo/store';
 import { MemberUpdate } from '../../types/member/member.update';
 import { UPDATE_MEMBER } from '../../../apollo/user/mutation';
 import { sweetErrorHandling, sweetMixinSuccessAlert } from '../../sweetAlert';
+import { useTranslation } from 'react-i18next';
 
 const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
+	const { t } = useTranslation('common');
 	const device = useDeviceDetect();
 	const token = getJwtToken();
 	const user = useReactiveVar(userVar);
@@ -89,7 +91,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			const jwtToken = result.data.updateMember?.accessToken;
 			await updateStorage({ jwtToken });
 			updateUserInfo(result.data.updateMember?.accessToken);
-			await sweetMixinSuccessAlert('information updated successfully');
+			await sweetMixinSuccessAlert(t('information updated successfully'));
 		} catch (error: any) {
 			sweetErrorHandling(error).then();
 		}
@@ -102,13 +104,72 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	};
 
 	if (device === 'mobile') {
-		return <>MY PROFILE PAGE MOBILE</>;
+		return (
+			<div id="my-profile-page-mobile">
+				<Stack className="photo-box-mobile">
+					<Stack className="image-box">
+						<img
+							src={
+								updateData?.memberImage
+									? `${REACT_APP_API_URL}/${updateData?.memberImage}`
+									: `/logo/defaultUser.svg`
+							}
+							alt=""
+						/>
+					</Stack>
+					<input
+						type="file"
+						hidden
+						id="hidden-input-mobile"
+						onChange={uploadImage}
+						accept="image/jpg, image/jpeg, image/png"
+					/>
+					<label htmlFor="hidden-input-mobile" className="labeler">
+						{t('Upload Profile Image')}
+					</label>
+					<Typography className="upload-text">{t('A photo must be in JPG, JPEG or PNG format!')}</Typography>
+				</Stack>
+
+				<Stack className="form-mobile">
+					<Stack className="input-box">
+						<Typography className="title">{t('Username')}</Typography>
+						<input
+							type="text"
+							placeholder={t('Your username')}
+							value={updateData.memberNick}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberNick: value })}
+						/>
+					</Stack>
+					<Stack className="input-box">
+						<Typography className="title">{t('Phone')}</Typography>
+						<input
+							type="text"
+							placeholder={t('Your Phone')}
+							value={updateData.memberPhone}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberPhone: value })}
+						/>
+					</Stack>
+					<Stack className="input-box">
+						<Typography className="title">{t('Address')}</Typography>
+						<input
+							type="text"
+							placeholder={t('Your address')}
+							value={updateData.memberAddress}
+							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
+						/>
+					</Stack>
+					<Button className="update-button" onClick={updatePropertyHandler} disabled={doDisabledCheck()}>
+						{t('Update Profile')}
+					</Button>
+				</Stack>
+			</div>
+		);
 	} else
 		return (
 			<div id="my-profile-page">
 				<Stack className="top-box">
 					<Stack className="photo-box">
-						<Typography className="title">Photo</Typography>
+						<Typography className="title">{t('Photo')}</Typography>
 						<Stack className="image-big-box">
 							<Stack className="image-box">
 								<img
@@ -129,44 +190,44 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 									accept="image/jpg, image/jpeg, image/png"
 								/>
 								<label htmlFor="hidden-input" className="labeler">
-									<Typography>Upload Profile Image</Typography>
+									<Typography>{t('Upload Profile Image')}</Typography>
 								</label>
-								<Typography className="upload-text">A photo must be in JPG, JPEG or PNG format!</Typography>
+								<Typography className="upload-text">{t('A photo must be in JPG, JPEG or PNG format!')}</Typography>
 							</Stack>
 						</Stack>
 					</Stack>
 					<Stack className="small-input-box">
 						<Stack className="input-box">
-							<Typography className="title">Username</Typography>
+							<Typography className="title">{t('Username')}</Typography>
 							<input
 								type="text"
-								placeholder="Your username"
+								placeholder={t('Your username')}
 								value={updateData.memberNick}
 								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberNick: value })}
 							/>
 						</Stack>
 						<Stack className="input-box">
-							<Typography className="title">Phone</Typography>
+							<Typography className="title">{t('Phone')}</Typography>
 							<input
 								type="text"
-								placeholder="Your Phone"
+								placeholder={t('Your Phone')}
 								value={updateData.memberPhone}
 								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberPhone: value })}
 							/>
 						</Stack>
 					</Stack>
 					<Stack className="address-box">
-						<Typography className="title">Address</Typography>
+						<Typography className="title">{t('Address')}</Typography>
 						<input
 							type="text"
-							placeholder="Your address"
+							placeholder={t('Your address')}
 							value={updateData.memberAddress}
 							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
 						/>
 					</Stack>
 					<Stack className="about-me-box">
 						<Button className="update-button" onClick={updatePropertyHandler} disabled={doDisabledCheck()}>
-							<Typography>Update Profile</Typography>
+							<Typography>{t('Update Profile')}</Typography>
 						</Button>
 					</Stack>
 				</Stack>

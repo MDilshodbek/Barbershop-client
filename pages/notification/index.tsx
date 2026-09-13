@@ -12,6 +12,7 @@ import { T } from "../../libs/types/common";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import useDeviceDetect from "../../libs/hooks/useDeviceDetect";
 
 interface NoticeProps {
   initialInput: NotificationInquiry;
@@ -19,6 +20,7 @@ interface NoticeProps {
 
 const NotificationPage: NextPage<NoticeProps> = (props) => {
   const { t, i18n } = useTranslation("common");
+  const device = useDeviceDetect();
   const [notice, setNotice] = useState<Notification[]>([]);
   const [total, setTotal] = useState<number>(0);
   const router = useRouter();
@@ -70,6 +72,57 @@ const NotificationPage: NextPage<NoticeProps> = (props) => {
     );
   };
 
+  if (device === "mobile") {
+    return (
+      <Stack className="notification-page-mobile">
+        <Typography className="hero-title">{t("Notification")}</Typography>
+        <Stack className="container">
+          {notice.length === 0 ? (
+            <Box component={"div"} className="empty-list">
+              <span className={"no-data"}>
+                <InfoOutlinedIcon className="info-icon" />
+                <p>{t("There is no notifications yet!")}</p>
+              </span>
+            </Box>
+          ) : (
+            <NotificationCard
+              notice={notice}
+              onRefresh={() => getMemberAllNotificationsRefetch()}
+            />
+          )}
+          {notice.length !== 0 && (
+            <Stack className={"pagination-config-mobile"}>
+              {Math.ceil(total / searchFilter.limit) > 1 && (
+                <Pagination
+                  page={searchFilter.page ?? 1}
+                  count={Math.ceil(total / searchFilter.limit)}
+                  onChange={paginationChangeHandler}
+                  shape="circular"
+                  size="small"
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      color: "#004034",
+                      borderColor: "#004034",
+                    },
+                    "& .MuiPaginationItem-root.Mui-selected": {
+                      backgroundColor: "#C6D984",
+                      color: "#fff",
+                    },
+                  }}
+                />
+              )}
+              <span className="page-text">
+                {t("Total")} {total}{" "}
+                {total > 1 ? t("notifications") : t("notification")}{" "}
+                {t("available")}
+              </span>
+            </Stack>
+          )}
+        </Stack>
+      </Stack>
+    );
+  }
+
   return (
     <Stack className="notification-page">
       <Typography className="hero-title">{t("Notification")}</Typography>
@@ -78,7 +131,7 @@ const NotificationPage: NextPage<NoticeProps> = (props) => {
           <Box component={"div"} className="empty-list">
             <span className={"no-data"}>
               <InfoOutlinedIcon className="info-icon" />
-              <p>There is no notifications yet!</p>
+              <p>{t("There is no notifications yet!")}</p>
             </span>
           </Box>
         ) : (
@@ -116,7 +169,7 @@ const NotificationPage: NextPage<NoticeProps> = (props) => {
           </Stack>
           {notice.length !== 0 && (
             <span>
-              Total {total} notification{total > 1 ? "s" : ""} available
+              {t("Total")} {total} {total > 1 ? t("notifications") : t("notification")} {t("available")}
             </span>
           )}
         </Stack>

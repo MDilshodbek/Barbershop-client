@@ -9,6 +9,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { ReserveStatus } from "../../enums/reservation.enum";
+import { useTranslation } from "react-i18next";
 
 type DailyEvent = {
   id: string;
@@ -23,7 +24,8 @@ type DailyEvent = {
 
 type WeekDateItem = {
   dayKey: string; // YYYY-MM-DD
-  labelDate: string; // "Dec 18"
+  monthAbbr: string; // "Dec"
+  dayNum: number; // 18
   labelDay: string; // "Wed"
 };
 
@@ -64,7 +66,8 @@ const buildWeekDates = (weekOffset: number): WeekDateItem[] => {
 
     result.push({
       dayKey,
-      labelDate: `${months[d.getMonth()]} ${d.getDate()}`,
+      monthAbbr: months[d.getMonth()],
+      dayNum: d.getDate(),
       labelDay: days[d.getDay()],
     });
   }
@@ -117,6 +120,7 @@ const isoToLocalMinutes = (iso: string | Date | null | undefined) => {
 };
 
 const DailySchedule: FC<DailyScheduleProps> = (props) => {
+  const { t } = useTranslation("common");
   const { weekOffset, schedule, updateReservationHandler } = props;
   /** COMMENT: rebuild week list when weekOffset changes */
   const weekDates = useMemo(() => buildWeekDates(weekOffset), [weekOffset]);
@@ -145,12 +149,12 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
           startTime: toLocalTime(startIso),
           endTime: toLocalTime(endIso),
           startMinutes: startMinutes ?? 0,
-          name: r?.serviceTitle ?? "Service",
+          name: r?.serviceTitle ?? t("Service"),
           userName:
             r?.clientData?.memberFullName ??
             r?.clientData?.memberNick ??
             r?.clientData?._id ??
-            "Client",
+            t("Client"),
           status: r?.reserveStatus ?? ReserveStatus.BOOKED,
           dayKey,
         } as DailyEvent;
@@ -233,8 +237,8 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
                   className={`week-date-btn ${isActive ? "active" : ""}`}
                   onClick={() => setActiveDayIndex(idx)}
                 >
-                  <span>{d.labelDate}</span>
-                  <span>{d.labelDay}</span>
+                  <span>{t(d.monthAbbr)} {d.dayNum}</span>
+                  <span>{t(d.labelDay)}</span>
                 </Button>
               );
             })}
@@ -247,7 +251,7 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
             <Stack component="li" className="events">
               <Stack component="ul" className="events-detail">
                 {visibleEvents.length === 0 ? (
-                  <Box className="empty-day">No reservations for this day.</Box>
+                  <Box className="empty-day">{t("No reservations for this day.")}</Box>
                 ) : (
                   visibleEvents.map((event) => (
                     <Stack component="li" key={event.id} className="event-item">
@@ -271,7 +275,7 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
                         </Typography>
 
                         <Typography component="span" className="event-name">
-                          Status: {event.status}
+                          {t("Status:")} {t(event.status)}
                         </Typography>
                       </Link>
 
@@ -280,7 +284,7 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
                         className="update-btn"
                         onClick={(e) => openStatusMenu(e, event.id)}
                       >
-                        Update
+                        {t("Update")}
                       </Button>
                     </Stack>
                   ))
@@ -297,25 +301,25 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
           onClick={() => changeStatusHandler(ReserveStatus.BOOKED)}
           disabled={activeEvent?.status === ReserveStatus.BOOKED}
         >
-          BOOKED
+          {t(ReserveStatus.BOOKED)}
         </MenuItem>
         <MenuItem
           onClick={() => changeStatusHandler(ReserveStatus.CANCELLED)}
           disabled={activeEvent?.status === ReserveStatus.CANCELLED}
         >
-          CANCELLED
+          {t(ReserveStatus.CANCELLED)}
         </MenuItem>
         <MenuItem
           onClick={() => changeStatusHandler(ReserveStatus.FINISH)}
           disabled={activeEvent?.status === ReserveStatus.FINISH}
         >
-          FINISH
+          {t(ReserveStatus.FINISH)}
         </MenuItem>
         <MenuItem
           onClick={() => changeStatusHandler(ReserveStatus.NOSHOW)}
           disabled={activeEvent?.status === ReserveStatus.NOSHOW}
         >
-          NOSHOW
+          {t(ReserveStatus.NOSHOW)}
         </MenuItem>
       </Menu>
     </Box>

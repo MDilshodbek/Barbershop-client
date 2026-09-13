@@ -91,23 +91,23 @@ class LoggingWebSocket {
 }
 
 function createIsomorphicLink() {
+	const authLink = new ApolloLink((operation, forward) => {
+		operation.setContext(({ headers = {} }) => ({
+			headers: {
+				...headers,
+				...getHeaders(),
+			},
+		}));
+		console.warn('requesting.. ', operation);
+		return forward(operation);
+	});
+
+	// @ts-ignore
+	const link = new createUploadLink({
+		uri: process.env.REACT_APP_API_GRAPHQL_URL,
+	});
+
 	if (typeof window !== 'undefined') {
-		const authLink = new ApolloLink((operation, forward) => {
-			operation.setContext(({ headers = {} }) => ({
-				headers: {
-					...headers,
-					...getHeaders(),
-				},
-			}));
-			console.warn('requesting.. ', operation);
-			return forward(operation);
-		});
-
-		// @ts-ignore
-		const link = new createUploadLink({
-			uri: process.env.REACT_APP_API_GRAPHQL_URL,
-		});
-
 		/* WEBSOCKET SUBSCRIPTION LINK */
 		const wsLink = new WebSocketLink({
 			// Comment: Always use ws/wss that matches the current page protocol.
@@ -146,6 +146,11 @@ function createIsomorphicLink() {
 
 		return from([errorLink, tokenRefreshLink, splitLink]);
 	}
+
+	// Comment: no window during SSR — skip the websocket/error-alert link setup
+	// (there's no UI to alert) but still return a real link so Apollo Client
+	// doesn't fall back to its deprecated default-link behavior.
+	return authLink.concat(link);
 }
 
 function createApolloClient() {

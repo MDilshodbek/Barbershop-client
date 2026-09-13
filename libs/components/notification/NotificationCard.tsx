@@ -11,6 +11,8 @@ import {
   MARK_NOTIFICATION_READ,
 } from "../../../apollo/user/mutation";
 import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
+import useDeviceDetect from "../../hooks/useDeviceDetect";
 
 interface NoticeProps {
   notice: Notification[];
@@ -18,6 +20,8 @@ interface NoticeProps {
 }
 
 const NotificationCard: FC<NoticeProps> = ({ notice, onRefresh }) => {
+  const { t } = useTranslation("common");
+  const device = useDeviceDetect();
   const router = useRouter();
   const [markAllNotificationsRead, { loading: allLoading }] = useMutation(
     MARK_ALL_NOTIFICATIONS_READ,
@@ -80,23 +84,63 @@ const NotificationCard: FC<NoticeProps> = ({ notice, onRefresh }) => {
       );
   };
 
+  if (device === "mobile") {
+    return (
+      <Stack className={"notice-content-mobile"}>
+        <Stack className="title-box-mobile">
+          <span className={"title"}>{t("Notice")}</span>
+          <Button
+            className="read-all"
+            onClick={handleReadAll}
+            disabled={allLoading}
+          >
+            {t("Read All")}
+          </Button>
+        </Stack>
+        <Stack className={"notice-list-mobile"}>
+          {notice.map((item: Notification) => (
+            <div
+              className={`notice-card-mobile ${
+                item.notificationStatus === NotificationStatus.UNREAD
+                  ? "unread"
+                  : ""
+              }`}
+              key={item._id}
+              onClick={() => handleCardClick(item)}
+            >
+              {item.notificationStatus === NotificationStatus.UNREAD && (
+                <span className="unread-dot" />
+              )}
+              <span className={"notice-title-mobile"}>
+                {item.notificationMessage}
+              </span>
+              <span className={"notice-date-mobile"}>
+                {new Date(item.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+          ))}
+        </Stack>
+      </Stack>
+    );
+  }
+
   return (
     <Stack className={"notice-content"}>
       <Stack className="title-box">
-        <span className={"title"}>Notice</span>
+        <span className={"title"}>{t("Notice")}</span>
         <Button
           className="read-all"
           onClick={handleReadAll}
           disabled={allLoading}
         >
-          Read All
+          {t("Read All")}
         </Button>
       </Stack>
       <Stack className={"main"}>
         <Box component={"div"} className={"top"}>
-          <span>number</span>
-          <span>title</span>
-          <span>date</span>
+          <span>{t("number")}</span>
+          <span>{t("title")}</span>
+          <span>{t("date")}</span>
         </Box>
         <Stack className={"bottom"}>
           {notice.map((item: Notification, index: number) => (

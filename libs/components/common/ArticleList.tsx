@@ -23,6 +23,7 @@ import Typography from '@mui/material/Typography';
 import { BoardArticle } from '../../types/board-article/board-article';
 import { BoardArticleStatus } from '../../enums/board-article.enum';
 import { REACT_APP_API_URL } from '../../config';
+import { useTranslation } from 'react-i18next';
 
 interface Data {
 	article_id: string;
@@ -87,6 +88,7 @@ interface EnhancedTableProps {
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
+	const { t } = useTranslation('common');
 	return (
 		<TableHead>
 			<TableRow>
@@ -96,7 +98,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 						align={headCell.numeric ? 'left' : 'center'}
 						padding={headCell.disablePadding ? 'none' : 'normal'}
 					>
-						{headCell.label}
+						{t(headCell.label)}
 					</TableCell>
 				))}
 			</TableRow>
@@ -114,6 +116,7 @@ interface CommunityArticleListProps {
 }
 
 const OurArticleList = (props: CommunityArticleListProps) => {
+	const { t } = useTranslation('common');
 	const { articles, anchorEl, menuIconClickHandler, menuIconCloseHandler, updateArticleHandler, removeArticleHandler } =
 		props;
 
@@ -137,7 +140,7 @@ const OurArticleList = (props: CommunityArticleListProps) => {
 													className={'img_box'}
 												>
 													<IconButton className="btn_window">
-														<Tooltip title={'Open window'}>
+														<Tooltip title={t('Open window')}>
 															<OpenInBrowserRoundedIcon />
 														</Tooltip>
 													</IconButton>
@@ -149,7 +152,7 @@ const OurArticleList = (props: CommunityArticleListProps) => {
 									<TableCell align="left" className={'name'}>
 										<Link href={`/member?memberId=${article?.memberData?._id}`}>
 											<Avatar
-												alt="Remy Sharp"
+												alt={t('Member photo')}
 												src={
 													article?.memberData?.memberImage
 														? `${REACT_APP_API_URL}/${article?.memberData?.memberImage}`

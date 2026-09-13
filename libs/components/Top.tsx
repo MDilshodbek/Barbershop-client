@@ -3,6 +3,8 @@ import {
   Badge,
   Box,
   Button,
+  Drawer,
+  IconButton,
   Menu,
   MenuItem,
   MenuProps,
@@ -10,6 +12,8 @@ import {
 } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import useDeviceDetect from "../hooks/useDeviceDetect";
 import { useQuery, useReactiveVar } from "@apollo/client";
 import { userVar } from "../../apollo/store";
@@ -38,6 +42,7 @@ const Top = () => {
   const logoutOpen = Boolean(logoutAnchor);
   const [colorChange, setColorChange] = useState(false);
   const [bgColor, setBgColor] = useState<boolean>(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const { data: notificationsData } = useQuery(GET_MEMBER_ALL_NOTIFICATIONS, {
     variables: { input: { page: 1, limit: 50 } },
     fetchPolicy: "cache-and-network",
@@ -73,13 +78,29 @@ const Top = () => {
 
   const langChoice = useCallback(
     async (e: any) => {
-      setLang(e.target.id);
-      localStorage.setItem("locale", e.target.id);
+      const nextLocale = e.currentTarget.id;
+      setLang(nextLocale);
+      localStorage.setItem("locale", nextLocale);
       setAnchorEl2(null);
-      await router.push(router.asPath, router.asPath, { locale: e.target.id });
+      await router.push(router.asPath, router.asPath, { locale: nextLocale });
     },
     [router]
   );
+
+  const mobileLangChoice = useCallback(
+    async (e: any) => {
+      await langChoice(e);
+      setMobileMenuOpen(false);
+    },
+    [langChoice]
+  );
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  const mobileLogoutHandler = () => {
+    setMobileMenuOpen(false);
+    logOut();
+  };
 
   const StyledMenu = styled((props: MenuProps) => (
     <Menu
@@ -138,32 +159,175 @@ const Top = () => {
   }
 
   if (device === "mobile") {
+    const mobileNavLinks = [
+      { href: "/", label: t("Home") },
+      { href: "/service", label: t("Service") },
+      { href: "/barber", label: t("Barbers") },
+      { href: "/appointment", label: t("Appointment") },
+      { href: "/community", label: t("Community") },
+      ...(user?._id ? [{ href: "/mypage", label: t("My Page") }] : []),
+      { href: "/faq", label: t("FAQ") },
+    ];
+
+    const languageOptions = [
+      { id: "en", label: t("English"), flag: "langen.png" },
+      { id: "kr", label: t("Korean"), flag: "langkr.png" },
+      { id: "cn", label: t("Chinese"), flag: "langcn.png" },
+      { id: "ru", label: t("Russian"), flag: "langru.png" },
+    ];
+
     return (
-      <Stack className="top">
-        <Link href="/">
-          <div className="chosen-link">Home</div>
-        </Link>
-        <Link href="/service">
-          <div className="chosen-link">Service</div>
-        </Link>
-        <Link href="/barber">
-          <div className="chosen-link">Barbers</div>
-        </Link>
-        <Link href="/appointment">
-          <div className="chosen-link">Appointment</div>
-        </Link>
-        <Link href="/community">
-          <div className="chosen-link">Community</div>
-        </Link>
-        {false && (
-          <Link href={"/mypage"}>
-            <div className="chosen-link">My Page</div>
+      <>
+        <Stack className="mobile-nav" direction="row">
+          <Link href="/">
+            <Box className="mobile-nav-brand">
+              <img src="/logo/Logo.svg" alt="" />
+              <span>Cropper</span>
+            </Box>
           </Link>
-        )}
-        <Link href="/faq">
-          <div className="chosen-link">FAQ</div>
-        </Link>
-      </Stack>
+
+          <Stack className="mobile-nav-actions" direction="row">
+            {user?._id && (
+              <Link href="/notification">
+                <IconButton className="mobile-nav-icon-btn" disableRipple>
+                  {unread > 0 ? (
+                    <Badge
+                      badgeContent={unread}
+                      sx={{ color: "#ff0000ff !important" }}
+                    >
+                      <NotificationsOutlinedIcon
+                        sx={{ color: "#004034 !important" }}
+                      />
+                    </Badge>
+                  ) : (
+                    <NotificationsOutlinedIcon
+                      sx={{ color: "#004034 !important" }}
+                    />
+                  )}
+                </IconButton>
+              </Link>
+            )}
+            <IconButton
+              className="mobile-nav-menu-btn"
+              disableRipple
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <MenuRoundedIcon sx={{ color: "#004034" }} />
+            </IconButton>
+          </Stack>
+        </Stack>
+
+        <Drawer
+          anchor="right"
+          open={mobileMenuOpen}
+          onClose={closeMobileMenu}
+          className="mobile-nav-drawer"
+        >
+          <Stack className="mobile-drawer-content">
+            <Stack
+              className="mobile-drawer-head"
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box className="mobile-nav-brand">
+                <img src="/logo/Logo.svg" alt="" />
+                <span>Cropper</span>
+              </Box>
+              <IconButton disableRipple onClick={closeMobileMenu}>
+                <CloseRoundedIcon sx={{ color: "#004034" }} />
+              </IconButton>
+            </Stack>
+
+            {user?._id && (
+              <Link href="/mypage" onClick={closeMobileMenu}>
+                <Stack
+                  className="mobile-drawer-user"
+                  direction="row"
+                  alignItems="center"
+                >
+                  <img
+                    className="mobile-drawer-avatar"
+                    src={
+                      user?.memberImage
+                        ? `${REACT_APP_API_URL}/${user?.memberImage}`
+                        : "/logo/User-avatar.png"
+                    }
+                    alt=""
+                  />
+                  <span>{user?.memberNick}</span>
+                </Stack>
+              </Link>
+            )}
+
+            <Stack className="mobile-drawer-links">
+              {mobileNavLinks.map((link) => (
+                <Link
+                  href={link.href}
+                  key={link.href}
+                  onClick={closeMobileMenu}
+                >
+                  <div
+                    className={`mobile-drawer-link ${
+                      router.pathname === link.href ? "active" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </div>
+                </Link>
+              ))}
+            </Stack>
+
+            <div className="mobile-drawer-divider" />
+
+            {user?._id ? (
+              <Button
+                disableRipple
+                className="mobile-drawer-logout"
+                onClick={mobileLogoutHandler}
+              >
+                <Logout fontSize="small" />
+                {t("Logout")}
+              </Button>
+            ) : (
+              <Link href="/account" onClick={closeMobileMenu}>
+                <div className="mobile-drawer-auth">
+                  <AccountCircleOutlinedIcon />
+                  <span>
+                    {t("Login")} / {t("Register")}
+                  </span>
+                </div>
+              </Link>
+            )}
+
+            <div className="mobile-drawer-divider" />
+
+            <Stack className="mobile-drawer-lang">
+              <span className="mobile-drawer-lang-label">
+                {t("Language")}
+              </span>
+              <Stack className="mobile-drawer-lang-options" direction="row">
+                {languageOptions.map((option) => (
+                  <button
+                    type="button"
+                    key={option.id}
+                    id={option.id}
+                    className={lang === option.id ? "active" : ""}
+                    onClick={mobileLangChoice}
+                  >
+                    <img
+                      src={`/img/flag/${option.flag}`}
+                      id={option.id}
+                      alt={option.label}
+                    />
+                    <span>{option.label}</span>
+                  </button>
+                ))}
+              </Stack>
+            </Stack>
+          </Stack>
+        </Drawer>
+      </>
     );
   } else {
     return (
@@ -237,7 +401,7 @@ const Top = () => {
                       fontSize="small"
                       style={{ color: "blue", marginRight: "10px" }}
                     />
-                    Logout
+                    {t("Logout")}
                   </MenuItem>
                 </Menu>
               </>

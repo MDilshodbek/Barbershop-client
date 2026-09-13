@@ -32,6 +32,7 @@ import { Reservation } from "../../types/reservation/reservation";
 import { ReserveStatus } from "../../enums/reservation.enum";
 import { GET_ALL_BARBER_SCHEDULES_BY_ADMIN } from "../../../apollo/admin/query";
 import { T } from "../../types/common";
+import { useTranslation } from "react-i18next";
 
 interface BarberStatisticsProps {
   initialInput?: AllBarberScheduleInquiry;
@@ -52,6 +53,7 @@ const PIE_COLORS: Record<string, string> = {
 };
 
 export const OurStatistics: FC<BarberStatisticsProps> = (props) => {
+  const { t } = useTranslation("common");
   const [selectedBarber, setSelectedBarber] = useState<string>("ALL");
   const [allReservations, setAllReservations] = useState<Reservation[]>([]);
   const [selectedBarberStats, setSelectedBarberStats] = useState<Reservation[]>(
@@ -122,13 +124,13 @@ export const OurStatistics: FC<BarberStatisticsProps> = (props) => {
     });
 
     return [
-      { value: "ALL", label: "All" },
+      { value: "ALL", label: t("All") },
       ...Array.from(map.entries()).map(([value, label]) => ({
         value,
         label,
       })),
     ];
-  }, [allReservations]);
+  }, [allReservations, t]);
 
   const statusBreakdown = useMemo(() => {
     const counts: Record<string, number> = {
@@ -144,12 +146,12 @@ export const OurStatistics: FC<BarberStatisticsProps> = (props) => {
     });
 
     return [
-      { name: "Booked", value: counts[ReserveStatus.BOOKED] },
-      { name: "Cancelled", value: counts[ReserveStatus.CANCELLED] },
-      { name: "NoShow", value: counts[ReserveStatus.NOSHOW] },
-      { name: "Finish", value: counts[ReserveStatus.FINISH] },
+      { name: t("Booked"), value: counts[ReserveStatus.BOOKED] },
+      { name: t("Cancelled"), value: counts[ReserveStatus.CANCELLED] },
+      { name: t("NoShow"), value: counts[ReserveStatus.NOSHOW] },
+      { name: t("Finish"), value: counts[ReserveStatus.FINISH] },
     ];
-  }, [activeReservations]);
+  }, [activeReservations, t]);
 
   const totalReservations = activeReservations.length;
 
@@ -172,10 +174,10 @@ export const OurStatistics: FC<BarberStatisticsProps> = (props) => {
 
   const revenueChartData = useMemo(
     () => [
-      { label: "Finish", revenue: revenueStats.finish },
-      { label: "Booked", revenue: revenueStats.booked },
+      { label: t("Finish"), revenue: revenueStats.finish },
+      { label: t("Booked"), revenue: revenueStats.booked },
     ],
-    [revenueStats]
+    [revenueStats, t]
   );
 
   const totalRevenue = revenueStats.finish;
@@ -200,7 +202,7 @@ export const OurStatistics: FC<BarberStatisticsProps> = (props) => {
     if (queryError) {
       return (
         <Alert severity="error">
-          Failed to load statistics. Please try again.
+          {t("Failed to load statistics. Please try again.")}
         </Alert>
       );
     }
@@ -217,7 +219,7 @@ export const OurStatistics: FC<BarberStatisticsProps> = (props) => {
     if (!activeReservations.length) {
       return (
         <Stack className="statistics-empty">
-          <Typography>No statistics available for this selection.</Typography>
+          <Typography>{t("No statistics available for this selection.")}</Typography>
         </Stack>
       );
     }
@@ -226,9 +228,9 @@ export const OurStatistics: FC<BarberStatisticsProps> = (props) => {
       <Stack className="charts-stack">
         <Stack className="chart-card">
           <Stack className="chart-header">
-            <Typography className="chart-title">Reservation Status</Typography>
+            <Typography className="chart-title">{t("Reservation Status")}</Typography>
             <Typography className="chart-subtitle">
-              Total Reservations: {totalReservations}
+              {t("Total Reservations:")} {totalReservations}
             </Typography>
           </Stack>
           <ResponsiveContainer width="100%" height={320}>
@@ -280,9 +282,9 @@ export const OurStatistics: FC<BarberStatisticsProps> = (props) => {
 
         <Stack className="chart-card">
           <Stack className="chart-header">
-            <Typography className="chart-title">Revenue</Typography>
+            <Typography className="chart-title">{t("Revenue")}</Typography>
             <Typography className="chart-subtitle">
-              Total Revenue: {CURRENCY.format(totalRevenue)}
+              {t("Total Revenue:")} {CURRENCY.format(totalRevenue)}
             </Typography>
           </Stack>
           <ResponsiveContainer width="100%" height={320}>
@@ -300,7 +302,7 @@ export const OurStatistics: FC<BarberStatisticsProps> = (props) => {
                 dataKey="revenue"
                 fill="#004034"
                 radius={[8, 8, 0, 0]}
-                name="Revenue by status"
+                name={t("Revenue by status")}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -311,7 +313,7 @@ export const OurStatistics: FC<BarberStatisticsProps> = (props) => {
 
   return (
     <Stack className="statistics-board">
-      <Typography className="tit">Statistics</Typography>
+      <Typography className="tit">{t("Statistics")}</Typography>
       <Stack className="card filters-card">
         <Stack className="filter-row">
           <Select

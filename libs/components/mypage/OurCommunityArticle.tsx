@@ -25,8 +25,10 @@ import {
 import { GET_ALL_BOARD_ARTICLES_BY_ADMIN } from "../../../apollo/admin/query";
 import { T } from "../../../libs/types/common";
 import OurArticleList from "../common/ArticleList";
+import { useTranslation } from "react-i18next";
 
 const OurCommunityArticle: NextPage = ({ initialInquiry, ...props }: any) => {
+  const { t } = useTranslation("common");
   const [anchorEl, setAnchorEl] = useState<any>([]);
   const [communityInquiry, setCommunityInquiry] =
     useState<AllBoardArticlesInquiry>(initialInquiry);
@@ -146,7 +148,7 @@ const OurCommunityArticle: NextPage = ({ initialInquiry, ...props }: any) => {
 
   const removeArticleHandler = async (id: string) => {
     try {
-      if (await sweetConfirmAlert("Are you sure to remove?")) {
+      if (await sweetConfirmAlert(t("Are you sure to remove?"))) {
         await removeBoardArticleByAdmin({
           variables: {
             input: id,
@@ -163,7 +165,7 @@ const OurCommunityArticle: NextPage = ({ initialInquiry, ...props }: any) => {
   return (
     <Box className={"service-list"}>
       <Typography variant={"h2"} className={"tit"} sx={{ mb: "24px" }}>
-        Article List
+        {t("Article List")}
       </Typography>
       <Box component={"div"} className={"table-wrap"}>
         <Box component={"div"} sx={{ width: "100%", typography: "body1" }}>
@@ -175,21 +177,21 @@ const OurCommunityArticle: NextPage = ({ initialInquiry, ...props }: any) => {
                   value="ALL"
                   className={value === "ALL" ? "li on" : "li"}
                 >
-                  All
+                  {t("All")}
                 </ListItem>
                 <ListItem
                   onClick={(e: any) => tabChangeHandler(e, "ACTIVE")}
                   value="ACTIVE"
                   className={value === "ACTIVE" ? "li on" : "li"}
                 >
-                  Active
+                  {t("Active")}
                 </ListItem>
                 <ListItem
                   onClick={(e: any) => tabChangeHandler(e, "DELETE")}
                   value="DELETE"
                   className={value === "DELETE" ? "li on" : "li"}
                 >
-                  Delete
+                  {t("Delete")}
                 </ListItem>
               </List>
               <Divider />
@@ -199,7 +201,7 @@ const OurCommunityArticle: NextPage = ({ initialInquiry, ...props }: any) => {
                     value={"ALL"}
                     onClick={() => searchTypeHandler("ALL")}
                   >
-                    ALL
+                    {t("All")}
                   </MenuItem>
                   {Object.values(BoardArticleCategory).map(
                     (category: string) => (

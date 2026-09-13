@@ -11,6 +11,7 @@ import { GET_AllREVIEWS } from '../../../apollo/user/query';
 import { T } from '../../types/common';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Direction } from '../../enums/common.enum';
+import { useTranslation } from 'react-i18next';
 SwiperCore.use([Autoplay, Navigation, Pagination]);
 
 interface ReviewProps {
@@ -27,6 +28,7 @@ export function UserReviews(props: ReviewProps) {
 	const { initialInput } = props;
 	const [review, setReview] = useState<Review[]>([]);
 	const device = useDeviceDetect();
+	const { t } = useTranslation('common');
 
 	const {
 		loading: getAllReviewsLoading,
@@ -48,9 +50,11 @@ export function UserReviews(props: ReviewProps) {
 				<Stack className={'container'}>
 					<Stack className="review-box">
 						<Typography component="span">
-							<Box className="review-main-title">Authentic Testimonials</Box>
+							<Box className="review-main-title">{t('Authentic Testimonials')}</Box>
 						</Typography>
-						<Typography className="review-subtitle">Feedback from clients who loved the Cropper experience</Typography>
+						<Typography className="review-subtitle">
+							{t('Feedback from clients who loved the Cropper experience')}
+						</Typography>
 					</Stack>
 
 					<Swiper
@@ -69,7 +73,7 @@ export function UserReviews(props: ReviewProps) {
 					>
 						{review.length === 0 ? (
 							<Box component={'div'} className="empty-list">
-								Reviews are not available
+								{t('Reviews are not available')}
 							</Box>
 						) : (
 							<>
@@ -127,12 +131,12 @@ export function UserReviews(props: ReviewProps) {
 					<Stack className="review-box">
 						<Typography component="span">
 							<Box className="review-main-title">
-								Authentic Testimonials
-								<br /> From Our Clients
+								{t('Authentic Testimonials')}
+								<br /> {t('From Our Clients')}
 							</Box>
 						</Typography>
 						<Typography className="review-subtitle">
-							Read feedbacks from those who have enjoyed and satisfied our services
+							{t('Read feedbacks from those who have enjoyed and satisfied our services')}
 						</Typography>
 					</Stack>
 
@@ -157,7 +161,7 @@ export function UserReviews(props: ReviewProps) {
 					>
 						{review.length === 0 ? (
 							<Box component={'div'} className="empty-list">
-								Reviews are not available
+								{t('Reviews are not available')}
 							</Box>
 						) : (
 							<>
@@ -217,7 +221,7 @@ export function UserReviews(props: ReviewProps) {
 UserReviews.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 10,
+		limit: 6,
 		direction: Direction.DESC,
 		sort: 'createdAt',
 		reviewGroup: 'MEMBER',

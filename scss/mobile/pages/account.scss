@@ -1,0 +1,153 @@
+#mobile-wrap {
+	.join-page-mobile {
+		padding: 40px $mobile-side-padding 48px $mobile-side-padding;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 6px;
+		min-height: 70vh;
+
+		.brand-logo-box {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 14px;
+
+			.brand-logo {
+				height: 28px;
+			}
+
+			.brand-name {
+				color: #004034;
+				font-family: 'Limelight', serif;
+				font-size: 20px;
+			}
+		}
+
+		.join-title {
+			color: #004034;
+			font-family: 'Limelight', serif;
+			font-size: 24px;
+		}
+
+		.join-subtitle {
+			color: #7c887f;
+			font-family: 'DM Sans';
+			font-size: 13px;
+			line-height: 19px;
+			margin-top: 4px;
+			margin-bottom: 8px;
+		}
+
+		.auth-tabs-mobile {
+			flex-direction: row;
+			width: 100%;
+			background: #f7f9f4;
+			border: 1px solid #e3ead9;
+			border-radius: 999px;
+			padding: 4px;
+			margin: 12px 0 18px 0;
+
+			button {
+				flex: 1;
+				border: none;
+				background: transparent;
+				padding: 10px 0;
+				border-radius: 999px;
+				font-family: 'DM Sans';
+				font-size: 13px;
+				font-weight: 700;
+				color: #7c887f;
+				cursor: pointer;
+				transition: all 0.2s ease;
+
+				&.active {
+					background: #004034;
+					color: #ffffff;
+					box-shadow: 0 8px 18px rgba(0, 64, 52, 0.18);
+				}
+			}
+		}
+
+		.auth-form-mobile {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+			text-align: left;
+
+			.MuiFilledInput-root {
+				border-radius: 12px;
+				overflow: hidden;
+				background: #f7f9f4;
+			}
+
+			.subtitle {
+				text-align: center;
+				color: #9fae9c;
+				font-family: 'DM Sans';
+				font-size: 12px;
+				margin-top: 2px;
+			}
+
+			.social-container {
+				flex-direction: row;
+				justify-content: center;
+				gap: 12px;
+
+				.social {
+					width: 40px;
+					height: 40px;
+					border: 1px solid #e3ead9;
+					border-radius: 50%;
+					color: #004034;
+				}
+			}
+
+			.register {
+				display: flex;
+				flex-direction: column;
+				gap: 14px;
+			}
+
+			.type-option {
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+
+				.text {
+					color: #004034;
+					font-family: 'DM Sans';
+					font-size: 12px;
+					font-weight: 700;
+				}
+
+				.checkbox-column {
+					display: flex;
+					flex-direction: row;
+					gap: 12px;
+				}
+			}
+
+			.main-btn {
+				width: 100%;
+				padding: 13px;
+				border-radius: 999px;
+				background: #004034 !important;
+				color: #ffffff !important;
+				font-family: 'DM Sans';
+				font-weight: 700;
+				font-size: 14px;
+				text-transform: none;
+				margin-top: 4px;
+
+				&.Mui-disabled {
+					opacity: 0.5;
+					color: #ffffff !important;
+				}
+			}
+		}
+	}
+}

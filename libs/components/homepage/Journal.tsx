@@ -12,6 +12,7 @@ import useDeviceDetect from "../../hooks/useDeviceDetect";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { Autoplay, Pagination } from "swiper";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 SwiperCore.use([Autoplay, Pagination]);
 
 interface NewArticlesProps {
@@ -22,6 +23,7 @@ const Journal = (props: NewArticlesProps) => {
   const [article, setArticle] = useState<BoardArticle[]>([]);
   const { initialInput } = props;
   const device = useDeviceDetect();
+  const { t } = useTranslation("common");
 
   const {
     loading: getArticlesLoading,
@@ -41,11 +43,11 @@ const Journal = (props: NewArticlesProps) => {
     return (
       <Stack className="journal journal-mobile">
         <Stack className="container">
-          <Stack className="grooming-blog">The Grooming Blogs</Stack>
+          <Stack className="grooming-blog">{t("The Grooming Blogs")}</Stack>
           <Stack className="blog-cards blog-cards-mobile">
             {article.length === 0 ? (
               <Box component={"div"} className="empty-list">
-                Articles are not available
+                {t("Articles are not available")}
               </Box>
             ) : (
               article.map((article: BoardArticle) => {
@@ -99,11 +101,11 @@ const Journal = (props: NewArticlesProps) => {
   return (
     <Stack className="journal">
       <Stack className="container">
-        <Stack className="grooming-blog">The Grooming Blogs</Stack>
+        <Stack className="grooming-blog">{t("The Grooming Blogs")}</Stack>
         <Stack className="blog-cards">
           {article.length === 0 ? (
             <Box component={"div"} className="empty-list">
-              Articles are not available
+              {t("Articles are not available")}
             </Box>
           ) : (
             <>

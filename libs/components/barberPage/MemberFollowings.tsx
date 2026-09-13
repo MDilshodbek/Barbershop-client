@@ -12,6 +12,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { userVar } from "../../../apollo/store";
 import { GET_MEMBER_FOLLOWINGS } from "../../../apollo/user/query";
 import { T } from "../../types/common";
+import { useTranslation } from "react-i18next";
 
 interface MemberFollowingsProps {
   initialInput: FollowInquiry;
@@ -32,6 +33,7 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
   const device = useDeviceDetect();
   const router = useRouter();
   const user = useReactiveVar(userVar);
+  const { t } = useTranslation("common");
   const [total, setTotal] = useState<number>(0);
   const [followInquiry, setFollowInquiry] =
     useState<FollowInquiry>(initialInput);
@@ -96,21 +98,143 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
   };
 
   if (device === "mobile") {
-    return <div>NESTAR FOLLOWS MOBILE</div>;
+    return (
+      <div id="member-follows-page-mobile">
+        <Stack className="follows-list-mobile">
+          {memberFollowings?.length === 0 && (
+            <div className={"no-data"}>
+              <InfoOutlinedIcon className="info-icon" />
+              <p>{t("No Followings yet!")}</p>
+            </div>
+          )}
+
+          {memberFollowings.map((follow: Following) => {
+            const imagePath: string = follow?.followingData?.memberImage
+              ? `${REACT_APP_API_URL}/${follow.followingData.memberImage}`
+              : "/logo/defaultUser.svg";
+
+            return (
+              <Stack className="follow-card" key={follow._id}>
+                <Stack
+                  className="follow-card-top"
+                  onClick={() =>
+                    redirectToMemberPageHandler(follow?.followingData?._id)
+                  }
+                >
+                  <img className="follow-avatar" src={imagePath} alt="" />
+                  <Stack className="follow-info">
+                    <span className="follow-name">
+                      {follow?.followingData?.memberNick}
+                    </span>
+                    <Stack className="follow-stats">
+                      <span>
+                        {t("Followers")} (
+                        {follow?.followingData?.memberFollowers})
+                      </span>
+                      <span>
+                        {t("Followings")} (
+                        {follow?.followingData?.memberFollowings})
+                      </span>
+                    </Stack>
+                  </Stack>
+                  <Box
+                    className="follow-like"
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      likeMemberHandler(
+                        follow?.followingData?._id,
+                        getMemberFollowingsRefetch,
+                        followInquiry
+                      );
+                    }}
+                  >
+                    {follow?.meLiked && follow?.meLiked[0]?.myFavorite ? (
+                      <FavoriteIcon color="primary" />
+                    ) : (
+                      <FavoriteBorderIcon />
+                    )}
+                    <span>({follow?.followingData?.memberLikes})</span>
+                  </Box>
+                </Stack>
+
+                <Stack className="follow-action">
+                  {user?._id === follow?.followingId ? (
+                    <Button disabled className="self-button">
+                      {t("Its You")}
+                    </Button>
+                  ) : follow.meFollowed && follow.meFollowed[0]?.myFollowing ? (
+                    <Button
+                      className="unfollow-btn"
+                      onClick={() =>
+                        unsubscribeHandler(
+                          follow?.followingData?._id,
+                          getMemberFollowingsRefetch,
+                          followInquiry
+                        )
+                      }
+                    >
+                      {t("Unfollow")}
+                    </Button>
+                  ) : (
+                    <Button
+                      className="follow-btn"
+                      onClick={() =>
+                        subscribeHandler(
+                          follow?.followingData?._id,
+                          getMemberFollowingsRefetch,
+                          followInquiry
+                        )
+                      }
+                    >
+                      {t("Follow")}
+                    </Button>
+                  )}
+                </Stack>
+              </Stack>
+            );
+          })}
+        </Stack>
+
+        {memberFollowings.length !== 0 && (
+          <Stack className="pagination-config-mobile">
+            <Pagination
+              page={followInquiry.page}
+              count={Math.ceil(total / followInquiry.limit)}
+              onChange={paginationHandler}
+              shape="circular"
+              size="small"
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  color: "#004034",
+                  borderColor: "#004034",
+                },
+                "& .MuiPaginationItem-root.Mui-selected": {
+                  backgroundColor: "#C6D984",
+                  color: "#fff",
+                },
+              }}
+            />
+            <span className="page-text">
+              {total} {t("followings")}
+            </span>
+          </Stack>
+        )}
+      </div>
+    );
   } else {
     return (
       <div id="member-follows-page">
         <Stack className="follows-list-box">
           <Stack className="listing-title-box">
-            <Typography className="title-text">Name</Typography>
-            <Typography className="title-text">Details</Typography>
-            <Typography className="title-text">Subscription</Typography>
+            <Typography className="title-text">{t("Name")}</Typography>
+            <Typography className="title-text">{t("Details")}</Typography>
+            <Typography className="title-text">{t("Subscription")}</Typography>
           </Stack>
 
           {memberFollowings?.length === 0 && (
             <div className={"no-data"}>
               <InfoOutlinedIcon className="info-icon" />
-              <p>No Followings yet!</p>
+              <p>{t("No Followings yet!")}</p>
             </div>
           )}
 
@@ -139,11 +263,11 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 
                 <Stack className={"details-box"}>
                   <Box className={"info-box"} component={"div"}>
-                    <p>Followers</p>
+                    <p>{t("Followers")}</p>
                     <span>({follow?.followingData?.memberFollowers})</span>
                   </Box>
                   <Box className={"info-box"} component={"div"}>
-                    <p>Followings</p>
+                    <p>{t("Followings")}</p>
                     <span>({follow?.followingData?.memberFollowings})</span>
                   </Box>
                   <Box className={"info-box"} component={"div"}>
@@ -185,11 +309,11 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
                         ":hover": { background: "#004034" },
                       }}
                     >
-                      Its You
+                      {t("Its You")}
                     </Button>
                   ) : follow.meFollowed && follow.meFollowed[0]?.myFollowing ? (
                     <>
-                      <Typography>Following</Typography>
+                      <Typography>{t("Following")}</Typography>
                       <Button
                         variant="outlined"
                         sx={{
@@ -205,7 +329,7 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
                           )
                         }
                       >
-                        Unfollow
+                        {t("Unfollow")}
                       </Button>
                     </>
                   ) : (
@@ -223,7 +347,7 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
                         )
                       }
                     >
-                      Follow
+                      {t("Follow")}
                     </Button>
                   )}
                 </Stack>
@@ -257,7 +381,7 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
               />
             </Stack>
             <Stack className="total-result">
-              <Typography className="page-text">{total} followings</Typography>
+              <Typography className="page-text">{total} {t("followings")}</Typography>
             </Stack>
           </Stack>
         )}

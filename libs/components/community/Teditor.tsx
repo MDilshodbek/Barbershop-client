@@ -21,8 +21,12 @@ import { useMutation } from "@apollo/client";
 import { CREATE_BOARD_ARTICLE } from "../../../apollo/user/mutation";
 import { sweetErrorHandling, sweetTopSuccessAlert } from "../../sweetAlert";
 import { Message } from "../../enums/common.enum";
+import { useTranslation } from "react-i18next";
+import useDeviceDetect from "../../hooks/useDeviceDetect";
 
 const TuiEditor = () => {
+  const { t } = useTranslation("common");
+  const device = useDeviceDetect();
   const editorRef = useRef<Editor>(null),
     token = getJwtToken(),
     router = useRouter();
@@ -120,7 +124,7 @@ const TuiEditor = () => {
         },
       });
 
-      await sweetTopSuccessAlert("Article is created successfully", 700);
+      await sweetTopSuccessAlert(t("Article is created successfully"), 700);
       await router.push({
         pathname: "/mypage",
         query: {
@@ -139,17 +143,17 @@ const TuiEditor = () => {
   return (
     <Stack>
       <Stack
-        direction="row"
-        style={{ margin: "40px" }}
+        direction={device === "mobile" ? "column" : "row"}
+        style={{ margin: device === "mobile" ? "16px" : "40px", gap: device === "mobile" ? "16px" : 0 }}
         justifyContent="space-evenly"
       >
         <Box
           component={"div"}
           className={"form_row"}
-          style={{ width: "300px" }}
+          style={{ width: device === "mobile" ? "100%" : "300px" }}
         >
           <Typography style={{ color: "#7f838d", margin: "10px" }} variant="h3">
-            Category
+            {t("Category")}
           </Typography>
           <FormControl
             sx={{
@@ -164,27 +168,28 @@ const TuiEditor = () => {
               inputProps={{ "aria-label": "Without label" }}
             >
               <MenuItem value={BoardArticleCategory.FREE}>
-                <span>Free</span>
+                <span>{t("Free")}</span>
               </MenuItem>
               <MenuItem value={BoardArticleCategory.LIFESTYLE}>
-                LIFESTYLE
+                {t("Lifestyle")}
               </MenuItem>
-              <MenuItem value={BoardArticleCategory.NEWS}>News</MenuItem>
+              <MenuItem value={BoardArticleCategory.NEWS}>{t("News")}</MenuItem>
             </Select>
           </FormControl>
         </Box>
         <Box
           component={"div"}
-          style={{ width: "300px", flexDirection: "column" }}
+          style={{ width: device === "mobile" ? "100%" : "300px", flexDirection: "column" }}
         >
           <Typography style={{ color: "#7f838d", margin: "10px" }} variant="h3">
-            Title
+            {t("Title")}
           </Typography>
           <TextField
             onChange={articleTitleHandler}
             id="filled-basic"
             sx={{
-              width: "300px",
+              width: "100%",
+              maxWidth: device === "mobile" ? "100%" : "300px",
               background: "white",
             }}
           />
@@ -192,10 +197,10 @@ const TuiEditor = () => {
       </Stack>
 
       <Editor
-        initialValue={"Type here"}
-        placeholder={"Type here"}
-        previewStyle={"vertical"}
-        height={"640px"}
+        initialValue={t("Type here")}
+        placeholder={t("Type here")}
+        previewStyle={device === "mobile" ? "tab" : "vertical"}
+        height={device === "mobile" ? "480px" : "640px"}
         // @ts-ignore
         initialEditType={"WYSIWYG"}
         toolbarItems={[
@@ -221,7 +226,8 @@ const TuiEditor = () => {
           variant="contained"
           sx={{
             margin: "30px",
-            width: "250px",
+            width: device === "mobile" ? "100%" : "250px",
+            maxWidth: device === "mobile" ? "320px" : "250px",
             height: "45px",
             backgroundColor: "#004034 !important",
             color: "#fff !important",
@@ -230,7 +236,7 @@ const TuiEditor = () => {
           onClick={handleRegisterButton}
           disabled={doDisabledCheck()}
         >
-          Publish
+          {t("Publish")}
         </Button>
       </Stack>
     </Stack>

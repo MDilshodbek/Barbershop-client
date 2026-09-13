@@ -1,0 +1,182 @@
+#mobile-wrap {
+	.appointment-page-mobile {
+		padding: 24px $mobile-side-padding 40px $mobile-side-padding;
+		display: flex;
+		flex-direction: column;
+
+		.hero-title {
+			color: #004034;
+			font-family: 'Limelight', serif;
+			font-size: 26px;
+			text-align: center;
+			margin-bottom: 16px;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.appoint-main,
+		.reservation,
+		.inputs-main {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.appoint-title {
+			color: #004034;
+			font-family: 'Limelight', serif;
+			font-size: 22px;
+			line-height: 26px;
+			text-align: center;
+		}
+
+		.appoint-subtitle {
+			color: #7c887f;
+			font-family: 'DM Sans';
+			font-size: 13px;
+			line-height: 19px;
+			text-align: center;
+			margin-top: 8px;
+		}
+
+		.appointment-frame {
+			margin-top: 18px;
+			padding: 18px 14px;
+			background: #ffffff;
+			border: 1px solid #e3ead9;
+			border-radius: 18px;
+			box-shadow: 0 16px 32px rgba(0, 64, 52, 0.1);
+			display: flex;
+			flex-direction: column;
+			gap: 24px;
+		}
+
+		.service-barber-section,
+		.appointment-top {
+			display: flex;
+			flex-direction: column;
+			gap: 20px !important;
+		}
+
+		.step-block,
+		.date-section,
+		.time-section,
+		.note-section {
+			width: 100%;
+		}
+
+		.step-title {
+			color: #004034;
+			font-family: 'DM Sans';
+			font-size: 13px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.3px;
+			margin-bottom: 8px;
+		}
+
+		.autocomplete-input,
+		.date-input {
+			width: 100%;
+
+			.MuiOutlinedInput-root {
+				border-radius: 12px;
+				background: #f9fbf6;
+			}
+
+			input {
+				font-family: 'DM Sans';
+				font-size: 14px;
+				color: #004034;
+			}
+		}
+
+		.time-grid {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 8px;
+			margin-top: 4px;
+
+			.time-chip {
+				border-radius: 999px;
+				text-transform: none;
+				font-family: 'DM Sans';
+				font-size: 12px;
+				font-weight: 700;
+				padding: 8px 4px;
+				border-color: #e3ead9;
+				color: #004034;
+				min-width: 0;
+
+				&.time-chip--selected {
+					background-color: #004034 !important;
+					color: #ffffff !important;
+					border-color: #004034 !important;
+				}
+
+				&.time-chip--disabled {
+					cursor: not-allowed;
+					opacity: 0.5;
+				}
+			}
+		}
+
+		.notes-top {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.notes-input textarea {
+			font-family: 'DM Sans';
+			font-size: 14px;
+			color: #004034;
+		}
+
+		.total-row {
+			display: flex;
+			flex-direction: column;
+			gap: 14px !important;
+			padding-top: 16px;
+			border-top: 1px solid #e3ead9;
+		}
+
+		.total-box {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+
+			.total-label {
+				color: #7c887f;
+				font-family: 'DM Sans';
+				font-size: 13px;
+				font-weight: 700;
+				text-transform: uppercase;
+			}
+
+			.total-value {
+				color: #004034;
+				font-family: 'Limelight', serif;
+				font-size: 22px;
+			}
+		}
+
+		.submit-button {
+			width: 100%;
+			padding: 14px;
+			border-radius: 999px;
+			background: #004034 !important;
+			color: #ffffff !important;
+			font-family: 'DM Sans';
+			font-weight: 700;
+			font-size: 14px;
+
+			&.Mui-disabled {
+				opacity: 0.5;
+				color: #ffffff !important;
+			}
+		}
+	}
+}

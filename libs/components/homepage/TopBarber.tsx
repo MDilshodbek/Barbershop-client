@@ -20,6 +20,10 @@ import {
 } from "../../sweetAlert";
 import { userVar } from "../../../apollo/store";
 import useDeviceDetect from "../../hooks/useDeviceDetect";
+import { useTranslation } from "react-i18next";
+import { Swiper, SwiperSlide } from "swiper/react";
+import SwiperCore, { Autoplay, Pagination } from "swiper";
+SwiperCore.use([Autoplay, Pagination]);
 
 interface TopBarbersProps {
   initialInput: BarbersInquiry;
@@ -30,6 +34,7 @@ const Barbers = (props: TopBarbersProps) => {
   const { initialInput } = props;
   const user = useReactiveVar(userVar);
   const device = useDeviceDetect();
+  const { t } = useTranslation("common");
 
   const {
     loading: getBarbersLoading,
@@ -57,7 +62,7 @@ const Barbers = (props: TopBarbersProps) => {
 
       // execute getPropertiesRefetch
       await getBarbersRefetch({ input: initialInput });
-      await sweetTopSmallSuccessAlert("success", 800);
+      await sweetTopSmallSuccessAlert(t("success"), 800);
     } catch (error: any) {
       sweetMixinErrorAlert(error.message).then();
     }
@@ -67,95 +72,107 @@ const Barbers = (props: TopBarbersProps) => {
     return (
       <Stack className="top-barbers top-barbers-mobile">
         <Stack className="container">
-          <Stack className="top-barber-title">Cropper Masters</Stack>
-          <Stack className="main-barbers">
-            {topBarber.length === 0 ? (
-              <Box component={"div"} className="empty-list">
-                Top Barbers are not available
-              </Box>
-            ) : (
-              <>
+          <Stack className="top-barber-title">{t("Cropper Masters")}</Stack>
+          {topBarber.length === 0 ? (
+            <Box component={"div"} className="empty-list">
+              {t("Top Barbers are not available")}
+            </Box>
+          ) : (
+            <>
+              <Swiper
+                className={"main-barbers main-barbers-swiper"}
+                slidesPerView={1.15}
+                spaceBetween={14}
+                autoplay={{ delay: 4000, disableOnInteraction: false }}
+                pagination={{ el: ".swiper-pagination", clickable: true }}
+              >
                 {topBarber.map((barber: Member) => {
                   return (
-                    <Stack key={barber._id} className="barber-card">
-                      <Box className="barber-img">
+                    <SwiperSlide key={barber._id} className={"barber-slide"}>
+                      <Stack className="barber-card">
+                        <Box className="barber-img">
+                          <Link
+                            href={{
+                              pathname: "/barber/detail",
+                              query: { barberId: barber?._id },
+                            }}
+                          >
+                            <img
+                              src={
+                                barber?.memberImage
+                                  ? `${process.env.REACT_APP_API_URL}/${barber?.memberImage}`
+                                  : "/logo/defaultUser.svg"
+                              }
+                              alt=""
+                              style={{ height: 268 }}
+                            />
+                          </Link>
+                        </Box>
                         <Link
                           href={{
                             pathname: "/barber/detail",
                             query: { barberId: barber?._id },
                           }}
                         >
-                          <img
-                            src={
-                              barber?.memberImage
-                                ? `${process.env.REACT_APP_API_URL}/${barber?.memberImage}`
-                                : "/logo/defaultUser.svg"
-                            }
-                            alt=""
-                          />
+                          <Box className="barber-name">
+                            {barber?.memberFullName ?? barber?.memberNick}
+                          </Box>
                         </Link>
-                      </Box>
-                      <Link
-                        href={{
-                          pathname: "/barber/detail",
-                          query: { barberId: barber?._id },
-                        }}
-                      >
-                        <Box className="barber-name">
-                          {barber?.memberFullName ?? barber?.memberNick}
-                        </Box>
-                      </Link>
-                      <Stack className="barber-stats">
-                        <Box
-                          className="stat-chip like"
-                          onClick={() => likeMemberHandler(user, barber?._id)}
-                        >
-                          {barber?.meLiked && barber?.meLiked[0]?.myFavorite ? (
-                            <FavoriteIcon style={{ color: "red" }} />
-                          ) : (
-                            <FavoriteBorderIcon style={{ color: "#004034" }} />
-                          )}
-                          <span>{barber.memberLikes}</span>
-                        </Box>
-                        <Box className="stat-chip views">
-                          <RemoveRedEyeIcon
+                        <Stack className="barber-stats">
+                          <Box
+                            className="stat-chip like"
+                            onClick={() => likeMemberHandler(user, barber?._id)}
+                          >
+                            {barber?.meLiked && barber?.meLiked[0]?.myFavorite ? (
+                              <FavoriteIcon style={{ color: "red" }} />
+                            ) : (
+                              <FavoriteBorderIcon style={{ color: "#004034" }} />
+                            )}
+                            <span>{barber.memberLikes}</span>
+                          </Box>
+                          <Box className="stat-chip views">
+                            <RemoveRedEyeIcon
+                              style={{
+                                color: "#004034",
+                                fontSize: "18px",
+                              }}
+                            />
+                            <span>{barber.memberViews}</span>
+                          </Box>
+                        </Stack>
+                        <Stack className="barber-socialmedia">
+                          <FacebookOutlinedIcon
                             style={{
                               color: "#004034",
                               fontSize: "18px",
+                              cursor: "pointer",
                             }}
                           />
-                          <span>{barber.memberViews}</span>
-                        </Box>
+                          <InstagramIcon
+                            style={{
+                              color: "#004034",
+                              fontSize: "18px",
+                              cursor: "pointer",
+                            }}
+                          />
+                          <XIcon
+                            style={{
+                              color: "#004034",
+                              fontSize: "18px",
+                              cursor: "pointer",
+                            }}
+                          />
+                        </Stack>
                       </Stack>
-                      <Stack className="barber-socialmedia">
-                        <FacebookOutlinedIcon
-                          style={{
-                            color: "#004034",
-                            fontSize: "18px",
-                            cursor: "pointer",
-                          }}
-                        />
-                        <InstagramIcon
-                          style={{
-                            color: "#004034",
-                            fontSize: "18px",
-                            cursor: "pointer",
-                          }}
-                        />
-                        <XIcon
-                          style={{
-                            color: "#004034",
-                            fontSize: "18px",
-                            cursor: "pointer",
-                          }}
-                        />
-                      </Stack>
-                    </Stack>
+                    </SwiperSlide>
                   );
                 })}
-              </>
-            )}
-          </Stack>
+              </Swiper>
+              <Box className={"top-barbers-pagination"}>
+                <div className={"dot-frame-pagination swiper-pagination"} />
+              </Box>
+            </>
+          )}
         </Stack>
       </Stack>
     );
@@ -164,14 +181,14 @@ const Barbers = (props: TopBarbersProps) => {
       <Stack className="top-barbers">
         <Stack className="container">
           <Stack className="top-barber-title">
-            Step Inside the Cropper
+            {t("Step Inside the Cropper")}
             <br />
-            Masters
+            {t("Masters")}
           </Stack>
           <Stack className="main-barbers">
             {topBarber.length === 0 ? (
               <Box component={"div"} className="empty-list">
-                Top Barbers are not available
+                {t("Top Barbers are not available")}
               </Box>
             ) : (
               <>

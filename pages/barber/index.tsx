@@ -128,7 +128,7 @@ const Barber: NextPage<BarbersProps> = (props) => {
 
       // execute getPropertiesRefetch
       await getBarbersRefetch({ input: searchFilter });
-      await sweetTopSmallSuccessAlert("success", 800);
+      await sweetTopSmallSuccessAlert(t("success"), 800);
     } catch (error: any) {
       sweetMixinErrorAlert(error.message).then();
     }
@@ -217,7 +217,198 @@ const Barber: NextPage<BarbersProps> = (props) => {
   };
 
   if (device === "mobile") {
-    return <Stack>Barber Mobile Page</Stack>;
+    return (
+      <Stack className="barber-page-mobile">
+        <Typography className="hero-title">{t("Masters")}</Typography>
+        <Stack className="container">
+          <Stack className="barber-main-title">
+            {t("Our Artistic Specialists")}
+          </Stack>
+          <Stack className={"filter"}>
+            <OutlinedInput
+              className="search-input"
+              type="text"
+              placeholder={t("Search for a barber")}
+              value={searchText}
+              onChange={(e: any) => setSearchText(e.target.value)}
+              onKeyDown={(event: any) => {
+                if (event.key == "Enter") {
+                  const nextFilter = {
+                    ...searchFilter,
+                    page: 1,
+                    search: {
+                      ...searchFilter.search,
+                      text: searchText,
+                    },
+                  };
+
+                  setSearchFilter(nextFilter);
+                  const encoded = encodeURIComponent(
+                    JSON.stringify(nextFilter)
+                  );
+                  router.replace(
+                    `/barber?input=${encoded}`,
+                    `/barber?input=${encoded}`,
+                    { scroll: false }
+                  );
+                }
+              }}
+              endAdornment={
+                <CancelRoundedIcon
+                  className="cancel-round"
+                  onClick={() => {
+                    setSearchText("");
+                    setSearchFilter({
+                      ...searchFilter,
+                      search: { ...searchFilter.search, text: "" },
+                    });
+                  }}
+                />
+              }
+            />
+            <Stack className="sort-row">
+              <span>{t("Sort by")}</span>
+              <div>
+                <Button
+                  onClick={sortingClickHandler}
+                  endIcon={<KeyboardArrowDownRoundedIcon />}
+                >
+                  {t(filterSortName)}
+                </Button>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={sortingOpen}
+                  onClose={sortingCloseHandler}
+                  sx={{ paddingTop: "5px" }}
+                >
+                  <MenuItem onClick={sortingHandler} id={"recent"} disableRipple>
+                    {t("Recent")}
+                  </MenuItem>
+                  <MenuItem onClick={sortingHandler} id={"old"} disableRipple>
+                    {t("Oldest")}
+                  </MenuItem>
+                  <MenuItem onClick={sortingHandler} id={"likes"} disableRipple>
+                    {t("Likes")}
+                  </MenuItem>
+                  <MenuItem onClick={sortingHandler} id={"rank"} disableRipple>
+                    {t("Rank")}
+                  </MenuItem>
+                  <MenuItem onClick={sortingHandler} id={"level"} disableRipple>
+                    {t("Level")}
+                  </MenuItem>
+                </Menu>
+              </div>
+            </Stack>
+          </Stack>
+
+          <Stack className="barber-box">
+            {barber.length === 0 ? (
+              <Box component={"div"} className="empty-list">
+                {t("Barbers are not available")}
+              </Box>
+            ) : (
+              <>
+                {barber.map((barber: Member) => {
+                  return (
+                    <Stack key={barber._id} className="barber-info">
+                      <Box className="barber-img">
+                        <Link
+                          href={{
+                            pathname: "/barber/detail",
+                            query: { barberId: barber?._id },
+                          }}
+                        >
+                          <img
+                            src={
+                              barber?.memberImage
+                                ? `${process.env.REACT_APP_API_URL}/${barber?.memberImage}`
+                                : "/logo/defaultUser.svg"
+                            }
+                            alt=""
+                          />
+                        </Link>
+                      </Box>
+                      <Stack className="barber-info-col">
+                        <Link
+                          href={{
+                            pathname: "/barber/detail",
+                            query: { barberId: barber?._id },
+                          }}
+                        >
+                          <Box className="barber-name">
+                            {barber?.memberFullName ?? barber?.memberNick}
+                          </Box>
+                        </Link>
+                        <Stack className="barber-media">
+                          <Box
+                            className="barber-like"
+                            onClick={() => likeMemberHandler(user, barber?._id)}
+                          >
+                            {barber?.meLiked &&
+                            barber?.meLiked[0]?.myFavorite ? (
+                              <FavoriteIcon style={{ color: "red" }} />
+                            ) : (
+                              <FavoriteBorderIcon
+                                style={{ color: "#004034" }}
+                              />
+                            )}
+                            <span>{barber.memberLikes}</span>
+                          </Box>
+                          <Box className="barber-view">
+                            <RemoveRedEyeIcon style={{ color: "#004034" }} />
+                            <span>{barber.memberViews}</span>
+                          </Box>
+                          <Stack className="barber-socialmedia">
+                            <FacebookOutlinedIcon
+                              style={{ color: "#004034", cursor: "pointer" }}
+                            />
+                            <InstagramIcon
+                              style={{ color: "#004034", cursor: "pointer" }}
+                            />
+                            <XIcon
+                              style={{ color: "#004034", cursor: "pointer" }}
+                            />
+                          </Stack>
+                        </Stack>
+                      </Stack>
+                    </Stack>
+                  );
+                })}
+              </>
+            )}
+          </Stack>
+
+          <Stack className={"pagination"}>
+            {barber.length !== 0 &&
+              Math.ceil(total / searchFilter.limit) > 1 && (
+                <Pagination
+                  page={searchFilter.page ?? 1}
+                  count={Math.ceil(total / searchFilter.limit)}
+                  onChange={paginationChangeHandler}
+                  shape="circular"
+                  size="small"
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      color: "#004034",
+                      borderColor: "#004034",
+                    },
+                    "& .MuiPaginationItem-root.Mui-selected": {
+                      backgroundColor: "#C6D984",
+                      color: "#fff",
+                    },
+                  }}
+                />
+              )}
+            {barber.length !== 0 && (
+              <span>
+                {t("Total")} {total}{" "}
+                {total > 1 ? t("barbers") : t("barber")} {t("available")}
+              </span>
+            )}
+          </Stack>
+        </Stack>
+      </Stack>
+    );
   } else {
     return (
       <Stack className="barber-page">
@@ -225,14 +416,14 @@ const Barber: NextPage<BarbersProps> = (props) => {
         <Stack className="container">
           <Stack className="barber-main">
             <Stack className="barber-main-title">
-              Our Artistic Specialists
+              {t("Our Artistic Specialists")}
             </Stack>
             <Stack className={"filter"}>
               <Box component={"div"} className={"left"}>
                 <OutlinedInput
                   className="search-input"
                   type="text"
-                  placeholder={"Search for a barber"}
+                  placeholder={t("Search for a barber")}
                   value={searchText}
                   onChange={(e: any) => setSearchText(e.target.value)}
                   onKeyDown={(event: any) => {
@@ -274,13 +465,13 @@ const Barber: NextPage<BarbersProps> = (props) => {
                 />
               </Box>
               <Box component={"div"} className={"right"}>
-                <span>Sort by</span>
+                <span>{t("Sort by")}</span>
                 <div>
                   <Button
                     onClick={sortingClickHandler}
                     endIcon={<KeyboardArrowDownRoundedIcon />}
                   >
-                    {filterSortName}
+                    {t(filterSortName)}
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -293,31 +484,31 @@ const Barber: NextPage<BarbersProps> = (props) => {
                       id={"recent"}
                       disableRipple
                     >
-                      Recent
+                      {t("Recent")}
                     </MenuItem>
                     <MenuItem onClick={sortingHandler} id={"old"} disableRipple>
-                      Oldest
+                      {t("Oldest")}
                     </MenuItem>
                     <MenuItem
                       onClick={sortingHandler}
                       id={"likes"}
                       disableRipple
                     >
-                      Likes
+                      {t("Likes")}
                     </MenuItem>
                     <MenuItem
                       onClick={sortingHandler}
                       id={"rank"}
                       disableRipple
                     >
-                      Rank
+                      {t("Rank")}
                     </MenuItem>
                     <MenuItem
                       onClick={sortingHandler}
                       id={"level"}
                       disableRipple
                     >
-                      Level
+                      {t("Level")}
                     </MenuItem>
                   </Menu>
                 </div>
@@ -326,7 +517,7 @@ const Barber: NextPage<BarbersProps> = (props) => {
             <Stack className="barber-box">
               {barber.length === 0 ? (
                 <Box component={"div"} className="empty-list">
-                  Barbers are not available
+                  {t("Barbers are not available")}
                 </Box>
               ) : (
                 <>
@@ -444,7 +635,7 @@ const Barber: NextPage<BarbersProps> = (props) => {
               </Stack>
               {barber.length !== 0 && (
                 <span>
-                  Total {total} barber{total > 1 ? "s" : ""} available
+                  {t("Total")} {total} {total > 1 ? t("barbers") : t("barber")} {t("available")}
                 </span>
               )}
             </Stack>

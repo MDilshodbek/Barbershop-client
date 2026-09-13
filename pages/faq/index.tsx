@@ -22,7 +22,19 @@ const FAQ: NextPage = () => {
   /** HANDLERS **/
 
   if (device === "mobile") {
-    return <h1>CS PAGE MOBILE</h1>;
+    return (
+      <Stack className={"cs-page-mobile"}>
+        <Typography className="hero-title">{t("Cs Center")}</Typography>
+        <Stack className={"container"}>
+          <Box component={"div"} className={"cs-main-info"}>
+            <span>{t("Frequently Asked Questions")}</span>
+          </Box>
+          <Box component={"div"} className={"cs-content"}>
+            <Faquestions />
+          </Box>
+        </Stack>
+      </Stack>
+    );
   } else {
     return (
       <Stack className={"cs-page"}>
@@ -30,7 +42,7 @@ const FAQ: NextPage = () => {
         <Stack className={"container"}>
           <Box component={"div"} className={"cs-main-info"}>
             <Box component={"div"} className={"info"}>
-              <span>Frequently asked quiestions</span>
+              <span>{t("Frequently Asked Questions")}</span>
             </Box>
           </Box>
 

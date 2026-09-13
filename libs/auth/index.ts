@@ -1,4 +1,5 @@
 import decodeJWT from 'jwt-decode';
+import i18next from 'i18next';
 import { initializeApollo } from '../../apollo/client';
 import { userVar } from '../../apollo/store';
 import { CustomJwtPayload } from '../types/customJwtPayload';
@@ -25,7 +26,7 @@ export const signUp = async (nick: string, password: string, phone: string, type
 		});
 
 		if (!jwtToken) {
-			throw new Error('Signup failed');
+			throw new Error(i18next.t('Signup failed'));
 		}
 
 		updateStorage({ jwtToken });
@@ -42,7 +43,7 @@ export const logIn = async (nick: string, password: string): Promise<void> => {
 		const { jwtToken } = await requestJwtToken({ nick, password });
 
 		if (!jwtToken) {
-			throw new Error('Login failed');
+			throw new Error(i18next.t('Login failed'));
 		}
 
 		updateStorage({ jwtToken });
@@ -77,13 +78,13 @@ const requestJwtToken = async ({
 	} catch (err: any) {
 		switch (err.graphQLErrors[0].message) {
 			case 'Definer: login and password do not match':
-				await sweetMixinErrorAlert('Please check your password again');
+				await sweetMixinErrorAlert(i18next.t('Please check your password again'));
 				break;
 			case 'Definer: user has been blocked!':
-				await sweetMixinErrorAlert('User has been blocked!');
+				await sweetMixinErrorAlert(i18next.t('User has been blocked!'));
 				break;
 		}
-		const backendMessage = err?.graphQLErrors?.[0]?.message || err?.message || 'Login failed';
+		const backendMessage = err?.graphQLErrors?.[0]?.message || err?.message || i18next.t('Login failed');
 
 		throw new Error(backendMessage);
 	}
@@ -124,13 +125,13 @@ const requestSignUpJwtToken = async ({
 		console.log('request token err', err.graphQLErrors);
 		switch (err.graphQLErrors[0].message) {
 			case 'Definer: login and password do not match':
-				await sweetMixinErrorAlert('Please check your password again');
+				await sweetMixinErrorAlert(i18next.t('Please check your password again'));
 				break;
 			case 'Definer: user has been blocked!':
-				await sweetMixinErrorAlert('User has been blocked!');
+				await sweetMixinErrorAlert(i18next.t('User has been blocked!'));
 				break;
 		}
-		const backendMessage = err?.graphQLErrors?.[0]?.message || err?.message || 'Signup failed';
+		const backendMessage = err?.graphQLErrors?.[0]?.message || err?.message || i18next.t('Signup failed');
 
 		throw new Error(backendMessage);
 	}

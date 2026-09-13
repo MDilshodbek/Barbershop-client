@@ -29,8 +29,10 @@ import { T } from "../../../libs/types/common";
 import { MemberPanelList } from "../common/MemberList";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 
 const OurMemberList: NextPage = ({ initialInquiry, ...props }: any) => {
+  const { t } = useTranslation("common");
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
   const [membersInquiry, setMembersInquiry] =
@@ -200,7 +202,7 @@ const OurMemberList: NextPage = ({ initialInquiry, ...props }: any) => {
 
   return (
     <Stack className={"service-list"}>
-      <Typography className={"tit"}>Member List</Typography>
+      <Typography className={"tit"}>{t("Member List")}</Typography>
       <Box component={"div"} className={"table-wrap"}>
         <Box component={"div"} sx={{ width: "100%", typography: "body1" }}>
           <TabContext value={value}>
@@ -211,28 +213,28 @@ const OurMemberList: NextPage = ({ initialInquiry, ...props }: any) => {
                   value="ALL"
                   className={value === "ALL" ? "li on" : "li"}
                 >
-                  All
+                  {t("All")}
                 </ListItem>
                 <ListItem
                   onClick={(e: any) => tabChangeHandler(e, "ACTIVE")}
                   value="ACTIVE"
                   className={value === "ACTIVE" ? "li on" : "li"}
                 >
-                  Active
+                  {t("Active")}
                 </ListItem>
                 <ListItem
                   onClick={(e: any) => tabChangeHandler(e, "BLOCK")}
                   value="BLOCK"
                   className={value === "BLOCK" ? "li on" : "li"}
                 >
-                  Blocked
+                  {t("Blocked")}
                 </ListItem>
                 <ListItem
                   onClick={(e: any) => tabChangeHandler(e, "DELETE")}
                   value="DELETE"
                   className={value === "DELETE" ? "li on" : "li"}
                 >
-                  Deleted
+                  {t("Deleted")}
                 </ListItem>
               </List>
               <Divider />
@@ -242,7 +244,7 @@ const OurMemberList: NextPage = ({ initialInquiry, ...props }: any) => {
                   onChange={(e: any) => textHandler(e.target.value)}
                   sx={{ width: "100%" }}
                   className={"search"}
-                  placeholder="Search user name"
+                  placeholder={t("Search user name")}
                   onKeyDown={(event) => {
                     if (event.key == "Enter") searchTextHandler();
                   }}
@@ -280,25 +282,25 @@ const OurMemberList: NextPage = ({ initialInquiry, ...props }: any) => {
                     value={"ALL"}
                     onClick={() => searchTypeHandler("ALL")}
                   >
-                    All
+                    {t("All")}
                   </MenuItem>
                   <MenuItem
                     value={"USER"}
                     onClick={() => searchTypeHandler("USER")}
                   >
-                    User
+                    {t("User")}
                   </MenuItem>
                   <MenuItem
                     value={"BARBER"}
                     onClick={() => searchTypeHandler("BARBER")}
                   >
-                    Barber
+                    {t("Barber")}
                   </MenuItem>
                   <MenuItem
                     value={"ADMIN"}
                     onClick={() => searchTypeHandler("ADMIN")}
                   >
-                    Admin
+                    {t("Admin")}
                   </MenuItem>
                 </Select>
               </Stack>
@@ -309,7 +311,7 @@ const OurMemberList: NextPage = ({ initialInquiry, ...props }: any) => {
                 <TableCell align="center" colSpan={8}>
                   <span className={"no-data"}>
                     <InfoOutlinedIcon className="info-icon" />
-                    <p>data not found!</p>
+                    <p>{t("data not found!")}</p>
                   </span>
                 </TableCell>
               </TableRow>
@@ -349,8 +351,8 @@ const OurMemberList: NextPage = ({ initialInquiry, ...props }: any) => {
           />
           <Stack className="total-result">
             <Typography>
-              Total {membersTotal} member{membersTotal > 1 ? "s" : ""}{" "}
-              available
+              {t("Total")} {membersTotal} {membersTotal > 1 ? t("members") : t("member")}{" "}
+              {t("available")}
             </Typography>
           </Stack>
         </Stack>

@@ -1,0 +1,210 @@
+#mobile-wrap {
+	// Shared barber-card row styling — reused by the barber list page AND
+	// MyFavorites.tsx (which renders the exact same .barber-info markup).
+	.barber-box,
+	.favorites-list-box {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.barber-info {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 12px;
+		padding: 12px;
+		background: #ffffff;
+		border: 1px solid #e3ead9;
+		border-radius: 16px;
+		box-shadow: 0 12px 24px rgba(0, 64, 52, 0.08);
+	}
+
+	.barber-img {
+		flex-shrink: 0;
+		width: 84px;
+		height: 84px;
+		border-radius: 14px;
+		overflow: hidden;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			object-position: top;
+			display: block;
+		}
+	}
+
+	.barber-info-col {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.barber-name {
+		color: #004034;
+		font-family: 'Limelight', serif;
+		font-size: 17px;
+		line-height: 20px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.barber-media {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 10px;
+		flex-wrap: wrap;
+		margin-top: 4px;
+	}
+
+	.barber-like,
+	.barber-view {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		font-family: 'DM Sans';
+		font-size: 12px;
+		font-weight: 700;
+		color: #004034;
+
+		svg {
+			font-size: 16px !important;
+		}
+	}
+
+	.barber-socialmedia {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 10px;
+
+		svg {
+			font-size: 15px !important;
+		}
+	}
+
+	.barber-page-mobile {
+		padding: 24px $mobile-side-padding 40px $mobile-side-padding;
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+
+		.hero-title {
+			color: #004034;
+			font-family: 'Limelight', serif;
+			font-size: 28px;
+			line-height: 32px;
+			text-align: center;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+		}
+
+		.barber-main-title {
+			text-align: center;
+			color: #7c887f;
+			font-family: 'DM Sans';
+			font-size: 14px;
+			font-weight: 600;
+		}
+
+		.filter {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		.search-input {
+			width: 100%;
+			background: #ffffff;
+			border-radius: 999px;
+			border: 1px solid #e3ead9;
+			padding: 2px 6px 2px 16px;
+
+			.MuiOutlinedInput-notchedOutline {
+				border: none;
+			}
+
+			input {
+				padding: 11px 4px;
+				font-family: 'DM Sans';
+				font-size: 14px;
+				color: #004034;
+			}
+
+			.cancel-round {
+				color: #9fae9c;
+				cursor: pointer;
+				font-size: 18px;
+			}
+		}
+
+		.sort-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			span {
+				color: #7c887f;
+				font-family: 'DM Sans';
+				font-size: 13px;
+				font-weight: 600;
+			}
+
+			button {
+				color: #004034;
+				font-family: 'DM Sans';
+				font-weight: 700;
+				font-size: 13px;
+				text-transform: none;
+				background: #f7f9f4;
+				border: 1px solid #e3ead9;
+				border-radius: 999px;
+				padding: 6px 14px;
+			}
+		}
+
+		.empty-list {
+			width: 100%;
+			min-height: 140px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #004034;
+			font-family: 'DM Sans';
+			font-size: 14px;
+			font-weight: 600;
+			border: 1px dashed #e3ead9;
+			border-radius: 14px;
+			background: #f9fbf6;
+		}
+
+		.pagination {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 8px;
+			margin-top: 4px;
+
+			span {
+				color: #7c887f;
+				font-family: 'DM Sans';
+				font-size: 12px;
+				font-weight: 600;
+			}
+
+			.MuiPagination-ul {
+				flex-wrap: nowrap;
+			}
+		}
+	}
+}

@@ -9,6 +9,7 @@ import { userVar } from "../../../apollo/store";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CommentIcon from "@mui/icons-material/Comment";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useTranslation } from "react-i18next";
 
 interface CommunityCardProps {
   boardArticle: BoardArticle;
@@ -18,6 +19,7 @@ const CommunityCard = (props: CommunityCardProps) => {
   const { boardArticle } = props;
   const device = useDeviceDetect();
   const router = useRouter();
+  const { t } = useTranslation("common");
   const user = useReactiveVar(userVar);
   const imagePath: string = boardArticle?.articleImage
     ? `${REACT_APP_API_URL}/${boardArticle?.articleImage}`
@@ -42,7 +44,45 @@ const CommunityCard = (props: CommunityCardProps) => {
   };
 
   if (device === "mobile") {
-    return <div>COMMUNITY CARD MOBILE</div>;
+    return (
+      <Stack
+        className="community-card-mobile"
+        onClick={(e: any) => chooseArticleHandler(e, boardArticle)}
+      >
+        <Box className="community-card-mobile-img">
+          <img
+            src={
+              boardArticle?.articleImage
+                ? `${process.env.REACT_APP_API_URL}/${boardArticle?.articleImage[0]}`
+                : "/logo/Logo.svg"
+            }
+            alt=""
+          />
+          <Box className="community-card-mobile-tag">
+            {boardArticle.articleCategory}
+          </Box>
+        </Box>
+        <Stack className="community-card-mobile-body">
+          <span className="community-card-mobile-title">
+            {boardArticle.articleTitle}
+          </span>
+          <Stack className="community-card-mobile-meta">
+            <span>
+              <CalendarMonthIcon />
+              {new Date(boardArticle.createdAt).toLocaleDateString()}
+            </span>
+            <span>
+              <CommentIcon />
+              {boardArticle.articleComments}
+            </span>
+            <span>
+              <VisibilityIcon />
+              {boardArticle.articleViews}
+            </span>
+          </Stack>
+        </Stack>
+      </Stack>
+    );
   } else {
     return (
       <Stack

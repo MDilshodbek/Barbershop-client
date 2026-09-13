@@ -141,27 +141,27 @@ const Top = () => {
     return (
       <Stack className="navbar">
         <Link href="/">
-          <div className="chosen-link-basic">Home</div>
+          <div className="chosen-link-basic">{t("Home")}</div>
         </Link>
         <Link href="/service">
-          <div className="chosen-link-basic">Service</div>
+          <div className="chosen-link-basic">{t("Service")}</div>
         </Link>
         <Link href="/barber">
-          <div className="chosen-link-basic">Barbers</div>
+          <div className="chosen-link-basic">{t("Barbers")}</div>
         </Link>
         <Link href="/appointment">
-          <div className="chosen-link-basic">Appointment</div>
+          <div className="chosen-link-basic">{t("Appointment")}</div>
         </Link>
         <Link href="/community">
-          <div className="chosen-link-basic">Community</div>
+          <div className="chosen-link-basic">{t("Community")}</div>
         </Link>
         {false && (
           <Link href={"/mypage"}>
-            <div className="chosen-link-basic">My Page</div>
+            <div className="chosen-link-basic">{t("My Page")}</div>
           </Link>
         )}
         <Link href="/faq">
-          <div className="chosen-link-basic">FAQ</div>
+          <div className="chosen-link-basic">{t("FAQ")}</div>
         </Link>
       </Stack>
     );
@@ -237,7 +237,7 @@ const Top = () => {
                       fontSize="small"
                       style={{ color: "blue", marginRight: "10px" }}
                     />
-                    Logout
+                    {t("Logout")}
                   </MenuItem>
                 </Menu>
               </>

@@ -26,8 +26,10 @@ import { ServiceStatus } from "../../enums/service.enum";
 import { ServiceUpdate } from "../../types/service/service.update";
 import { useRouter } from "next/router";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useTranslation } from "react-i18next";
 
 const OurServiceList: NextPage = ({ initialInquiry, ...props }: any) => {
+  const { t } = useTranslation("common");
   const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
   const [serviceInquiry, setServiceInquiry] =
     useState<ServiceInquiry>(initialInquiry);
@@ -134,7 +136,7 @@ const OurServiceList: NextPage = ({ initialInquiry, ...props }: any) => {
 
   return (
     <Stack className={"service-list"}>
-      <Typography className={"tit"}>Service List</Typography>
+      <Typography className={"tit"}>{t("Service List")}</Typography>
       <Box component={"div"} className={"table-wrap"}>
         <Box component={"div"} sx={{ width: "100%", typography: "body1" }}>
           <TabContext value={value}>
@@ -145,21 +147,21 @@ const OurServiceList: NextPage = ({ initialInquiry, ...props }: any) => {
                   value="ALL"
                   className={value === "ALL" ? "li on" : "li"}
                 >
-                  All
+                  {t("All")}
                 </ListItem>
                 <ListItem
                   onClick={(e: any) => tabChangeHandler(e, "ACTIVE")}
                   value="ACTIVE"
                   className={value === "ACTIVE" ? "li on" : "li"}
                 >
-                  Active
+                  {t("Active")}
                 </ListItem>
                 <ListItem
                   onClick={(e: any) => tabChangeHandler(e, "INACTIVE")}
                   value="INACTIVE"
                   className={value === "INACTIVE" ? "li on" : "li"}
                 >
-                  InActive
+                  {t("InActive")}
                 </ListItem>
               </List>
               <Divider />
@@ -169,7 +171,7 @@ const OurServiceList: NextPage = ({ initialInquiry, ...props }: any) => {
                 <TableCell align="center" colSpan={8}>
                   <span className={"no-data"}>
                     <InfoOutlinedIcon className="info-icon" />
-                    <p>data not found!</p>
+                    <p>{t("data not found!")}</p>
                   </span>
                 </TableCell>
               </TableRow>
@@ -209,8 +211,8 @@ const OurServiceList: NextPage = ({ initialInquiry, ...props }: any) => {
           />
           <Stack className="total-result">
             <Typography>
-              Total {serviceTotal} service{serviceTotal > 1 ? "s" : ""}{" "}
-              available
+              {t("Total")} {serviceTotal} {serviceTotal > 1 ? t("services") : t("service")}{" "}
+              {t("available")}
             </Typography>
           </Stack>
         </Stack>

@@ -64,7 +64,7 @@ const Join: NextPage = () => {
 			await logIn(input.nick, input.password);
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
-			const message = err?.graphQLErrors?.[0]?.message || err?.message || 'Login failed';
+			const message = err?.graphQLErrors?.[0]?.message || err?.message || t('Login failed');
 
 			await sweetMixinErrorAlert(message, 1500);
 		}
@@ -76,14 +76,170 @@ const Join: NextPage = () => {
 			await signUp(input.nick, input.password, input.phone, input.type);
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
-			const message = err?.graphQLErrors?.[0]?.message || err?.message || 'Signup failed';
+			const message = err?.graphQLErrors?.[0]?.message || err?.message || t('Signup failed');
 
 			await sweetMixinErrorAlert(message, 1500);
 		}
 	}, [input, router]);
 
 	if (device === 'mobile') {
-		return <div>LOGIN MOBILE</div>;
+		return (
+			<Stack className="join-page-mobile">
+				<Stack className="brand-logo-box">
+					<img className="brand-logo" src="/logo/Logo2.png" alt="" />
+					<span className="brand-name">Cropper</span>
+				</Stack>
+				<Typography className="join-title">
+					{rightActive ? t('Hello, Gentleman!') : t('Welcome Back!')}
+				</Typography>
+				<Typography className="join-subtitle">
+					{rightActive
+						? t('Enter your personal details and start your') + ' ' + t('journey with us.')
+						: t('To keep connected with us') + ' ' + t('please login with your personal info')}
+				</Typography>
+
+				<Stack className="auth-tabs-mobile">
+					<button
+						type="button"
+						className={!rightActive ? 'active' : ''}
+						onClick={() => setRightActive(false)}
+					>
+						{t('Login')}
+					</button>
+					<button
+						type="button"
+						className={rightActive ? 'active' : ''}
+						onClick={() => setRightActive(true)}
+					>
+						{t('Register')}
+					</button>
+				</Stack>
+
+				{!rightActive ? (
+					<form className="auth-form-mobile">
+						<TextField
+							fullWidth
+							variant="filled"
+							label={t('Nickname')}
+							onChange={(e) => handleInput('nick', e.target.value)}
+						/>
+						<TextField
+							fullWidth
+							variant="filled"
+							label={t('Password')}
+							type="password"
+							onChange={(e) => handleInput('password', e.target.value)}
+							onKeyDown={(event) => {
+								if (event.key == 'Enter') doLogin();
+							}}
+						/>
+
+						<Typography className="subtitle">{t('login with')}</Typography>
+						<Stack direction="row" spacing={1} className="social-container">
+							<IconButton className="social">
+								<FacebookIcon />
+							</IconButton>
+							<IconButton className="social">
+								<GoogleIcon />
+							</IconButton>
+							<IconButton className="social">
+								<LinkedInIcon />
+							</IconButton>
+						</Stack>
+
+						<Button
+							variant="contained"
+							className="main-btn"
+							disabled={input.nick === '' || input.password === ''}
+							onClick={doLogin}
+						>
+							{t('LOGIN')}
+						</Button>
+					</form>
+				) : (
+					<form className="auth-form-mobile">
+						<TextField
+							fullWidth
+							variant="filled"
+							label={t('Nickname')}
+							onChange={(e) => handleInput('nick', e.target.value)}
+						/>
+						<TextField
+							fullWidth
+							variant="filled"
+							label={t('Phone number')}
+							onChange={(e) => handleInput('phone', e.target.value)}
+						/>
+						<TextField
+							fullWidth
+							variant="filled"
+							label={t('Password')}
+							type="password"
+							onChange={(e) => handleInput('password', e.target.value)}
+							onKeyDown={(event) => {
+								if (event.key == 'Enter') doSignUp();
+							}}
+						/>
+
+						<Box className="register">
+							<div className="type-option">
+								<span className="text">{t('I want to be registered as:')}</span>
+								<div className="checkbox-column">
+									<FormGroup>
+										<FormControlLabel
+											control={
+												<Checkbox
+													size="small"
+													name="USER"
+													onChange={checkUserTypeHandler}
+													checked={input.type === 'USER'}
+												/>
+											}
+											label={t('User')}
+										/>
+									</FormGroup>
+									<FormGroup>
+										<FormControlLabel
+											control={
+												<Checkbox
+													size="small"
+													name="BARBER"
+													onChange={checkUserTypeHandler}
+													checked={input.type === 'BARBER'}
+												/>
+											}
+											label={t('Barber')}
+										/>
+									</FormGroup>
+								</div>
+							</div>
+
+							<Typography className="subtitle">{t('register with')}</Typography>
+							<Stack className="social-container">
+								<IconButton className="social">
+									<FacebookIcon />
+								</IconButton>
+								<IconButton className="social">
+									<GoogleIcon />
+								</IconButton>
+								<IconButton className="social">
+									<LinkedInIcon />
+								</IconButton>
+							</Stack>
+
+							<Button
+								variant="contained"
+								className="main-btn"
+								disabled={input.nick === '' || input.password === '' || input.phone === '' || input.type === ''}
+								onClick={doSignUp}
+							>
+								{t('SIGNUP')}
+							</Button>
+						</Box>
+					</form>
+				)}
+			</Stack>
+		);
 	} else {
 		return (
 			<Stack className="join-page">
@@ -93,24 +249,24 @@ const Join: NextPage = () => {
 						{/* SIGN UP PANEL */}
 						<Stack className="form-container sign-up-container">
 							<form>
-								<Typography className="title">Create Account</Typography>
+								<Typography className="title">{t('Create Account')}</Typography>
 
 								<TextField
 									fullWidth
 									variant="filled"
-									label="Nickname"
+									label={t('Nickname')}
 									onChange={(e) => handleInput('nick', e.target.value)}
 								/>
 								<TextField
 									fullWidth
 									variant="filled"
-									label="Phone number"
+									label={t('Phone number')}
 									onChange={(e) => handleInput('phone', e.target.value)}
 								/>
 								<TextField
 									fullWidth
 									variant="filled"
-									label="Password"
+									label={t('Password')}
 									type="password"
 									onChange={(e) => handleInput('password', e.target.value)}
 									onKeyDown={(event) => {
@@ -120,7 +276,7 @@ const Join: NextPage = () => {
 
 								<Box className="register">
 									<div className="type-option">
-										<span className="text">I want to be registered as:</span>
+										<span className="text">{t('I want to be registered as:')}</span>
 
 										<div className="checkbox-column">
 											<FormGroup>
@@ -133,7 +289,7 @@ const Join: NextPage = () => {
 															checked={input.type === 'USER'}
 														/>
 													}
-													label="User"
+													label={t('User')}
 												/>
 											</FormGroup>
 
@@ -147,13 +303,13 @@ const Join: NextPage = () => {
 															checked={input.type === 'BARBER'}
 														/>
 													}
-													label="Barber"
+													label={t('Barber')}
 												/>
 											</FormGroup>
 										</div>
 									</div>
 
-									<Typography className="subtitle">register with</Typography>
+									<Typography className="subtitle">{t('register with')}</Typography>
 
 									<Stack className="social-container">
 										<IconButton className="social">
@@ -173,7 +329,7 @@ const Join: NextPage = () => {
 										disabled={input.nick === '' || input.password === '' || input.phone === '' || input.type === ''}
 										onClick={doSignUp}
 									>
-										SIGNUP
+										{t('SIGNUP')}
 									</Button>
 								</Box>
 							</form>
@@ -182,18 +338,18 @@ const Join: NextPage = () => {
 						{/* LOG IN PANEL */}
 						<Stack className="form-container sign-in-container">
 							<form>
-								<Typography className="title">Login</Typography>
+								<Typography className="title">{t('Login')}</Typography>
 
 								<TextField
 									fullWidth
 									variant="filled"
-									label="Nickname"
+									label={t('Nickname')}
 									onChange={(e) => handleInput('nick', e.target.value)}
 								/>
 								<TextField
 									fullWidth
 									variant="filled"
-									label="Password"
+									label={t('Password')}
 									type="password"
 									onChange={(e) => handleInput('password', e.target.value)}
 									onKeyDown={(event) => {
@@ -201,7 +357,7 @@ const Join: NextPage = () => {
 									}}
 								/>
 
-								<Typography className="subtitle">login with</Typography>
+								<Typography className="subtitle">{t('login with')}</Typography>
 
 								<Stack direction="row" spacing={1} className="social-container">
 									<IconButton className="social">
@@ -221,7 +377,7 @@ const Join: NextPage = () => {
 									disabled={input.nick === '' || input.password === ''}
 									onClick={doLogin}
 								>
-									LOGIN
+									{t('LOGIN')}
 								</Button>
 							</form>
 						</Stack>
@@ -235,12 +391,12 @@ const Join: NextPage = () => {
 											<img className="brand-logo" src="/logo/Logo2.png" alt="" />
 											<span className="brand-name">Cropper</span>
 										</Stack>
-										<Typography variant="h4">Welcome Back!</Typography>
+										<Typography variant="h4">{t('Welcome Back!')}</Typography>
 										<Typography>
-											To keep connected with us <br /> please login with your personal info
+											{t('To keep connected with us')} <br /> {t('please login with your personal info')}
 										</Typography>
 										<Button className="ghost-btn" onClick={() => setRightActive(false)}>
-											LogIn
+											{t('LogIn')}
 										</Button>
 									</Stack>
 								</Box>
@@ -251,12 +407,12 @@ const Join: NextPage = () => {
 											<img src="/logo/Logo2.png" alt="" />
 											<span className="brand-name">Cropper</span>
 										</Stack>
-										<Typography variant="h4">Hello, Gentleman!</Typography>
+										<Typography variant="h4">{t('Hello, Gentleman!')}</Typography>
 										<Typography>
-											Enter your personal details and start your <br /> journey with us.
+											{t('Enter your personal details and start your')} <br /> {t('journey with us.')}
 										</Typography>
 										<Button className="ghost-btn" onClick={() => setRightActive(true)}>
-											Sign Up
+											{t('Sign Up')}
 										</Button>
 									</Stack>
 								</Box>

@@ -1,11 +1,13 @@
+import i18next from "i18next";
+
 export const REACT_APP_API_URL = `${process.env.REACT_APP_API_URL}`;
 
 export const Messages = {
-  error1: "Something went wrong!",
-  error2: "Please login first!",
-  error3: "Please fulfill all inputs!",
-  error4: "Message is empty!",
-  error5: "Only images with jpeg, jpg, png format allowed!",
+  get error1() { return i18next.t("Something went wrong!"); },
+  get error2() { return i18next.t("Please login first!"); },
+  get error3() { return i18next.t("Please fulfill all inputs!"); },
+  get error4() { return i18next.t("Message is empty!"); },
+  get error5() { return i18next.t("Only images with jpeg, jpg, png format allowed!"); },
 };
 
 export const formatSlotFromDate = (dateInput: string | Date): string | null => {

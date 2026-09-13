@@ -15,10 +15,12 @@ import {
   sweetMixinErrorAlert,
   sweetTopSmallSuccessAlert,
 } from "../../sweetAlert";
+import { useTranslation } from "react-i18next";
 
 const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
   const device = useDeviceDetect();
   const router = useRouter();
+  const { t } = useTranslation("common");
   const [total, setTotal] = useState<number>(0);
   const { memberId } = router.query;
   const [searchFilter, setSearchFilter] =
@@ -55,7 +57,50 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
   };
 
   if (device === "mobile") {
-    return <div>MEMBER ARTICLES MOBILE</div>;
+    return (
+      <div id="member-articles-page-mobile">
+        <Stack className="articles-list-mobile">
+          {memberBoArticles?.length === 0 && (
+            <div className={"no-data"}>
+              <InfoOutlinedIcon className="info-icon" />
+              <p>{t("No Articles found!")}</p>
+            </div>
+          )}
+          {memberBoArticles?.map((boardArticle: BoardArticle) => {
+            return (
+              <CommunityCard
+                boardArticle={boardArticle}
+                key={boardArticle?._id}
+              />
+            );
+          })}
+        </Stack>
+        {memberBoArticles?.length !== 0 && (
+          <Stack className="pagination-config-mobile">
+            <Pagination
+              count={Math.ceil(total / searchFilter.limit) || 1}
+              page={searchFilter.page}
+              shape="circular"
+              size="small"
+              onChange={paginationHandler}
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  color: "#004034",
+                  borderColor: "#004034",
+                },
+                "& .MuiPaginationItem-root.Mui-selected": {
+                  backgroundColor: "#C6D984",
+                  color: "#fff",
+                },
+              }}
+            />
+            <span className="page-text">
+              {total} {total > 1 ? t("articles") : t("article")} {t("available")}
+            </span>
+          </Stack>
+        )}
+      </div>
+    );
   } else {
     return (
       <div id="member-articles-page">
@@ -63,7 +108,7 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
           {memberBoArticles?.length === 0 && (
             <div className={"no-data"}>
               <InfoOutlinedIcon className="info-icon" />
-              <p>No Articles found!</p>
+              <p>{t("No Articles found!")}</p>
             </div>
           )}
           {memberBoArticles?.map((boardArticle: BoardArticle) => {
@@ -100,7 +145,7 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
               />
             </Stack>
             <Stack className="total-result">
-              <span>{total} article available</span>
+              <span>{total} {total > 1 ? t("articles") : t("article")} {t("available")}</span>
             </Stack>
           </Stack>
         )}

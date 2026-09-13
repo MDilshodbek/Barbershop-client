@@ -85,17 +85,106 @@ const OurService: NextPage<ServiceProps> = (props) => {
   };
 
   if (device === "mobile") {
-    return <Stack>Service Mobile Page</Stack>;
+    return (
+      <Stack className="service-page-mobile">
+        <Typography className="hero-title">{t("Services")}</Typography>
+        <Stack className="container">
+          <Stack className="service-main-title">
+            {t("Our Signature Services")}
+          </Stack>
+          {service.length === 0 ? (
+            <Box component={"div"} className="empty-list">
+              {t("Services are not available")}
+            </Box>
+          ) : (
+            <Stack className="service-list-mobile">
+              {service.map((service: Service) => {
+                return (
+                  <Stack key={service._id} className="service-card-mobile">
+                    <Box className="service-card-img">
+                      <img
+                        src={
+                          service.serviceImages?.[0]
+                            ? `${process.env.REACT_APP_API_URL}/${service.serviceImages[0]}`
+                            : "/logo/Logo.svg"
+                        }
+                        alt=""
+                      />
+                      <Box className="service-price-tag">
+                        ${service.servicePrice}
+                      </Box>
+                    </Box>
+                    <Stack className="service-card-body">
+                      <Typography className="service-title">
+                        {service.serviceTitle}
+                      </Typography>
+                      <Typography className="service-desc">
+                        {service.serviceDesc}
+                      </Typography>
+                      <Stack className="service-card-footer">
+                        <span className="service-time">
+                          {service.serviceDuration} {t("min")}
+                        </span>
+                        <Stack className="review-stars">
+                          <Rating
+                            value={5}
+                            readOnly
+                            size="small"
+                            sx={{
+                              "& .MuiRating-iconFilled": {
+                                color: "#FFD700 !important",
+                              },
+                            }}
+                          />
+                          <span>({service.serviceReviews})</span>
+                        </Stack>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                );
+              })}
+            </Stack>
+          )}
+          <Stack className={"pagination-config-mobile"}>
+            {service.length > 0 && Math.ceil(total / pageFilter.limit) > 1 && (
+              <Pagination
+                page={pageFilter.page ?? 1}
+                count={Math.ceil(total / pageFilter.limit)}
+                onChange={paginationChangeHandler}
+                shape="circular"
+                size="small"
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    color: "#004034",
+                    borderColor: "#004034",
+                  },
+                  "& .MuiPaginationItem-root.Mui-selected": {
+                    backgroundColor: "#C6D984",
+                    color: "#fff",
+                  },
+                }}
+              />
+            )}
+            {service.length !== 0 && (
+              <span className="page-text">
+                {t("Total")} {total}{" "}
+                {total > 1 ? t("services") : t("service")} {t("available")}
+              </span>
+            )}
+          </Stack>
+        </Stack>
+      </Stack>
+    );
   } else {
     return (
       <Stack className="service-page">
         <Typography className="hero-title">{t("Services")}</Typography>
         <Stack className="container">
           <Stack className="service-main">
-            <Stack className="service-main-title">Our Signature Services</Stack>
+            <Stack className="service-main-title">{t("Our Signature Services")}</Stack>
             {service.length === 0 ? (
               <Box component={"div"} className="empty-list">
-                Services are not available
+                {t("Services are not available")}
               </Box>
             ) : (
               <>
@@ -110,7 +199,7 @@ const OurService: NextPage<ServiceProps> = (props) => {
                           {service.serviceDesc}
                         </Typography>
                         <Typography className="service-time">
-                          {service.serviceDuration} min
+                          {service.serviceDuration} {t("min")}
                         </Typography>
                         <Stack className="review-stars">
                           <Rating
@@ -172,7 +261,7 @@ const OurService: NextPage<ServiceProps> = (props) => {
               </Stack>
               {service.length !== 0 && (
                 <span>
-                  Total {total} service{total > 1 ? "s" : ""} available
+                  {t("Total")} {total} {total > 1 ? t("services") : t("service")} {t("available")}
                 </span>
               )}
             </Stack>

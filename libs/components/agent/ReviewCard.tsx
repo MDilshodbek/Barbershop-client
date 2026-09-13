@@ -21,6 +21,7 @@ import {
   sweetMixinSuccessAlert,
 } from "../../sweetAlert";
 import { ReviewStatus } from "../../enums/review.enum";
+import { useTranslation } from "react-i18next";
 
 interface ReviewCardProps {
   fromMyPage?: string;
@@ -36,6 +37,7 @@ const ReviewCard = (props: ReviewCardProps) => {
   const { fromMyPage, review, onRefetch, onUpdate } = props;
   const device = useDeviceDetect();
   const user = useReactiveVar(userVar);
+  const { t } = useTranslation("common");
   const [openBackdrop, setOpenBackdrop] = useState<boolean>(false);
   const [updatedReview, setUpdatedReview] = useState<string>("");
 
@@ -45,9 +47,9 @@ const ReviewCard = (props: ReviewCardProps) => {
   ) => {
     try {
       if (!user._id) throw new Error(Messages.error2);
-      if (!reviewId) throw new Error("Select a review to update!");
+      if (!reviewId) throw new Error(t("Select a review to update!"));
       if (updatedReview.trim() === review?.reviewContent) return;
-      if (!onUpdate) throw new Error("Update handler not provided.");
+      if (!onUpdate) throw new Error(t("Update handler not provided."));
 
       const payload = {
         reviewId,
@@ -56,16 +58,16 @@ const ReviewCard = (props: ReviewCardProps) => {
       };
 
       if (!payload.reviewContent && !payload.reviewStatus)
-        throw new Error("Provide data to update your review!");
+        throw new Error(t("Provide data to update your review!"));
 
       if (reviewStatus) {
-        if (await sweetConfirmAlert("Do you want to delete the review?")) {
+        if (await sweetConfirmAlert(t("Do you want to delete the review?"))) {
           await onUpdate(payload);
-          await sweetMixinSuccessAlert("Successfully deleted!");
+          await sweetMixinSuccessAlert(t("Successfully deleted!"));
         } else return;
       } else {
         await onUpdate(payload);
-        await sweetMixinSuccessAlert("Successfully updated!");
+        await sweetMixinSuccessAlert(t("Successfully updated!"));
       }
       if (onRefetch) await onRefetch();
     } catch (error: any) {
@@ -89,11 +91,12 @@ const ReviewCard = (props: ReviewCardProps) => {
     ? `${REACT_APP_API_URL}/${review?.memberData?.memberImage}`
     : "/logo/defaultUser.svg";
 
-  if (null === "mobile") {
-    return <div>REVIEW CARD</div>;
-  } else {
+  {
     return (
-      <Box component={"div"} className={"review-card"}>
+      <Box
+        component={"div"}
+        className={`review-card ${device === "mobile" ? "review-card-mobile" : ""}`}
+      >
         <div className={"info"}>
           <div className={"left"}>
             <img src={imagePath} alt="" />
@@ -124,16 +127,30 @@ const ReviewCard = (props: ReviewCardProps) => {
                 <EditIcon sx={{ color: "#757575" }} />
               </IconButton>
               <Backdrop
-                sx={{
-                  top: "40%",
-                  right: "25%",
-                  left: "25%",
-                  width: "1000px",
-                  height: "fit-content",
-                  borderRadius: "10px",
-                  color: "#ffffff",
-                  zIndex: 999,
-                }}
+                sx={
+                  device === "mobile"
+                    ? {
+                        top: "auto",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        width: "100%",
+                        height: "fit-content",
+                        borderRadius: "16px 16px 0 0",
+                        color: "#ffffff",
+                        zIndex: 999,
+                      }
+                    : {
+                        top: "40%",
+                        right: "25%",
+                        left: "25%",
+                        width: "1000px",
+                        height: "fit-content",
+                        borderRadius: "10px",
+                        color: "#ffffff",
+                        zIndex: 999,
+                      }
+                }
                 open={openBackdrop}
               >
                 <Stack
@@ -149,7 +166,7 @@ const ReviewCard = (props: ReviewCardProps) => {
                   }}
                 >
                   <Typography variant="h4" color={"#b9b9b9"}>
-                    Update review
+                    {t("Update review")}
                   </Typography>
                   <Stack gap={"20px"}>
                     <input
@@ -182,7 +199,7 @@ const ReviewCard = (props: ReviewCardProps) => {
                           color="inherit"
                           onClick={() => cancelButtonHandler()}
                         >
-                          Cancel
+                          {t("Cancel")}
                         </Button>
                         <Button
                           variant="contained"
@@ -191,7 +208,7 @@ const ReviewCard = (props: ReviewCardProps) => {
                             updateButtonHandler(review?._id, undefined)
                           }
                         >
-                          Update
+                          {t("Update")}
                         </Button>
                       </Stack>
                     </Stack>
@@ -224,7 +241,7 @@ const ReviewCard = (props: ReviewCardProps) => {
                 </clipPath>
               </defs>
             </svg>
-            <Typography className="reply-text">Reply</Typography>
+            <Typography className="reply-text">{t("Reply")}</Typography>
           </Stack>
         )} */}
       </Box>

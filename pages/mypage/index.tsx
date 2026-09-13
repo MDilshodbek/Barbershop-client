@@ -61,7 +61,7 @@ const MyPage: NextPage = () => {
       // execute likeTargetProperty Mutation
       await likeTargetMember({ variables: { input: id } });
 
-      await sweetTopSmallSuccessAlert("success", 800);
+      await sweetTopSmallSuccessAlert(t("success"), 800);
       await refetch({ input: query });
     } catch (error: any) {
       sweetMixinErrorAlert(error.message).then();
@@ -78,7 +78,7 @@ const MyPage: NextPage = () => {
           input: id,
         },
       });
-      await sweetTopSmallSuccessAlert("Subscribed!", 800);
+      await sweetTopSmallSuccessAlert(t("Subscribed!"), 800);
       await refetch({ input: query });
     } catch (err: any) {
       sweetErrorHandling(err).then();
@@ -95,7 +95,7 @@ const MyPage: NextPage = () => {
           input: id,
         },
       });
-      await sweetTopSmallSuccessAlert("Unsubscribed!", 800);
+      await sweetTopSmallSuccessAlert(t("Unsubscribed!"), 800);
       await refetch({ input: query });
     } catch (err: any) {
       sweetErrorHandling(err).then();
@@ -113,7 +113,43 @@ const MyPage: NextPage = () => {
   };
 
   if (device === "mobile") {
-    return <div>MY PAGE</div>;
+    return (
+      <div id="my-page-mobile">
+        <Typography className="hero-title">{t("My Page")}</Typography>
+        <div className="container">
+          <MyMenu />
+          <Stack className={"list-config-mobile"}>
+            {category === "addService" && <AddService />}
+            {category === "ourServices" && <OurServiceList />}
+            {category === "ourMembers" && <OurMemberList />}
+            {category === "ourArticles" && <OurCommunityArticle />}
+            {category === "ourStatistics" && <OurStatistics />}
+            {category === "myReservations" && <ReservationCard />}
+            {category === "mySchedule" && <MySchedule />}
+            {category === "myFavorites" && <MyFavorites />}
+            {category === "myArticles" && <MyArticles />}
+            {category === "writeArticle" && <WriteArticle />}
+            {category === "myProfile" && <MyProfile />}
+            {category === "followers" && (
+              <MemberFollowers
+                subscribeHandler={subscribeHandler}
+                unsubscribeHandler={unsubscribeHandler}
+                redirectToMemberPageHandler={redirectToMemberPageHandler}
+                likeMemberHandler={likeMemberHandler}
+              />
+            )}
+            {category === "followings" && (
+              <MemberFollowings
+                subscribeHandler={subscribeHandler}
+                unsubscribeHandler={unsubscribeHandler}
+                redirectToMemberPageHandler={redirectToMemberPageHandler}
+                likeMemberHandler={likeMemberHandler}
+              />
+            )}
+          </Stack>
+        </div>
+      </div>
+    );
   } else {
     return (
       <div id="my-page" style={{ position: "relative" }}>

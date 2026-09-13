@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { styled } from "@mui/material/styles";
 import useDeviceDetect from "../../hooks/useDeviceDetect";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import { useTranslation } from "react-i18next";
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -39,6 +40,7 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
 const Faquestions = () => {
   const device = useDeviceDetect();
   const router = useRouter();
+  const { t } = useTranslation("common");
   const [category, setCategory] = useState<string>("service");
   const [expanded, setExpanded] = useState<string | false>("panel1");
 
@@ -366,7 +368,79 @@ const Faquestions = () => {
   };
 
   if (device === "mobile") {
-    return <div>FAQ MOBILE</div>;
+    return (
+      <Stack className={"faq-content-mobile"}>
+        <Box className={"categories-mobile"} component={"div"}>
+          <div
+            className={category === "service" ? "active" : ""}
+            onClick={() => changeCategoryHandler("service")}
+          >
+            {t("Service")}
+          </div>
+          <div
+            className={category === "users" ? "active" : ""}
+            onClick={() => changeCategoryHandler("users")}
+          >
+            {t("For Users")}
+          </div>
+          <div
+            className={category === "barbers" ? "active" : ""}
+            onClick={() => changeCategoryHandler("barbers")}
+          >
+            {t("For Barbers")}
+          </div>
+          <div
+            className={category === "community" ? "active" : ""}
+            onClick={() => changeCategoryHandler("community")}
+          >
+            {t("Community")}
+          </div>
+          <div
+            className={category === "other" ? "active" : ""}
+            onClick={() => changeCategoryHandler("other")}
+          >
+            {t("Other")}
+          </div>
+        </Box>
+        <Box className={"wrap-mobile"} component={"div"}>
+          {data[category] &&
+            data[category].map((ele: any) => (
+              <Accordion
+                expanded={expanded === ele?.id}
+                onChange={handleChange(ele?.id)}
+                key={ele?.subject}
+              >
+                <AccordionSummary
+                  id="panel1d-header"
+                  className="question"
+                  aria-controls="panel1d-content"
+                >
+                  <Typography className="badge" variant={"h4"}>
+                    Q
+                  </Typography>
+                  <Typography className="question-text">
+                    {t(ele?.subject)}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Stack className={"answer flex-box"}>
+                    <Typography
+                      className="badge"
+                      variant={"h4"}
+                      color={"primary"}
+                    >
+                      A
+                    </Typography>
+                    <Typography className="answer-text">
+                      {t(ele?.content)}
+                    </Typography>
+                  </Stack>
+                </AccordionDetails>
+              </Accordion>
+            ))}
+        </Box>
+      </Stack>
+    );
   } else {
     return (
       <Stack className={"faq-content"}>
@@ -377,7 +451,7 @@ const Faquestions = () => {
               changeCategoryHandler("service");
             }}
           >
-            Service
+            {t("Service")}
           </div>
           <div
             className={category === "users" ? "active" : ""}
@@ -385,7 +459,7 @@ const Faquestions = () => {
               changeCategoryHandler("users");
             }}
           >
-            For Users
+            {t("For Users")}
           </div>
           <div
             className={category === "barbers" ? "active" : ""}
@@ -393,7 +467,7 @@ const Faquestions = () => {
               changeCategoryHandler("barbers");
             }}
           >
-            For Barbers
+            {t("For Barbers")}
           </div>
           <div
             className={category === "community" ? "active" : ""}
@@ -401,7 +475,7 @@ const Faquestions = () => {
               changeCategoryHandler("community");
             }}
           >
-            Community
+            {t("Community")}
           </div>
           <div
             className={category === "other" ? "active" : ""}
@@ -409,7 +483,7 @@ const Faquestions = () => {
               changeCategoryHandler("other");
             }}
           >
-            Other
+            {t("Other")}
           </div>
         </Box>
         <Box className={"wrap"} component={"div"}>
@@ -428,7 +502,7 @@ const Faquestions = () => {
                   <Typography className="badge" variant={"h4"}>
                     Q
                   </Typography>
-                  <Typography> {ele?.subject}</Typography>
+                  <Typography> {t(ele?.subject)}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <Stack className={"answer flex-box"}>
@@ -439,7 +513,7 @@ const Faquestions = () => {
                     >
                       A
                     </Typography>
-                    <Typography> {ele?.content}</Typography>
+                    <Typography> {t(ele?.content)}</Typography>
                   </Stack>
                 </AccordionDetails>
               </Accordion>

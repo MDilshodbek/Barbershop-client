@@ -18,6 +18,7 @@ import { Stack } from "@mui/material";
 import { Member } from "../../types/member/member";
 import { REACT_APP_API_URL } from "../../config";
 import { MemberStatus, MemberType } from "../../enums/member.enum";
+import { useTranslation } from "react-i18next";
 
 interface Data {
   id: string;
@@ -107,6 +108,7 @@ interface EnhancedTableProps {
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { onSelectAllClick } = props;
+  const { t } = useTranslation("common");
 
   return (
     <TableHead>
@@ -117,7 +119,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             align={headCell.numeric ? "left" : "center"}
             padding={headCell.disablePadding ? "none" : "normal"}
           >
-            {headCell.label}
+            {t(headCell.label)}
           </TableCell>
         ))}
       </TableRow>
@@ -134,6 +136,7 @@ interface MemberPanelListType {
 }
 
 export const MemberPanelList = (props: MemberPanelListType) => {
+  const { t } = useTranslation("common");
   const {
     members,
     anchorEl,
@@ -171,7 +174,7 @@ export const MemberPanelList = (props: MemberPanelListType) => {
                         <Link href={`/member?memberId=${member._id}`}>
                           <div>
                             <Avatar
-                              alt="Remy Sharp"
+                              alt={t("Member photo")}
                               src={member_image}
                               sx={{ ml: "2px", mr: "10px" }}
                             />

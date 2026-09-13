@@ -19,6 +19,7 @@ import { Service } from "../../types/service/service";
 import { REACT_APP_API_URL } from "../../config";
 import { ServiceStatus } from "../../enums/service.enum";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useTranslation } from "react-i18next";
 
 interface Data {
   id: string;
@@ -91,6 +92,7 @@ interface EnhancedTableProps {
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { onSelectAllClick } = props;
+  const { t } = useTranslation("common");
 
   return (
     <TableHead>
@@ -101,7 +103,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             align={headCell.numeric ? "left" : "center"}
             padding={headCell.disablePadding ? "none" : "normal"}
           >
-            {headCell.label}
+            {t(headCell.label)}
           </TableCell>
         ))}
       </TableRow>
@@ -118,6 +120,7 @@ interface ServicePanelListType {
 }
 
 export const ServicePanelList = (props: ServicePanelListType) => {
+  const { t } = useTranslation("common");
   const {
     service,
     anchorEl,
@@ -152,7 +155,7 @@ export const ServicePanelList = (props: ServicePanelListType) => {
                       <Stack direction={"row"} style={{ alignItems: "center" }}>
                         <div>
                           <Avatar
-                            alt="Remy Sharp"
+                            alt={t("Service photo")}
                             src={serviceImage}
                             sx={{ ml: "2px", mr: "10px" }}
                           />

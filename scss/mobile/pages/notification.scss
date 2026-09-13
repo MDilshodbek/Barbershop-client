@@ -1,0 +1,123 @@
+#mobile-wrap {
+	.notification-page-mobile {
+		padding: 24px $mobile-side-padding 40px $mobile-side-padding;
+		display: flex;
+		flex-direction: column;
+
+		.hero-title {
+			color: #004034;
+			font-family: 'Limelight', serif;
+			font-size: 26px;
+			text-align: center;
+			margin-bottom: 16px;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+		}
+
+		.empty-list {
+			width: 100%;
+			min-height: 160px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.no-data {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 8px;
+			color: #004034;
+			font-family: 'DM Sans';
+			font-size: 13px;
+			font-weight: 600;
+
+			.info-icon {
+				color: #9fae9c;
+				font-size: 24px;
+			}
+		}
+	}
+
+	.notice-content-mobile {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.title-box-mobile {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+
+		.title {
+			color: #004034;
+			font-family: 'Limelight', serif;
+			font-size: 18px;
+		}
+
+		.read-all {
+			color: #004034;
+			font-family: 'DM Sans';
+			font-size: 12px;
+			font-weight: 700;
+			text-transform: none;
+			background: #f7f9f4;
+			border: 1px solid #e3ead9;
+			border-radius: 999px;
+			padding: 6px 14px;
+		}
+	}
+
+	.notice-list-mobile {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.notice-card-mobile {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		background: #ffffff;
+		border: 1px solid #e3ead9;
+		border-radius: 14px;
+		padding: 12px 14px 12px 22px;
+		box-shadow: 0 10px 22px rgba(0, 64, 52, 0.06);
+		cursor: pointer;
+
+		&.unread {
+			background: #f7f9f4;
+			border-color: #c6d984;
+		}
+
+		.unread-dot {
+			position: absolute;
+			left: 10px;
+			top: 16px;
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			background: #e92c28;
+		}
+
+		.notice-title-mobile {
+			color: #14231d;
+			font-family: 'DM Sans';
+			font-size: 13px;
+			font-weight: 600;
+			line-height: 18px;
+		}
+
+		.notice-date-mobile {
+			color: #9fae9c;
+			font-family: 'DM Sans';
+			font-size: 11px;
+		}
+	}
+}

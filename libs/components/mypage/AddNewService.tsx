@@ -16,8 +16,10 @@ import { CREATE_SERVICE, UPDATE_SERVICE } from "../../../apollo/admin/mutation";
 import { GET_SERVICE } from "../../../apollo/admin/query";
 import { ServiceType } from "../../enums/service.enum";
 import { ServiceInput } from "../../types/service/service.input";
+import { useTranslation } from "react-i18next";
 
 const AddService = ({ initialValues, ...props }: any) => {
+  const { t } = useTranslation("common");
   const device = useDeviceDetect();
   const router = useRouter();
   const inputRef = useRef<any>(null);
@@ -76,7 +78,7 @@ const AddService = ({ initialValues, ...props }: any) => {
 
       if (selectedFiles.length == 0) return false;
       if (selectedFiles.length > 5)
-        throw new Error("Cannot upload more than 5 images!");
+        throw new Error(t("Cannot upload more than 5 images!"));
 
       formData.append(
         "operations",
@@ -149,7 +151,7 @@ const AddService = ({ initialValues, ...props }: any) => {
       });
 
       await sweetMixinSuccessAlert(
-        "This service has been created successfully"
+        t("This service has been created successfully")
       );
       await router.push({
         pathname: "/mypage",
@@ -173,7 +175,7 @@ const AddService = ({ initialValues, ...props }: any) => {
       });
 
       await sweetMixinSuccessAlert(
-        "this service has been updated successfully"
+        t("this service has been updated successfully")
       );
       await router.push({
         pathname: "/mypage",
@@ -190,25 +192,17 @@ const AddService = ({ initialValues, ...props }: any) => {
     router.back();
   }
 
-  if (device === "mobile") {
-    return <div>ADD NEW PROPERTY MOBILE PAGE</div>;
-  } else {
-    return (
-      <div id="add-property-page">
-        <Stack className="main-title-box">
-          <Typography className="main-title">Add New Service</Typography>
-        </Stack>
-
+  const formBody = (
         <div>
           <Stack className="config">
             <Stack className="description-box">
               <Stack className="config-row">
                 <Stack className="price-year-after-price">
-                  <Typography className="title">Title</Typography>
+                  <Typography className="title">{t("Title")}</Typography>
                   <input
                     type="text"
                     className="description-input"
-                    placeholder={"Title"}
+                    placeholder={t("Title")}
                     value={insertServiceData.serviceTitle}
                     onChange={({ target: { value } }) =>
                       setInsertServiceData({
@@ -219,11 +213,11 @@ const AddService = ({ initialValues, ...props }: any) => {
                   />
                 </Stack>
                 <Stack className="price-year-after-price">
-                  <Typography className="title">Price</Typography>
+                  <Typography className="title">{t("Price")}</Typography>
                   <input
                     type="text"
                     className="description-input"
-                    placeholder={"Price"}
+                    placeholder={t("Price")}
                     value={insertServiceData.servicePrice}
                     onChange={({ target: { value } }) =>
                       setInsertServiceData({
@@ -237,11 +231,11 @@ const AddService = ({ initialValues, ...props }: any) => {
 
               <Stack className="config-row">
                 <Stack className="price-year-after-price">
-                  <Typography className="title">Service Duration</Typography>
+                  <Typography className="title">{t("Service Duration")}</Typography>
                   <input
                     type="text"
                     className="description-input"
-                    placeholder={"Service Duration"}
+                    placeholder={t("Service Duration")}
                     value={insertServiceData.serviceDuration}
                     onChange={({ target: { value } }) =>
                       setInsertServiceData({
@@ -252,7 +246,7 @@ const AddService = ({ initialValues, ...props }: any) => {
                   />
                 </Stack>
                 <Stack className="price-year-after-price">
-                  <Typography className="title">Select Type</Typography>
+                  <Typography className="title">{t("Select Type")}</Typography>
                   <select
                     className={"select-description"}
                     defaultValue={insertServiceData.serviceType || "select"}
@@ -268,7 +262,7 @@ const AddService = ({ initialValues, ...props }: any) => {
                   >
                     <>
                       <option selected={true} disabled={true} value={"select"}>
-                        Select
+                        {t("Select")}
                       </option>
                       {serviceType.map((type: any) => (
                         <option value={`${type}`} key={type}>
@@ -283,7 +277,7 @@ const AddService = ({ initialValues, ...props }: any) => {
               </Stack>
 
               <Stack className="config-column">
-                <Typography className="title">Description</Typography>
+                <Typography className="title">{t("Description")}</Typography>
                 <textarea
                   name=""
                   id=""
@@ -300,7 +294,7 @@ const AddService = ({ initialValues, ...props }: any) => {
             </Stack>
 
             <Typography className="upload-title">
-              Upload photos of the service
+              {t("Upload photos of the service")}
             </Typography>
             <Stack className="images-box">
               <Stack className="upload-box">
@@ -358,10 +352,10 @@ const AddService = ({ initialValues, ...props }: any) => {
                 </svg>
                 <Stack className="text-box">
                   <Typography className="drag-title">
-                    Drag and drop images here
+                    {t("Drag and drop images here")}
                   </Typography>
                   <Typography className="format-title">
-                    Photos must be JPEG or PNG format and least 2048x768
+                    {t("Photos must be JPEG or PNG format and least 2048x768")}
                   </Typography>
                 </Stack>
                 <Button
@@ -372,7 +366,7 @@ const AddService = ({ initialValues, ...props }: any) => {
                   }}
                 >
                   <Typography className="browse-button-text">
-                    Browse Files
+                    {t("Browse Files")}
                   </Typography>
                   <input
                     ref={inputRef}
@@ -422,7 +416,7 @@ const AddService = ({ initialValues, ...props }: any) => {
                   disabled={doDisabledCheck()}
                   onClick={updatePropertyHandler}
                 >
-                  <Typography className="next-button-text">Save</Typography>
+                  <Typography className="next-button-text">{t("Save")}</Typography>
                 </Button>
               ) : (
                 <Button
@@ -430,15 +424,33 @@ const AddService = ({ initialValues, ...props }: any) => {
                   disabled={doDisabledCheck()}
                   onClick={insertServiceHandler}
                 >
-                  <Typography className="next-button-text">Save</Typography>
+                  <Typography className="next-button-text">{t("Save")}</Typography>
                 </Button>
               )}
             </Stack>
           </Stack>
         </div>
+  );
+
+  if (device === "mobile") {
+    return (
+      <div id="add-property-page-mobile">
+        <Stack className="main-title-box">
+          <Typography className="main-title">{t("Add New Service")}</Typography>
+        </Stack>
+        {formBody}
       </div>
     );
   }
+
+  return (
+    <div id="add-property-page">
+      <Stack className="main-title-box">
+        <Typography className="main-title">{t("Add New Service")}</Typography>
+      </Stack>
+      {formBody}
+    </div>
+  );
 };
 
 AddService.defaultProps = {

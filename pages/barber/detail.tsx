@@ -156,7 +156,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
 
       // execute getPropertiesRefetch
       await getMemberRefetch({ input: barberId });
-      await sweetTopSmallSuccessAlert("success", 800);
+      await sweetTopSmallSuccessAlert(t("success"), 800);
     } catch (error: any) {
       sweetMixinErrorAlert(error.message).then();
     }
@@ -176,10 +176,10 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
     try {
       if (!user._id) throw new Error(Messages.error2);
       if (user._id === barberId)
-        throw new Error(`Cannot write review for yourself`);
+        throw new Error(t('Cannot write review for yourself'));
 
       if (!insertReviewData.rating || insertReviewData.rating <= 0) {
-        throw new Error("Please add a rating before submitting your review");
+        throw new Error(t('Please add a rating before submitting your review'));
       }
 
       await createReview({ variables: { input: insertReviewData } });
@@ -199,7 +199,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
           input: id,
         },
       });
-      await sweetTopSmallSuccessAlert("Subscribed!", 800);
+      await sweetTopSmallSuccessAlert(t("Subscribed!"), 800);
       await refetch({ input: query });
     } catch (err: any) {
       sweetErrorHandling(err).then();
@@ -216,7 +216,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
           input: id,
         },
       });
-      await sweetTopSmallSuccessAlert("Unsubscribed!", 800);
+      await sweetTopSmallSuccessAlert(t("Unsubscribed!"), 800);
       await refetch({ input: query });
     } catch (err: any) {
       sweetErrorHandling(err).then();
@@ -274,7 +274,271 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
   };
 
   if (device === "mobile") {
-    return <Stack>Barber Detail Page mobile</Stack>;
+    return (
+      <Stack className="bdetail-page-mobile">
+        <Typography className="hero-title">{t("Barber Page")}</Typography>
+        <Stack className="container">
+          <Stack className="bdetail-box">
+            <Box className="bdetail-avatar">
+              <img
+                src={
+                  barber?.memberImage
+                    ? `${process.env.REACT_APP_API_URL}/${barber?.memberImage}`
+                    : "/logo/defaultUser.svg"
+                }
+                alt=""
+              />
+            </Box>
+            <Stack className="bdetail-info">
+              <Typography className="barber-name">
+                {barber?.memberFullName}
+              </Typography>
+              <Stack className="barber-level">
+                <Typography className="barber-level1">{t("Level:")}</Typography>
+                <Typography className="barber-level2">
+                  {barber?.memberLevel}
+                </Typography>
+              </Stack>
+              <Rating
+                className="review-starts"
+                value={5}
+                readOnly
+                size="small"
+                sx={{ "& .MuiRating-iconFilled": { color: "#FFD700 !important" } }}
+              />
+              <Typography className="barber-desc">
+                {barber?.memberDesc}
+              </Typography>
+
+              <Stack className="blike-box">
+                <Box className="barber-like">
+                  <IconButton
+                    color={"default"}
+                    onClick={() => {
+                      if (!barber?._id) return;
+                      likeMemberHandler(user, barber._id);
+                    }}
+                  >
+                    {barber?.meLiked && barber?.meLiked[0]?.myFavorite ? (
+                      <FavoriteIcon style={{ color: "red" }} />
+                    ) : (
+                      <FavoriteBorderIcon style={{ color: "#004034" }} />
+                    )}
+                  </IconButton>
+                  <Typography className="view-cnt">
+                    {barber?.memberLikes}
+                  </Typography>
+                </Box>
+                <Box className="barber-like">
+                  <IconButton color={"default"}>
+                    <RemoveRedEyeIcon style={{ color: "#004034" }} />
+                  </IconButton>
+                  <Typography className="view-cnt">
+                    {barber?.memberViews}
+                  </Typography>
+                </Box>
+                <Stack className="bcontact-box">
+                  <FacebookOutlinedIcon style={{ color: "#004034" }} />
+                  <InstagramIcon style={{ color: "#004034" }} />
+                  <XIcon style={{ color: "#004034" }} />
+                </Stack>
+              </Stack>
+
+              {user?._id !== barber?._id && (
+                <Stack className="bfollow-box">
+                  {barber?.meFollowed && barber.meFollowed[0]?.myFollowing ? (
+                    <>
+                      <Button
+                        onClick={() =>
+                          unsubscribeHandler(
+                            barber?._id,
+                            getMemberRefetch,
+                            barberId
+                          )
+                        }
+                        className="follow-butt following"
+                      >
+                        {t("Unfollow")}
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        if (barber?._id) {
+                          subscribeHandler(
+                            barber._id,
+                            getMemberRefetch,
+                            barberId
+                          );
+                        }
+                      }}
+                      className="follow-butt"
+                    >
+                      {t("Follow")}
+                    </Button>
+                  )}
+                </Stack>
+              )}
+            </Stack>
+          </Stack>
+
+          <Stack className="bdetail-tabs">
+            <Button
+              className={category === "reviews" ? "active-butt" : "default-butt"}
+              onClick={() => handleCategoryChange("reviews")}
+            >
+              {t("Reviews")}
+              <span>({barber?.memberReviews})</span>
+            </Button>
+            <Button
+              className={category === "articles" ? "active-butt" : "default-butt"}
+              onClick={() => handleCategoryChange("articles")}
+            >
+              {t("Articles")}
+              <span>({barber?.memberArticles})</span>
+            </Button>
+            <Button
+              className={category === "followers" ? "active-butt" : "default-butt"}
+              onClick={() => handleCategoryChange("followers")}
+            >
+              {t("Followers")}
+              <span>({barber?.memberFollowers})</span>
+            </Button>
+            <Button
+              className={category === "followings" ? "active-butt" : "default-butt"}
+              onClick={() => handleCategoryChange("followings")}
+            >
+              {t("Followings")}
+              <span>({barber?.memberFollowings})</span>
+            </Button>
+          </Stack>
+
+          {category === "reviews" && (
+            <Stack className={"review-box"}>
+              <Stack className={"main-intro"}>
+                <span>{t("Reviews")}</span>
+                <p>{t("we are glad to see you again")}</p>
+              </Stack>
+
+              {reviewTotal !== 0 && (
+                <Stack className={"review-wrap"}>
+                  <Box component={"div"} className={"title-box"}>
+                    <StarIcon />
+                    <span>
+                      {reviewTotal} {reviewTotal > 1 ? t("reviews") : t("review")}
+                    </span>
+                  </Box>
+                  {barberReviews?.map((review: Review) => {
+                    return (
+                      <ReviewCard
+                        review={review}
+                        key={review?._id}
+                        onUpdate={handleUpdateReview}
+                      />
+                    );
+                  })}
+                  <Box component={"div"} className={"pagination-box"}>
+                    <Pagination
+                      page={reviewInquiry.page}
+                      count={Math.ceil(reviewTotal / reviewInquiry.limit) || 1}
+                      onChange={reviewPaginationChangeHandler}
+                      shape="circular"
+                      size="small"
+                      sx={{
+                        "& .MuiPaginationItem-root": {
+                          color: "#004034",
+                          borderColor: "#004034",
+                        },
+                        "& .MuiPaginationItem-root.Mui-selected": {
+                          backgroundColor: "#C6D984",
+                          color: "#fff",
+                        },
+                      }}
+                    />
+                  </Box>
+                </Stack>
+              )}
+
+              <Stack className={"leave-review-config"}>
+                <Typography className={"main-title"}>
+                  {t("Leave A Review")}
+                </Typography>
+                <Typography className={"review-title"}>{t("Rating")}</Typography>
+                <Box className={"rating-row"}>
+                  <Rating
+                    value={insertReviewData.rating}
+                    onChange={(_, newValue) => {
+                      setInsertReviewData({
+                        ...insertReviewData,
+                        rating: newValue ?? 0,
+                      });
+                    }}
+                    size="medium"
+                  />
+                  <Typography className={"rating-value"}>
+                    {insertReviewData.rating > 0
+                      ? `${insertReviewData.rating.toFixed(1)} / 5`
+                      : t("No rating yet")}
+                  </Typography>
+                </Box>
+                <Typography className={"review-title"}>{t("Review")}</Typography>
+                <textarea
+                  className="review-content"
+                  onChange={({ target: { value } }: any) => {
+                    setInsertReviewData({
+                      ...insertReviewData,
+                      reviewContent: value,
+                    });
+                  }}
+                  value={insertReviewData.reviewContent}
+                ></textarea>
+                <Box className={"submit-btn"} component={"div"}>
+                  <Button
+                    className={"submit-review"}
+                    disabled={
+                      insertReviewData.reviewContent === "" || user?._id === ""
+                    }
+                    onClick={createReviewHandler}
+                  >
+                    <Typography className={"title"}>
+                      {t("Submit Review")}
+                    </Typography>
+                  </Button>
+                </Box>
+              </Stack>
+            </Stack>
+          )}
+
+          {category === "articles" && (
+            <Stack className="button-router">
+              <MemberArticles />
+            </Stack>
+          )}
+
+          {category === "followers" && (
+            <Stack className="button-router">
+              <MemberFollowers
+                subscribeHandler={subscribeHandler}
+                unsubscribeHandler={unsubscribeHandler}
+                redirectToMemberPageHandler={redirectToMemberPageHandler}
+                likeMemberHandler={likeMemberHandler}
+              />
+            </Stack>
+          )}
+
+          {category === "followings" && (
+            <Stack className="button-router">
+              <MemberFollowings
+                subscribeHandler={subscribeHandler}
+                unsubscribeHandler={unsubscribeHandler}
+                redirectToMemberPageHandler={redirectToMemberPageHandler}
+                likeMemberHandler={likeMemberHandler}
+              />
+            </Stack>
+          )}
+        </Stack>
+      </Stack>
+    );
   } else {
     return (
       <Stack className="bdetail-page">
@@ -297,7 +561,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                   {barber?.memberFullName}
                 </Typography>
                 <Stack className="barber-level">
-                  <Typography className="barber-level1">Level:</Typography>
+                  <Typography className="barber-level1">{t("Level:")}</Typography>
                   <Typography className="barber-level2">
                     {barber?.memberLevel}
                   </Typography>
@@ -396,10 +660,10 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                           }
                           className="follow-butt"
                         >
-                          Unfollow
+                          {t("Unfollow")}
                         </Button>
                         <Typography className="follow-status">
-                          Following
+                          {t("Following")}
                         </Typography>
                       </>
                     ) : (
@@ -423,7 +687,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                         }}
                         className="follow-butt"
                       >
-                        Follow
+                        {t("Follow")}
                       </Button>
                     )}
                   </Stack>
@@ -438,7 +702,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                 }
                 onClick={() => handleCategoryChange("reviews")}
               >
-                Reviews
+                {t("Reviews")}
                 <span>({barber?.memberReviews})</span>
               </Button>
               <Button
@@ -447,7 +711,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                 }
                 onClick={() => handleCategoryChange("articles")}
               >
-                Articles
+                {t("Articles")}
                 <span>({barber?.memberArticles})</span>
               </Button>
               <Button
@@ -456,7 +720,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                 }
                 onClick={() => handleCategoryChange("followers")}
               >
-                Followers
+                {t("Followers")}
                 <span>({barber?.memberFollowers})</span>
               </Button>
               <Button
@@ -465,7 +729,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                 }
                 onClick={() => handleCategoryChange("followings")}
               >
-                Followings
+                {t("Followings")}
                 <span>({barber?.memberFollowings})</span>
               </Button>
             </Stack>
@@ -473,8 +737,8 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
             {category === "reviews" && (
               <Stack className={"review-box"}>
                 <Stack className={"main-intro"}>
-                  <span>Reviews</span>
-                  <p>we are glad to see you again</p>
+                  <span>{t("Reviews")}</span>
+                  <p>{t("we are glad to see you again")}</p>
                 </Stack>
 
                 {reviewTotal !== 0 && (
@@ -482,7 +746,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                     <Box component={"div"} className={"title-box"}>
                       <StarIcon />
                       <span>
-                        {reviewTotal} review{reviewTotal > 1 ? "s" : ""}
+                        {reviewTotal} {reviewTotal > 1 ? t("reviews") : t("review")}
                       </span>
                     </Box>
                     {barberReviews?.map((review: Review) => {
@@ -523,9 +787,9 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
 
                 <Stack className={"leave-review-config"}>
                   <Typography className={"main-title"}>
-                    Leave A Review
+                    {t("Leave A Review")}
                   </Typography>
-                  <Typography className={"review-title"}>Rating</Typography>
+                  <Typography className={"review-title"}>{t("Rating")}</Typography>
                   <Box className={"rating-row"}>
                     <Rating
                       value={insertReviewData.rating}
@@ -540,10 +804,10 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                     <Typography className={"rating-value"}>
                       {insertReviewData.rating > 0
                         ? `${insertReviewData.rating.toFixed(1)} / 5`
-                        : "No rating yet"}
+                        : t("No rating yet")}
                     </Typography>
                   </Box>
-                  <Typography className={"review-title"}>Review</Typography>
+                  <Typography className={"review-title"}>{t("Review")}</Typography>
                   <textarea
                     className="review-content"
                     onChange={({ target: { value } }: any) => {
@@ -563,7 +827,7 @@ const BarberDetail: NextPage = ({ initialReview, ...props }: any) => {
                       }
                       onClick={createReviewHandler}
                     >
-                      <Typography className={"title"}>Submit Review</Typography>
+                      <Typography className={"title"}>{t("Submit Review")}</Typography>
                       {/* svg same as before */}
                     </Button>
                   </Box>

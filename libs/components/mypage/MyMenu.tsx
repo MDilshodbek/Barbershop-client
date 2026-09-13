@@ -11,8 +11,10 @@ import { REACT_APP_API_URL } from "../../config";
 import { logOut } from "../../auth";
 import { sweetConfirmAlert, sweetMixinErrorAlert } from "../../sweetAlert";
 import CallIcon from "@mui/icons-material/Call";
+import { useTranslation } from "react-i18next";
 
 const MyMenu = () => {
+  const { t } = useTranslation("common");
   const device = useDeviceDetect();
   const router = useRouter();
   const pathname = router.query.category ?? "myProfile";
@@ -22,7 +24,7 @@ const MyMenu = () => {
   /** HANDLERS **/
   const logoutHandler = async () => {
     try {
-      if (await sweetConfirmAlert("Do you want to logout?")) logOut();
+      if (await sweetConfirmAlert(t("Do you want to logout?"))) logOut();
       await router.push(`${router.query.referrer ?? "/"}`);
     } catch (err: any) {
       console.log("ERROR, logoutHandler:", err.message);
@@ -30,7 +32,81 @@ const MyMenu = () => {
   };
 
   if (device === "mobile") {
-    return <div>MY MENU</div>;
+    const items: { category: string; label: string; icon: string }[] = [];
+
+    if (user.memberType === "ADMIN") {
+      items.push(
+        { category: "addService", label: t("Add Service"), icon: "/img/icons/newTab.svg" },
+        { category: "ourServices", label: t("Our Services"), icon: "/img/icons/home.svg" },
+        { category: "ourMembers", label: t("Our Members"), icon: "/img/icons/home.svg" },
+        { category: "ourArticles", label: t("Our Articles"), icon: "/img/icons/home.svg" },
+        { category: "ourStatistics", label: t("Our Statistics"), icon: "/img/icons/home.svg" }
+      );
+    }
+    if (user.memberType === "USER") {
+      items.push({ category: "myReservations", label: t("My Reservations"), icon: "/img/icons/search.svg" });
+    }
+    if (user.memberType === "BARBER") {
+      items.push({ category: "mySchedule", label: t("My Schedule"), icon: "/img/icons/search.svg" });
+    }
+    if (user.memberType === "USER" || user.memberType === "BARBER") {
+      items.push(
+        { category: "myFavorites", label: t("My Favorites"), icon: "/img/icons/like.svg" },
+        { category: "followers", label: t("My Followers"), icon: "/img/icons/discovery.svg" },
+        { category: "followings", label: t("My Followings"), icon: "/img/icons/home.svg" }
+      );
+    }
+    if (user.memberType === "ADMIN" || user.memberType === "BARBER") {
+      items.push(
+        { category: "myArticles", label: t("Articles"), icon: "/img/icons/discovery.svg" },
+        { category: "writeArticle", label: t("Write Article"), icon: "/img/icons/newTab.svg" }
+      );
+    }
+    items.push({ category: "myProfile", label: t("My Profile"), icon: "/logo/User-avatar.png" });
+
+    return (
+      <Stack className="my-menu-mobile">
+        <Stack className="my-menu-profile-mobile">
+          <img
+            src={
+              user?.memberImage
+                ? `${REACT_APP_API_URL}/${user?.memberImage}`
+                : "/logo/defaultUser.svg"
+            }
+            alt=""
+          />
+          <Stack className="my-menu-profile-info">
+            <span className="name">{user?.memberNick}</span>
+            <span className="phone">
+              <CallIcon sx={{ fontSize: 14 }} />
+              {user?.memberPhone}
+            </span>
+          </Stack>
+        </Stack>
+        <Stack className="my-menu-tabs-mobile">
+          {items.map((item) => (
+            <Link
+              key={item.category}
+              href={{ pathname: "/mypage", query: { category: item.category } }}
+              scroll={false}
+            >
+              <div
+                className={`my-menu-pill ${
+                  pathname === item.category ? "active" : ""
+                }`}
+              >
+                <img src={item.icon} alt="" />
+                <span>{item.label}</span>
+              </div>
+            </Link>
+          ))}
+          <div className="my-menu-pill logout-pill" onClick={logoutHandler}>
+            <img src="/img/icons/logout.svg" alt="" />
+            <span>{t("Logout")}</span>
+          </div>
+        </Stack>
+      </Stack>
+    );
   } else {
     return (
       <Stack width={"100%"} padding={"30px 24px"}>
@@ -72,7 +148,7 @@ const MyMenu = () => {
             style={{ height: user.memberType === "AGENT" ? "228px" : "153px" }}
           >
             <Typography className="title" variant={"h5"}>
-              MANAGE LISTINGS
+              {t("MANAGE LISTINGS")}
             </Typography>
             <List className={"sub-section"}>
               {user.memberType === "ADMIN" && (
@@ -98,7 +174,7 @@ const MyMenu = () => {
                           variant={"subtitle1"}
                           component={"p"}
                         >
-                          Add Service
+                          {t("Add Service")}
                         </Typography>
                       </div>
                     </Link>
@@ -124,7 +200,7 @@ const MyMenu = () => {
                           variant={"subtitle1"}
                           component={"p"}
                         >
-                          Our Services
+                          {t("Our Services")}
                         </Typography>
                       </div>
                     </Link>
@@ -150,7 +226,7 @@ const MyMenu = () => {
                           variant={"subtitle1"}
                           component={"p"}
                         >
-                          Our Members
+                          {t("Our Members")}
                         </Typography>
                       </div>
                     </Link>
@@ -176,7 +252,7 @@ const MyMenu = () => {
                           variant={"subtitle1"}
                           component={"p"}
                         >
-                          Our Articles
+                          {t("Our Articles")}
                         </Typography>
                       </div>
                     </Link>
@@ -202,7 +278,7 @@ const MyMenu = () => {
                           variant={"subtitle1"}
                           component={"p"}
                         >
-                          Our Statistics
+                          {t("Our Statistics")}
                         </Typography>
                       </div>
                     </Link>
@@ -231,7 +307,7 @@ const MyMenu = () => {
                         variant={"subtitle1"}
                         component={"p"}
                       >
-                        My Resrvations
+                        {t("My Reservations")}
                       </Typography>
                     </div>
                   </Link>
@@ -257,7 +333,7 @@ const MyMenu = () => {
                         variant={"subtitle1"}
                         component={"p"}
                       >
-                        My Schedule
+                        {t("My Schedule")}
                       </Typography>
                     </div>
                   </Link>
@@ -288,7 +364,7 @@ const MyMenu = () => {
                           variant={"subtitle1"}
                           component={"p"}
                         >
-                          My Favorites
+                          {t("My Favorites")}
                         </Typography>
                       </div>
                     </Link>
@@ -339,7 +415,7 @@ const MyMenu = () => {
                           variant={"subtitle1"}
                           component={"p"}
                         >
-                          My Followers
+                          {t("My Followers")}
                         </Typography>
                       </div>
                     </Link>
@@ -393,7 +469,7 @@ const MyMenu = () => {
                           variant={"subtitle1"}
                           component={"p"}
                         >
-                          My Followings
+                          {t("My Followings")}
                         </Typography>
                       </div>
                     </Link>
@@ -406,7 +482,7 @@ const MyMenu = () => {
             <Stack className={"section"} sx={{ marginTop: "10px" }}>
               <div>
                 <Typography className="title" variant={"h5"}>
-                  Community
+                  {t("Community")}
                 </Typography>
                 <List className={"sub-section"}>
                   <ListItem
@@ -430,7 +506,7 @@ const MyMenu = () => {
                           variant={"subtitle1"}
                           component={"p"}
                         >
-                          Articles
+                          {t("Articles")}
                         </Typography>
                       </div>
                     </Link>
@@ -456,7 +532,7 @@ const MyMenu = () => {
                           variant={"subtitle1"}
                           component={"p"}
                         >
-                          Write Article
+                          {t("Write Article")}
                         </Typography>
                       </div>
                     </Link>
@@ -467,7 +543,7 @@ const MyMenu = () => {
           )}
           <Stack className={"section"} sx={{ marginTop: "30px" }}>
             <Typography className="title" variant={"h5"}>
-              MANAGE ACCOUNT
+              {t("MANAGE ACCOUNT")}
             </Typography>
             <List className={"sub-section"}>
               <ListItem className={pathname === "myProfile" ? "focus" : ""}>
@@ -490,7 +566,7 @@ const MyMenu = () => {
                       variant={"subtitle1"}
                       component={"p"}
                     >
-                      My Profile
+                      {t("My Profile")}
                     </Typography>
                   </div>
                 </Link>
@@ -507,7 +583,7 @@ const MyMenu = () => {
                     variant={"subtitle1"}
                     component={"p"}
                   >
-                    Logout
+                    {t("Logout")}
                   </Typography>
                 </div>
               </ListItem>

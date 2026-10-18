@@ -58,12 +58,12 @@ export function UserReviews(props: ReviewProps) {
 					</Stack>
 
 					<Swiper
-						className={'review-info swiper-wrapper review-mobile-swiper'}
+						className={'review-info review-mobile-swiper'}
 						centeredSlides={false}
-						slidesPerView={1.1}
+						slidesPerView={'auto'}
 						spaceBetween={14}
 						autoplay={{
-							delay: 3500,
+							delay: 4000,
 							disableOnInteraction: false,
 						}}
 						pagination={{
@@ -79,7 +79,7 @@ export function UserReviews(props: ReviewProps) {
 							<>
 								{review.map((review: Review) => {
 									return (
-										<SwiperSlide className={'review-info-frame review-card'}>
+										<SwiperSlide className={'review-info-frame review-card'} key={review._id}>
 											<Box className="mark">
 												<FormatQuoteRoundedIcon
 													style={{
@@ -167,7 +167,7 @@ export function UserReviews(props: ReviewProps) {
 							<>
 								{review.map((review: Review) => {
 									return (
-										<SwiperSlide className={'review-info-frame'}>
+										<SwiperSlide className={'review-info-frame'} key={review._id}>
 											<Box className="mark">
 												<FormatQuoteRoundedIcon
 													style={{

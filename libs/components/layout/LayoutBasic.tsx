@@ -65,6 +65,7 @@ const withLayoutBasic = (Component: any) => {
 					title = t('Barber Detail Page');
 					desc = t('Our Barbers Info');
 					bgImage = '/banner/b4.jpg';
+					break;
 				case '/account':
 					title = t('Account Join');
 					desc = t('Authentication process');

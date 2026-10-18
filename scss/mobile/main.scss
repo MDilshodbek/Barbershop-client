@@ -1,15 +1,15 @@
-@import "/scss/variables.scss";
-@import "/scss/mobile/pages/faq.scss";
-@import "/scss/mobile/pages/barbers.scss";
-@import "/scss/mobile/pages/barber-detail.scss";
-@import "/scss/mobile/pages/member.scss";
-@import "/scss/mobile/pages/service.scss";
-@import "/scss/mobile/pages/appointment.scss";
-@import "/scss/mobile/pages/community.scss";
-@import "/scss/mobile/pages/account.scss";
-@import "/scss/mobile/pages/notification.scss";
-@import "/scss/mobile/pages/mypage.scss";
-@import "/scss/mobile/pages/admin.scss";
+@import '/scss/variables.scss';
+@import '/scss/mobile/pages/faq.scss';
+@import '/scss/mobile/pages/barbers.scss';
+@import '/scss/mobile/pages/barber-detail.scss';
+@import '/scss/mobile/pages/member.scss';
+@import '/scss/mobile/pages/service.scss';
+@import '/scss/mobile/pages/appointment.scss';
+@import '/scss/mobile/pages/community.scss';
+@import '/scss/mobile/pages/account.scss';
+@import '/scss/mobile/pages/notification.scss';
+@import '/scss/mobile/pages/mypage.scss';
+@import '/scss/mobile/pages/admin.scss';
 
 #mobile-wrap {
 	font-family: 'DM Sans', sans-serif;
@@ -57,6 +57,96 @@
 		height: 38px;
 		border-radius: 999px !important;
 		background: #f4f7ef !important;
+	}
+
+	.mobile-nav-lang {
+		position: relative;
+
+		.mobile-nav-lang-trigger {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			height: 38px;
+			padding: 0 10px 0 8px;
+			border-radius: 999px;
+			border: 1px solid #e3ead9;
+			background: #f4f7ef;
+			box-shadow: 0 4px 12px rgba(0, 64, 52, 0.06);
+			cursor: pointer;
+			-webkit-tap-highlight-color: transparent;
+
+			img {
+				width: 22px;
+				height: 22px;
+				border-radius: 50%;
+				object-fit: cover;
+				display: block;
+			}
+
+			svg {
+				transition: transform 0.15s ease;
+			}
+
+			&.open svg {
+				transform: rotate(180deg);
+			}
+		}
+
+		.mobile-nav-lang-list {
+			position: absolute;
+			top: calc(100% + 8px);
+			right: 0;
+			z-index: 1100; // above page content, below the MUI drawer (1200)
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+			margin: 0;
+			padding: 6px;
+			list-style: none;
+			border-radius: 14px;
+			border: 1px solid #e3ead9;
+			background: #f7f9f4;
+			box-shadow: 0 14px 28px rgba(0, 64, 52, 0.12);
+			animation: mobileLangDropIn 0.15s ease-out;
+
+			button {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 40px;
+				height: 40px;
+				padding: 0;
+				border: none;
+				border-radius: 50%;
+				background: transparent;
+				cursor: pointer;
+				-webkit-tap-highlight-color: transparent;
+
+				img {
+					width: 24px;
+					height: 24px;
+					border-radius: 50%;
+					object-fit: cover;
+					display: block;
+				}
+
+				&.active {
+					background: #004034;
+					box-shadow: 0 0 0 2px #004034;
+				}
+			}
+		}
+	}
+
+	@keyframes mobileLangDropIn {
+		from {
+			opacity: 0;
+			transform: translateY(-6px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	#top-basic {
@@ -320,6 +410,7 @@
 
 		.top-barbers {
 			margin-top: 36px;
+			overflow: hidden;
 
 			.container {
 				flex-direction: column;
@@ -350,7 +441,6 @@
 				.swiper-slide {
 					display: flex;
 					justify-content: center;
-					height: auto;
 				}
 			}
 
@@ -382,6 +472,7 @@
 
 			.barber-card {
 				width: 100%;
+				height: 330px;
 				background: #ffffff;
 				border: 1px solid #e3ead9;
 				border-radius: 16px;
@@ -394,10 +485,10 @@
 
 			.barber-img {
 				width: 100%;
+				height: 200px;
 
 				img {
 					width: 100%;
-					height: 240px;
 					object-fit: cover;
 					object-position: top;
 					display: block;
@@ -408,11 +499,11 @@
 				color: #004034;
 				text-align: center;
 				font-family: 'Limelight', serif;
-				font-size: 20px;
+				font-size: 15px;
 				font-style: normal;
 				font-weight: 400;
-				line-height: 24px;
-				padding: 0 14px;
+				line-height: 18px;
+				padding: 0 10px;
 			}
 
 			.barber-stats {
@@ -429,7 +520,7 @@
 					align-items: center;
 					justify-content: center;
 					gap: 6px;
-					padding: 10px 12px;
+					padding: 5px 12px;
 					border-radius: 12px;
 					background: #f7f9f4;
 					border: 1px solid #e3ead9;
@@ -452,8 +543,8 @@
 				flex-direction: row;
 				justify-content: center;
 				align-items: center;
-				gap: 16px;
-				padding: 4px 0 14px 0;
+				gap: 10px;
+				padding: 2px 0 10px 0;
 				color: #004034;
 			}
 		}
@@ -503,7 +594,6 @@
 						align-items: stretch;
 						display: flex;
 						flex-direction: row;
-						gap: 10px;
 					}
 
 					.swiper-slide {
@@ -528,7 +618,7 @@
 				}
 
 				.review-card {
-					width: 70%;
+					// width: 70%;
 					max-width: 380px;
 					height: auto;
 					display: flex;
@@ -925,51 +1015,5 @@
 		font-weight: 700;
 		text-transform: none;
 		box-shadow: 0 12px 24px rgba(0, 64, 52, 0.18);
-	}
-
-	.mobile-drawer-lang {
-		gap: 10px;
-	}
-
-	.mobile-drawer-lang-label {
-		color: #7c887f;
-		font-family: 'DM Sans';
-		font-size: 12px;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.4px;
-	}
-
-	.mobile-drawer-lang-options {
-		flex-wrap: wrap;
-		gap: 8px;
-
-		button {
-			display: flex;
-			align-items: center;
-			gap: 6px;
-			padding: 8px 12px;
-			border-radius: 999px;
-			border: 1px solid #e3ead9;
-			background: #f7f9f4;
-			cursor: pointer;
-			font-family: 'DM Sans';
-			font-size: 13px;
-			font-weight: 700;
-			color: #004034;
-
-			img {
-				width: 18px;
-				height: 18px;
-				border-radius: 50%;
-				object-fit: cover;
-			}
-
-			&.active {
-				background: #004034;
-				border-color: #004034;
-				color: #ffffff;
-			}
-		}
 	}
 }

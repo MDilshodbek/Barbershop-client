@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Badge,
   Box,
@@ -43,6 +43,8 @@ const Top = () => {
   const [colorChange, setColorChange] = useState(false);
   const [bgColor, setBgColor] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [mobileLangOpen, setMobileLangOpen] = useState<boolean>(false);
+  const mobileLangRef = useRef<HTMLDivElement>(null);
   const { data: notificationsData } = useQuery(GET_MEMBER_ALL_NOTIFICATIONS, {
     variables: { input: { page: 1, limit: 50 } },
     fetchPolicy: "cache-and-network",
@@ -89,11 +91,31 @@ const Top = () => {
 
   const mobileLangChoice = useCallback(
     async (e: any) => {
+      setMobileLangOpen(false);
       await langChoice(e);
-      setMobileMenuOpen(false);
     },
     [langChoice]
   );
+
+  useEffect(() => {
+    if (!mobileLangOpen) return;
+    const handleOutside = (e: MouseEvent | TouchEvent) => {
+      if (!mobileLangRef.current?.contains(e.target as Node)) {
+        setMobileLangOpen(false);
+      }
+    };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileLangOpen(false);
+    };
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("touchstart", handleOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("touchstart", handleOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [mobileLangOpen]);
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
@@ -176,6 +198,9 @@ const Top = () => {
       { id: "ru", label: t("Russian"), flag: "langru.png" },
     ];
 
+    const currentLang =
+      languageOptions.find((option) => option.id === lang) ?? languageOptions[0];
+
     return (
       <>
         <Stack className="mobile-nav" direction="row">
@@ -207,10 +232,49 @@ const Top = () => {
                 </IconButton>
               </Link>
             )}
+            <div className="mobile-nav-lang" ref={mobileLangRef}>
+              <button
+                type="button"
+                className={`mobile-nav-lang-trigger ${
+                  mobileLangOpen ? "open" : ""
+                }`}
+                aria-haspopup="listbox"
+                aria-expanded={mobileLangOpen}
+                aria-label={`${t("Change language")}, ${t("current")}: ${
+                  currentLang.label
+                }`}
+                onClick={() => setMobileLangOpen((prev) => !prev)}
+              >
+                <img src={`/img/flag/${currentLang.flag}`} alt="" />
+                <CaretDown size={12} color="#004034" weight="bold" />
+              </button>
+              {mobileLangOpen && (
+                <ul className="mobile-nav-lang-list" role="listbox">
+                  {languageOptions.map((option) => (
+                    <li key={option.id} role="presentation">
+                      <button
+                        type="button"
+                        id={option.id}
+                        role="option"
+                        aria-selected={lang === option.id}
+                        aria-label={option.label}
+                        className={lang === option.id ? "active" : ""}
+                        onClick={mobileLangChoice}
+                      >
+                        <img src={`/img/flag/${option.flag}`} alt="" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
             <IconButton
               className="mobile-nav-menu-btn"
               disableRipple
-              onClick={() => setMobileMenuOpen(true)}
+              onClick={() => {
+                setMobileLangOpen(false);
+                setMobileMenuOpen(true);
+              }}
             >
               <MenuRoundedIcon sx={{ color: "#004034" }} />
             </IconButton>
@@ -299,32 +363,6 @@ const Top = () => {
                 </div>
               </Link>
             )}
-
-            <div className="mobile-drawer-divider" />
-
-            <Stack className="mobile-drawer-lang">
-              <span className="mobile-drawer-lang-label">
-                {t("Language")}
-              </span>
-              <Stack className="mobile-drawer-lang-options" direction="row">
-                {languageOptions.map((option) => (
-                  <button
-                    type="button"
-                    key={option.id}
-                    id={option.id}
-                    className={lang === option.id ? "active" : ""}
-                    onClick={mobileLangChoice}
-                  >
-                    <img
-                      src={`/img/flag/${option.flag}`}
-                      id={option.id}
-                      alt={option.label}
-                    />
-                    <span>{option.label}</span>
-                  </button>
-                ))}
-              </Stack>
-            </Stack>
           </Stack>
         </Drawer>
       </>

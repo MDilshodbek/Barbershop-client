@@ -59,7 +59,6 @@ const Join: NextPage = () => {
 	}, []);
 
 	const doLogin = useCallback(async () => {
-		console.warn(input);
 		try {
 			await logIn(input.nick, input.password);
 			await router.push(`${router.query.referrer ?? '/'}`);
@@ -71,7 +70,6 @@ const Join: NextPage = () => {
 	}, [input, router]);
 
 	const doSignUp = useCallback(async () => {
-		console.warn(input);
 		try {
 			await signUp(input.nick, input.password, input.phone, input.type);
 			await router.push(`${router.query.referrer ?? '/'}`);

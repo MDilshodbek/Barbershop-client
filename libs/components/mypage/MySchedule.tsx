@@ -3,7 +3,7 @@ import { Stack } from "@mui/system";
 import { NextPage } from "next";
 import { FC, useState } from "react";
 import DailySchedule from "./DailySchedule";
-import { Reservations } from "../../types/reservation/reservation";
+import { Reservation } from "../../types/reservation/reservation";
 import { BarberScheduleInquiry } from "../../types/reservation/reservation.input";
 import { Direction } from "../../enums/common.enum";
 import { useMutation, useQuery } from "@apollo/client";
@@ -19,7 +19,7 @@ interface ScheduleProps {
 
 const MySchedule: FC<ScheduleProps> = (props) => {
   const { t } = useTranslation("common");
-  const [schedule, setSchedule] = useState<Reservations[]>([]);
+  const [schedule, setSchedule] = useState<Reservation[]>([]);
   const [total, setTotal] = useState<number>(0);
   const {
     initialInput = {

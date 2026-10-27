@@ -14,6 +14,10 @@ import {
 import { ReviewInput } from "../../types/review/review.input";
 import { ReviewGroup } from "../../enums/review.enum";
 import { useTranslation } from "react-i18next";
+import {
+  formatLocalDate,
+  formatReservationDateTime,
+} from "../../utils/reservationDate";
 
 interface ReservationItemProps {
   reservation: Reservation;
@@ -125,12 +129,10 @@ const ReservationCard: FC<ReservationItemProps> = ({
     setShowCancelInput(false);
   };
 
-  const createdAtDate = reservation?.createdAt
-    ? new Date(reservation.createdAt)
-    : null;
-  const reserveTimeDate = reservation?.reserveTime
-    ? new Date(reservation.reserveTime)
-    : null;
+  // COMMENT: appointment date + time (reserveTime / reserveDay), not the booking date
+  const reservedDateTime = formatReservationDateTime(reservation);
+  // COMMENT: when the client made the booking (secondary info)
+  const bookedOnDate = formatLocalDate(reservation?.createdAt);
   const reserveNotes = reservation?.reserveNotes?.toString().trim();
 
   const serviceImage = reservation.serviceData?.serviceImages
@@ -149,21 +151,8 @@ const ReservationCard: FC<ReservationItemProps> = ({
           </Box>
 
           <Stack className="cardInfo">
-            {/* COMMENT: date + time below service name */}
-            <Typography className="dateTime">
-              {(createdAtDate
-                ? createdAtDate.toLocaleDateString()
-                : reservation.createdAt || ""
-              ).toString()}
-              {" \u2022 "}
-              {(reserveTimeDate
-                ? reserveTimeDate.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                : reservation.reserveTime || ""
-              ).toString()}
-            </Typography>
+            {/* COMMENT: reserved appointment date + time, above the service name */}
+            <Typography className="dateTime">{reservedDateTime}</Typography>
             <Typography className="serviceName">
               {reservation.serviceTitle}
             </Typography>
@@ -180,6 +169,12 @@ const ReservationCard: FC<ReservationItemProps> = ({
                 {reservation.serviceDurationMin}{t("min")}
               </Typography>
             </Stack>
+
+            {bookedOnDate && (
+              <Typography className="bookedOn">
+                {t("Booked on")} {bookedOnDate}
+              </Typography>
+            )}
 
             {reserveNotes && (
               <Stack className="notesRow">

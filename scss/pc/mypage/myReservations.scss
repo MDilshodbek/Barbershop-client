@@ -79,6 +79,14 @@
 						color: #6d6d6d;
 					}
 
+					// COMMENT: secondary "Booked on" line (createdAt), quieter than the appointment date
+					.bookedOn {
+						font-family: 'DM Sans';
+						font-weight: 400;
+						font-size: 12px;
+						color: #767676;
+					}
+
 					.barberRow {
 						display: flex;
 						flex-direction: row;

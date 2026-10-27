@@ -1,14 +1,10 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Typography,
-  Link,
-  Stack,
-  Button,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import React, { FC, useEffect, useId, useMemo, useRef, useState } from "react";
+import { Box, Stack, Button, Menu, MenuItem } from "@mui/material";
+import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+import ContentCutRoundedIcon from "@mui/icons-material/ContentCutRounded";
+import FormatQuoteRoundedIcon from "@mui/icons-material/FormatQuoteRounded";
 import { ReserveStatus } from "../../enums/reservation.enum";
+import { Reservation } from "../../types/reservation/reservation";
 import { useTranslation } from "react-i18next";
 
 type DailyEvent = {
@@ -20,6 +16,7 @@ type DailyEvent = {
   userName: string;
   status: ReserveStatus;
   dayKey: string;
+  notes: string | null; // COMMENT: trimmed client note, null when empty
 };
 
 type WeekDateItem = {
@@ -28,6 +25,20 @@ type WeekDateItem = {
   dayNum: number; // 18
   labelDay: string; // "Wed"
 };
+
+/** COMMENT: CSS modifier per status (pill colors + accent bar) */
+const STATUS_CLASS: Record<ReserveStatus, string> = {
+  [ReserveStatus.BOOKED]: "booked",
+  [ReserveStatus.FINISH]: "finished",
+  [ReserveStatus.CANCELLED]: "cancelled",
+  [ReserveStatus.NOSHOW]: "no-show",
+};
+
+/** COMMENT: cancelled and no-show cards are faded so active bookings stand out */
+const INACTIVE_STATUSES = new Set<ReserveStatus>([
+  ReserveStatus.CANCELLED,
+  ReserveStatus.NOSHOW,
+]);
 
 /** COMMENT: build week dates by weekOffset (0=this week, -1=prev week, +1=next week) */
 const buildWeekDates = (weekOffset: number): WeekDateItem[] => {
@@ -77,7 +88,7 @@ const buildWeekDates = (weekOffset: number): WeekDateItem[] => {
 
 type DailyScheduleProps = {
   weekOffset: number;
-  schedule: any[];
+  schedule: Reservation[];
   updateReservationHandler: (
     reservationId: string,
     reserveStatus: ReserveStatus
@@ -119,6 +130,83 @@ const isoToLocalMinutes = (iso: string | Date | null | undefined) => {
   return d.getHours() * 60 + d.getMinutes();
 };
 
+/** COMMENT: trimmed note text, or null when missing/blank */
+const normalizeNotes = (value: unknown): string | null => {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+};
+
+/** COMMENT: notes are clamped to this many lines until "Show more" */
+const NOTE_COLLAPSED_LINES = 2;
+
+/** COMMENT: client note panel; plain text only (user content), clamped with a toggle */
+const ClientNote: FC<{ note: string }> = ({ note }) => {
+  const { t } = useTranslation("common");
+  const textId = useId();
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [canExpand, setCanExpand] = useState(false);
+  const [fullHeight, setFullHeight] = useState(0);
+
+  /** COMMENT: measure the full text height; re-measure when the card width changes */
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+
+    const measure = () => {
+      const lineHeight = parseFloat(getComputedStyle(el).lineHeight) || 22;
+      setFullHeight(el.scrollHeight);
+      setCanExpand(el.scrollHeight > lineHeight * NOTE_COLLAPSED_LINES + 1);
+    };
+
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [note]);
+
+  const isClamped = canExpand && !expanded;
+
+  // COMMENT: max-height animates between the 2-line CSS value and the measured height
+  const textStyle: React.CSSProperties | undefined = !canExpand
+    ? { maxHeight: "none" }
+    : expanded
+    ? { maxHeight: `${fullHeight}px` }
+    : undefined;
+
+  return (
+    <div className="client-note">
+      <div className="note-header">
+        <FormatQuoteRoundedIcon className="note-icon" aria-hidden="true" />
+        <span>{t("Client note")}</span>
+      </div>
+
+      <p
+        id={textId}
+        ref={textRef}
+        className={`note-text ${isClamped ? "is-clamped" : ""}`}
+        style={textStyle}
+      >
+        {note}
+      </p>
+
+      {canExpand && (
+        <button
+          type="button"
+          className="note-toggle"
+          aria-expanded={expanded}
+          aria-controls={textId}
+          onClick={() => setExpanded((prev) => !prev)}
+        >
+          {expanded ? t("Show less") : t("Show more")}
+        </button>
+      )}
+    </div>
+  );
+};
+
 const DailySchedule: FC<DailyScheduleProps> = (props) => {
   const { t } = useTranslation("common");
   const { weekOffset, schedule, updateReservationHandler } = props;
@@ -130,7 +218,7 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
     const weekDaySet = new Set(weekDates.map((d) => d.dayKey));
 
     return (schedule ?? [])
-      .map((r: any) => {
+      .map((r) => {
         const dayKey =
           toLocalYmd(r?.reserveTime) ??
           toLocalYmd(r?.reserveDay) ??
@@ -157,10 +245,17 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
             t("Client"),
           status: r?.reserveStatus ?? ReserveStatus.BOOKED,
           dayKey,
+          notes: normalizeNotes(r?.reserveNotes),
         } as DailyEvent;
       })
       .filter(Boolean) as DailyEvent[];
-  }, [schedule, weekDates]);
+  }, [schedule, weekDates, t]);
+
+  /** COMMENT: days in this week that have at least one client note (dot on the date button) */
+  const daysWithNotes = useMemo(
+    () => new Set(dailyEvents.filter((e) => e.notes).map((e) => e.dayKey)),
+    [dailyEvents]
+  );
 
   /** COMMENT: selected day index inside the current week */
   const [activeDayIndex, setActiveDayIndex] = useState<number>(0);
@@ -230,6 +325,7 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
           <Stack className="week-dates-inner">
             {weekDates.map((d, idx) => {
               const isActive = idx === safeActiveDayIndex;
+              const hasNotes = daysWithNotes.has(d.dayKey);
 
               return (
                 <Button
@@ -239,13 +335,19 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
                 >
                   <span>{t(d.monthAbbr)} {d.dayNum}</span>
                   <span>{t(d.labelDay)}</span>
+                  {hasNotes && (
+                    <>
+                      <span className="note-dot" aria-hidden="true" />
+                      <span className="visually-hidden">{t("Has client notes")}</span>
+                    </>
+                  )}
                 </Button>
               );
             })}
           </Stack>
         </Box>
 
-        {/* COMMENT: RIGHT = original schedule layout (keeps your .main/.events scss) */}
+        {/* COMMENT: RIGHT = selected day's appointment cards */}
         <Box className="schedule-right">
           <Box component="ul" className="main">
             <Stack component="li" className="events">
@@ -253,41 +355,66 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
                 {visibleEvents.length === 0 ? (
                   <Box className="empty-day">{t("No reservations for this day.")}</Box>
                 ) : (
-                  visibleEvents.map((event) => (
-                    <Stack component="li" key={event.id} className="event-item">
-                      {/* COMMENT: left side info */}
-                      <Link className="event-link" underline="none">
-                        <Stack className="time-box">
-                          <Typography component="span" className="event-time">
-                            {event.startTime} {"-"}
-                          </Typography>
-                          <Typography component="span" className="event-time">
-                            {event.endTime}
-                          </Typography>
-                        </Stack>
+                  visibleEvents.map((event) => {
+                    const statusClass = STATUS_CLASS[event.status] ?? "booked";
+                    const isInactive = INACTIVE_STATUSES.has(event.status);
+                    const initial = event.userName.trim().charAt(0).toUpperCase() || "?";
 
-                        <Typography component="span" className="event-name">
-                          {event.name}
-                        </Typography>
-
-                        <Typography component="span" className="event-name">
-                          {event.userName}
-                        </Typography>
-
-                        <Typography component="span" className="event-name">
-                          {t("Status:")} {t(event.status)}
-                        </Typography>
-                      </Link>
-
-                      {/* COMMENT: right side status button */}
-                      <Button
-                        className="update-btn"
-                        onClick={(e) => openStatusMenu(e, event.id)}
+                    return (
+                      <li
+                        key={event.id}
+                        className={`event-card status-${statusClass} ${isInactive ? "is-inactive" : ""}`}
                       >
-                        {t("Update")}
-                      </Button>
-                    </Stack>
-                  ))
+                        {/* COMMENT: top row = time range, status pill, Update button */}
+                        <div className="event-top">
+                          <span className="event-time">
+                            <AccessTimeRoundedIcon className="event-time-icon" aria-hidden="true" />
+                            <span>
+                              {event.startTime} – {event.endTime}
+                            </span>
+                          </span>
+
+                          <span className="status-pill">
+                            <span className="visually-hidden">{t("Status:")} </span>
+                            {t(event.status)}
+                          </span>
+
+                          <Button
+                            className="update-btn"
+                            aria-haspopup="menu"
+                            aria-expanded={isMenuOpen && activeEventId === event.id}
+                            onClick={(e) => openStatusMenu(e, event.id)}
+                          >
+                            {t("Update")}
+                          </Button>
+                        </div>
+
+                        {/* COMMENT: middle row = service + client */}
+                        <div className="event-meta">
+                          <span className="event-service">
+                            <ContentCutRoundedIcon className="event-service-icon" aria-hidden="true" />
+                            <span>{event.name}</span>
+                          </span>
+
+                          <span className="event-client">
+                            <span className="client-avatar" aria-hidden="true">
+                              {initial}
+                            </span>
+                            <span>{event.userName}</span>
+                          </span>
+                        </div>
+
+                        {/* COMMENT: client note (plain text) or a muted placeholder */}
+                        <div className="event-notes">
+                          {event.notes ? (
+                            <ClientNote note={event.notes} />
+                          ) : (
+                            <p className="note-empty">{t("No notes from client")}</p>
+                          )}
+                        </div>
+                      </li>
+                    );
+                  })
                 )}
               </Stack>
             </Stack>
@@ -295,7 +422,7 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
         </Box>
       </Stack>
 
-      {/* COMMENT: status dropdown menu */}
+      {/* COMMENT: status dropdown menu (MUI portal, renders above all cards) */}
       <Menu anchorEl={menuAnchor} open={isMenuOpen} onClose={closeStatusMenu}>
         <MenuItem
           onClick={() => changeStatusHandler(ReserveStatus.BOOKED)}

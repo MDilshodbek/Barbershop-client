@@ -278,6 +278,12 @@
 			font-size: 11px;
 		}
 
+		.bookedOn {
+			color: #8a948c;
+			font-family: 'DM Sans';
+			font-size: 10.5px;
+		}
+
 		.serviceName {
 			color: #004034;
 			font-family: 'DM Sans';
@@ -469,23 +475,34 @@
 		.events {
 			width: 100%;
 			border-left: none !important;
+			padding-left: 0;
 		}
 
-		.events-detail li,
-		.event-item {
-			flex-direction: column !important;
-			align-items: stretch !important;
-			gap: 8px !important;
+		.events-detail {
+			gap: 12px;
 		}
 
-		.event-link {
-			flex-direction: column !important;
-			align-items: flex-start !important;
-			gap: 4px !important;
+		// COMMENT: appointment card: time + status on one line, Update full width below
+		.event-card {
+			padding: 14px 14px 14px 20px;
+			border-radius: 14px;
+		}
+
+		.event-time {
+			font-size: 15px;
 		}
 
 		.update-btn {
+			flex-basis: 100%;
 			width: 100%;
+			margin-left: 0;
+		}
+
+		.event-meta {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 8px;
+			font-size: 14px;
 		}
 	}
 

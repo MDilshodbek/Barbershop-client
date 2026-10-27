@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { logIn, signUp } from '../../libs/auth';
+import { reconnectChatSocket } from '../../apollo/chatSocket';
 import { sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -61,6 +62,7 @@ const Join: NextPage = () => {
 	const doLogin = useCallback(async () => {
 		try {
 			await logIn(input.nick, input.password);
+			reconnectChatSocket();
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
 			const message = err?.graphQLErrors?.[0]?.message || err?.message || t('Login failed');
@@ -72,6 +74,7 @@ const Join: NextPage = () => {
 	const doSignUp = useCallback(async () => {
 		try {
 			await signUp(input.nick, input.password, input.phone, input.type);
+			reconnectChatSocket();
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
 			const message = err?.graphQLErrors?.[0]?.message || err?.message || t('Signup failed');

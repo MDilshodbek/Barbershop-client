@@ -324,27 +324,138 @@
     background-size: cover;
   }
   .chatting {
+    // Comment: AI icon palette (light). Dark values are below under [data-theme="dark"]
+    --ai-grad-start: #8b5cf6;
+    --ai-grad-end: #3b82f6;
+    --ai-face: #ffffff;
+    --ai-eye: #1e1b4b;
+    --ai-cheek: #f9a8d4;
+    --ai-accent: #fbbf24;
+    --ai-badge: #ff4d6d;
+    --ai-avatar-bg: #eef0ff;
+    --ai-launcher-bg: #ffffff;
+    --ai-glow: rgba(124, 92, 246, 0.45);
+
     .chat-button {
       border: none;
       position: fixed;
       bottom: 50px;
       right: 30px;
-      height: 50px;
-      width: 50px;
+      height: 56px;
+      width: 56px;
+      padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      height: 50px;
-      background: #fff;
+      background: var(--ai-launcher-bg);
       box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.2);
       transition: transform 0.3s;
       z-index: 999;
       &:hover {
         cursor: pointer;
         transform: scale(1.1);
-        background-color: #fff;
+        background-color: var(--ai-launcher-bg);
+        .launcher-glow {
+          opacity: 1;
+        }
       }
+      &:focus-visible {
+        outline: 3px solid var(--ai-grad-end);
+        outline-offset: 3px;
+      }
+      .launcher-glow,
+      .launcher-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+      // Comment: static soft halo; hover only raises its opacity
+      .launcher-glow {
+        z-index: -1;
+        transform: scale(1.35);
+        background: radial-gradient(circle closest-side, transparent 70%, var(--ai-glow) 78%, transparent 100%);
+        opacity: 0.6;
+        transition: opacity 0.3s;
+      }
+      // Comment: ring radiating outward every 2s
+      .launcher-ring {
+        z-index: -1;
+        border: 2px solid var(--ai-grad-start);
+        animation: ai-ring 2s ease-out infinite;
+      }
+      .launcher-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: ai-breathe 2s ease-in-out infinite;
+      }
+      .launcher-badge {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: var(--ai-badge);
+        border: 2px solid var(--ai-launcher-bg);
+        animation: ai-badge-pulse 2s ease-in-out infinite;
+      }
+    }
+    .bot-avatar {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--ai-avatar-bg);
+    }
+    // Comment: AI icons are stacked same-size SVG layers (see libs/components/AiIcons.tsx)
+    .ai-icon {
+      position: relative;
+      display: inline-block;
+      flex-shrink: 0;
+      .ai-layer {
+        position: absolute;
+        inset: 0;
+        display: block;
+        svg {
+          display: block;
+          width: 100%;
+          height: 100%;
+          overflow: visible;
+        }
+      }
+      .ai-layer-glow {
+        opacity: 0.3;
+      }
+    }
+    // Comment: optional icon animations, only on icons rendered with animated.
+    // They animate whole <svg> layers (transform/opacity), which the compositor handles off the main thread.
+    // transform-origin = the animated shape's center in the 64x64 viewBox
+    .ai-animated {
+      .ai-layer-eyes {
+        transform-origin: 50% 53.125%; // eyes at y=34
+        animation: ai-blink 4s ease-in-out infinite;
+      }
+      .ai-layer-glow {
+        transform-origin: 50% 10.9375%; // antenna dot at (32, 7)
+        animation: ai-antenna 2s ease-in-out infinite;
+      }
+      .ai-layer-sparkle {
+        transform-origin: 81.25% 18.75%; // sparkle at (52, 12)
+        animation: ai-twinkle 2.4s ease-in-out infinite;
+      }
+      &.ai-launcher .ai-layer-eyes {
+        transform-origin: 50% 43.75%; // launcher eyes at y=28
+      }
+    }
+    // Comment: the header avatar is off-screen while the chat is closed, so pause its animations
+    .chat-frame:not(.open) .ai-animated .ai-layer {
+      animation-play-state: paused;
     }
     .chat-frame {
       position: fixed;
@@ -366,13 +477,49 @@
       .chat-top {
         width: 100%;
         height: 103px;
+        flex-shrink: 0;
         display: flex;
         justify-content: center;
         align-items: center;
+        gap: 14px;
         border-bottom: 1px solid rgba(205, 205, 205, 0.83);
-        font-size: 30px;
-        line-height: 54px;
         color: #004034;
+        .bot-avatar.chat-top-avatar {
+          width: 52px;
+          height: 52px;
+        }
+        .chat-top-info {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .chat-title {
+          font-family: "Limelight";
+          font-size: 28px;
+          line-height: 36px;
+        }
+        .chat-status {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-family: "DM Sans";
+          font-size: 13px;
+          line-height: 18px;
+          color: #5f6f6b;
+          .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #bdbdbd;
+          }
+          &.open .status-dot {
+            background: #4caf50;
+          }
+          &.connecting .status-dot {
+            background: #f0b429;
+            animation: chat-pulse 1.2s infinite ease-in-out;
+          }
+        }
       }
       .chat-content {
         position: relative;
@@ -410,22 +557,105 @@
             padding: 9px;
             width: auto;
             height: auto;
+            min-width: 0;
             display: flex;
             background: #004034;
             border-radius: 20px 20px 20px 0px;
             color: #fff;
+            .msg-text {
+              white-space: pre-wrap;
+              word-break: break-word;
+            }
+            .stream-cursor {
+              display: inline-block;
+              width: 2px;
+              height: 1em;
+              margin-left: 2px;
+              vertical-align: text-bottom;
+              background: currentColor;
+              animation: chat-blink 1s steps(1) infinite;
+            }
+            &.typing {
+              align-items: center;
+              gap: 8px;
+              .typing-dots {
+                display: flex;
+                gap: 4px;
+                span {
+                  width: 6px;
+                  height: 6px;
+                  border-radius: 50%;
+                  background: #c6d984;
+                  animation: chat-typing 1.2s infinite ease-in-out;
+                  &:nth-child(2) {
+                    animation-delay: 0.15s;
+                  }
+                  &:nth-child(3) {
+                    animation-delay: 0.3s;
+                  }
+                }
+              }
+              .typing-label {
+                font-size: 13px;
+                opacity: 0.85;
+              }
+            }
+            .chat-link {
+              color: #c6d984;
+              font-weight: 700;
+              text-decoration: underline;
+              cursor: pointer;
+              &:hover {
+                color: #fff;
+              }
+            }
           }
         }
       }
       .chat-bott {
         width: 100%;
         height: 103px;
+        flex-shrink: 0;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+        gap: 6px;
         border-top: 1px solid rgba(205, 205, 205, 0.83);
+        .chat-input-row {
+          display: flex;
+          align-items: center;
+        }
+        .chat-meta {
+          width: 340px;
+          display: flex;
+          justify-content: space-between;
+          gap: 8px;
+          padding: 0 12px;
+          font-family: "DM Sans";
+          font-size: 12px;
+          line-height: 16px;
+          min-height: 16px;
+          .chat-hint {
+            color: #5f6f6b;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+          .chat-counter {
+            flex-shrink: 0;
+            color: #8a9a96;
+            &.warn {
+              color: #d98b00;
+            }
+            &.limit {
+              color: #e92c28;
+              font-weight: 700;
+            }
+          }
+        }
         .msg-input {
-          padding: 20px;
+          padding: 0 18px;
           width: 276px;
           height: 50px;
           display: flex;
@@ -440,6 +670,10 @@
           font-weight: 400;
           font-size: 16px;
           line-height: 24px;
+          &::placeholder {
+            font-size: 14px;
+            text-overflow: ellipsis;
+          }
         }
         .send-msg-btn {
           margin-left: 14px;
@@ -451,16 +685,151 @@
           border-radius: 50%;
           background: #c6d984;
           border: none;
+          cursor: pointer;
+          transition: opacity 0.2s;
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
         }
       }
       .msg-right {
         padding: 9px;
         width: auto;
         height: auto;
+        max-width: 85%;
         display: flex;
         background: #e6f8a6;
         color: #004034;
         border-radius: 20px 20px 0px 20px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    }
+    @keyframes chat-blink {
+      50% {
+        opacity: 0;
+      }
+    }
+    @keyframes chat-typing {
+      0%,
+      80%,
+      100% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+      40% {
+        transform: translateY(-4px);
+        opacity: 1;
+      }
+    }
+    @keyframes chat-pulse {
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.3;
+      }
+    }
+    @keyframes ai-ring {
+      0% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(1.7);
+        opacity: 0;
+      }
+    }
+    @keyframes ai-breathe {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.06);
+      }
+    }
+    @keyframes ai-badge-pulse {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.25);
+        opacity: 0.75;
+      }
+    }
+    @keyframes ai-blink {
+      0%,
+      90%,
+      100% {
+        transform: scaleY(1);
+      }
+      94% {
+        transform: scaleY(0.1);
+      }
+    }
+    @keyframes ai-antenna {
+      0%,
+      100% {
+        transform: scale(0.8);
+        opacity: 0.2;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 0.55;
+      }
+    }
+    @keyframes ai-twinkle {
+      0%,
+      100% {
+        transform: scale(0.85) rotate(0deg);
+        opacity: 0.75;
+      }
+      50% {
+        transform: scale(1.1) rotate(15deg);
+        opacity: 1;
+      }
+    }
+
+    // Comment: dark palette, applied when the app sets data-theme="dark" on <html> or <body>
+    [data-theme="dark"] & {
+      --ai-face: #1e1b4b;
+      --ai-eye: #e0e7ff;
+      --ai-cheek: #f472b6;
+      --ai-avatar-bg: #2e2a5c;
+      --ai-launcher-bg: #1f2937;
+      --ai-glow: rgba(139, 92, 246, 0.6);
+    }
+
+    // Comment: reduced motion: no movement, keep a static glow and a visible badge
+    @media (prefers-reduced-motion: reduce) {
+      .chat-button {
+        transition: none;
+        &:hover {
+          transform: none;
+        }
+        .launcher-ring,
+        .launcher-icon,
+        .launcher-badge {
+          animation: none;
+        }
+        .launcher-ring {
+          transform: scale(1.12);
+          opacity: 0.5;
+        }
+        .launcher-glow {
+          opacity: 1;
+        }
+      }
+      .ai-animated .ai-layer,
+      .chat-status .status-dot,
+      .typing-dots span,
+      .stream-cursor {
+        animation: none !important;
       }
     }
   }

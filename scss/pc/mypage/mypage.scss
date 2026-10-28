@@ -63,7 +63,7 @@
                 gap: 5px;
                 .user-name {
                   color: #004034;
-                  font-family: "Limelight";
+                  font-family: "DM Sans", sans-serif;
                   font-size: 15px;
                   font-style: normal;
                   font-weight: 600;
@@ -94,12 +94,16 @@
               .section {
                 margin-top: 40px;
                 height: auto;
+                // COMMENT: section headings (MANAGE LISTINGS / MANAGE ACCOUNT) use the page font
                 .title {
-                  font-family: "Limelight";
-                  font-size: 15px;
+                  color: #6b7280;
+                  font-family: "DM Sans", sans-serif;
+                  font-size: 12px;
                   font-style: normal;
-                  font-weight: 400;
+                  font-weight: 700;
+                  letter-spacing: 1px;
                   line-height: 28px;
+                  text-transform: uppercase;
                 }
                 .sub-section {
                   width: 230px;

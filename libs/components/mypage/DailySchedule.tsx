@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useId, useMemo, useRef, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { Box, Stack, Button, Menu, MenuItem } from "@mui/material";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import ContentCutRoundedIcon from "@mui/icons-material/ContentCutRounded";
@@ -6,6 +6,7 @@ import FormatQuoteRoundedIcon from "@mui/icons-material/FormatQuoteRounded";
 import { ReserveStatus } from "../../enums/reservation.enum";
 import { Reservation } from "../../types/reservation/reservation";
 import { useTranslation } from "react-i18next";
+import ExpandableNote from "../common/ExpandableNote";
 
 type DailyEvent = {
   id: string;
@@ -135,76 +136,6 @@ const normalizeNotes = (value: unknown): string | null => {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
   return trimmed ? trimmed : null;
-};
-
-/** COMMENT: notes are clamped to this many lines until "Show more" */
-const NOTE_COLLAPSED_LINES = 2;
-
-/** COMMENT: client note panel; plain text only (user content), clamped with a toggle */
-const ClientNote: FC<{ note: string }> = ({ note }) => {
-  const { t } = useTranslation("common");
-  const textId = useId();
-  const textRef = useRef<HTMLParagraphElement>(null);
-  const [expanded, setExpanded] = useState(false);
-  const [canExpand, setCanExpand] = useState(false);
-  const [fullHeight, setFullHeight] = useState(0);
-
-  /** COMMENT: measure the full text height; re-measure when the card width changes */
-  useEffect(() => {
-    const el = textRef.current;
-    if (!el) return;
-
-    const measure = () => {
-      const lineHeight = parseFloat(getComputedStyle(el).lineHeight) || 22;
-      setFullHeight(el.scrollHeight);
-      setCanExpand(el.scrollHeight > lineHeight * NOTE_COLLAPSED_LINES + 1);
-    };
-
-    measure();
-    if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [note]);
-
-  const isClamped = canExpand && !expanded;
-
-  // COMMENT: max-height animates between the 2-line CSS value and the measured height
-  const textStyle: React.CSSProperties | undefined = !canExpand
-    ? { maxHeight: "none" }
-    : expanded
-    ? { maxHeight: `${fullHeight}px` }
-    : undefined;
-
-  return (
-    <div className="client-note">
-      <div className="note-header">
-        <FormatQuoteRoundedIcon className="note-icon" aria-hidden="true" />
-        <span>{t("Client note")}</span>
-      </div>
-
-      <p
-        id={textId}
-        ref={textRef}
-        className={`note-text ${isClamped ? "is-clamped" : ""}`}
-        style={textStyle}
-      >
-        {note}
-      </p>
-
-      {canExpand && (
-        <button
-          type="button"
-          className="note-toggle"
-          aria-expanded={expanded}
-          aria-controls={textId}
-          onClick={() => setExpanded((prev) => !prev)}
-        >
-          {expanded ? t("Show less") : t("Show more")}
-        </button>
-      )}
-    </div>
-  );
 };
 
 const DailySchedule: FC<DailyScheduleProps> = (props) => {
@@ -407,7 +338,11 @@ const DailySchedule: FC<DailyScheduleProps> = (props) => {
                         {/* COMMENT: client note (plain text) or a muted placeholder */}
                         <div className="event-notes">
                           {event.notes ? (
-                            <ClientNote note={event.notes} />
+                            <ExpandableNote
+                              note={event.notes}
+                              label={t("Client note")}
+                              icon={<FormatQuoteRoundedIcon className="note-icon" aria-hidden="true" />}
+                            />
                           ) : (
                             <p className="note-empty">{t("No notes from client")}</p>
                           )}

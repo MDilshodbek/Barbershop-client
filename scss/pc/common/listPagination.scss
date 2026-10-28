@@ -1,0 +1,113 @@
+/* libs/components/common/ListPagination.tsx (used by My Reservations and the Services page) */
+.list-pagination {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	margin-top: 40px;
+	font-family: 'DM Sans', sans-serif;
+
+	&__items {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	&__btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background: transparent;
+		font-family: 'DM Sans', sans-serif;
+		cursor: pointer;
+		transition: background 150ms ease, color 150ms ease;
+
+		&:focus-visible {
+			outline: 2px solid #004034;
+			outline-offset: 2px;
+		}
+	}
+
+	&__btn--page {
+		color: #374151;
+		font-size: 15px;
+		font-weight: 500;
+
+		&:hover:not(.is-active) {
+			background: #f3f4f6;
+		}
+
+		&.is-active {
+			background: #c5d98a;
+			color: #fff;
+			cursor: default;
+		}
+	}
+
+	&__btn--nav {
+		color: #111827;
+
+		svg {
+			font-size: 22px; /* the icon's glyph is ~16px inside its 22px box */
+		}
+
+		&:hover:not(:disabled) {
+			background: #f3f4f6;
+		}
+
+		&:disabled {
+			color: #c4c4c4;
+			cursor: not-allowed;
+		}
+	}
+
+	&__ellipsis {
+		min-width: 16px;
+		color: #6b7280;
+		font-size: 15px;
+		text-align: center;
+	}
+
+	&__total {
+		margin: 0;
+		color: #0f3d2e;
+		font-family: 'DM Sans', sans-serif;
+		font-size: 20px;
+		font-weight: 700;
+		line-height: 1.3;
+		text-align: center;
+	}
+
+	/* COMMENT: tighter on phones so 1 … 4 5 6 … 8 still fits on one row */
+	@media (max-width: 480px) {
+		&__items {
+			gap: 6px;
+		}
+
+		&__btn {
+			width: 32px;
+			height: 32px;
+		}
+
+		&__total {
+			font-size: 17px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&__btn {
+			transition: none;
+		}
+	}
+}

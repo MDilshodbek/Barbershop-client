@@ -42,3 +42,37 @@ export const formatReservationDateTime = (
   const time = formatLocalTime(reservation?.reserveTime);
   return [date, time].filter(Boolean).join(" • ");
 };
+
+/** App language code -> Intl locale */
+const INTL_LOCALES: Record<string, string> = { en: "en-US", kr: "ko-KR", ru: "ru-RU", cn: "zh-CN" };
+export const toIntlLocale = (language?: string): string => INTL_LOCALES[language ?? ""] ?? "en-US";
+
+/** Friendly local date, e.g. "Tue, Nov 10, 2026" */
+export const formatFriendlyDate = (value: DateValue, locale: string, withWeekday = true): string => {
+  const date = toLocalDate(value);
+  if (!date) return "";
+  return date.toLocaleDateString(locale, {
+    ...(withWeekday ? { weekday: "short" as const } : {}),
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+/** Friendly local time, e.g. "2:30 PM" */
+export const formatFriendlyTime = (value: DateValue, locale: string): string =>
+  toLocalDate(value)?.toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" }) ?? "";
+
+/** Appointment start as a local Date (reserveTime, falling back to reserveDay) */
+export const getReservationStart = (
+  reservation: Pick<Reservation, "reserveTime" | "reserveDay">
+): Date | null => toLocalDate(reservation?.reserveTime) ?? toLocalDate(reservation?.reserveDay);
+
+/** True when the appointment start is still ahead of now */
+export const isUpcomingReservation = (
+  reservation: Pick<Reservation, "reserveTime" | "reserveDay">,
+  now: number = Date.now()
+): boolean => {
+  const start = getReservationStart(reservation);
+  return !!start && start.getTime() >= now;
+};

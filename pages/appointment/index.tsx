@@ -180,13 +180,18 @@ const Appointment: NextPage<AppointmentProps> = (props) => {
     }
   );
 
+  // COMMENT: "Book again" links pass ?serviceId=&barberId= to preselect them; otherwise the first item is used
   useEffect(() => {
-    if (services.length && !selectedService) setSelectedService(services[0]);
-  }, [services, selectedService]);
+    if (!router.isReady || !services.length || selectedService) return;
+    const wantedId = typeof router.query.serviceId === "string" ? router.query.serviceId : "";
+    setSelectedService(services.find((s) => s._id === wantedId) ?? services[0]);
+  }, [router.isReady, router.query.serviceId, services, selectedService]);
 
   useEffect(() => {
-    if (barbers.length && !selectedBarber) setSelectedBarber(barbers[0]);
-  }, [barbers, selectedBarber]);
+    if (!router.isReady || !barbers.length || selectedBarber) return;
+    const wantedId = typeof router.query.barberId === "string" ? router.query.barberId : "";
+    setSelectedBarber(barbers.find((b) => b._id === wantedId) ?? barbers[0]);
+  }, [router.isReady, router.query.barberId, barbers, selectedBarber]);
 
   useEffect(() => {
     if (!selectedBarber?._id || !selectedDate) {

@@ -1,10 +1,11 @@
-import { Box, Pagination, Rating, Stack, Typography } from "@mui/material";
+import { Box, Rating, Stack, Typography } from "@mui/material";
+import ListPagination from "../../libs/components/common/ListPagination";
 import { NextPage } from "next";
 import withLayoutBasic from "../../libs/components/layout/LayoutBasic";
 import useDeviceDetect from "../../libs/hooks/useDeviceDetect";
 import CommentIcon from "@mui/icons-material/Comment";
 import { ServiceInquiry } from "../../libs/types/service/service.input";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Service } from "../../libs/types/service/service";
 import { useQuery } from "@apollo/client";
 import { GET_SERVICES } from "../../apollo/user/query";
@@ -66,10 +67,7 @@ const OurService: NextPage<ServiceProps> = (props) => {
     }
   }, [router.isReady, router.query.input]);
 
-  const paginationChangeHandler = async (
-    event: ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const paginationChangeHandler = async (value: number) => {
     const nextFilter = {
       ...pageFilter,
       page: value,
@@ -145,33 +143,15 @@ const OurService: NextPage<ServiceProps> = (props) => {
               })}
             </Stack>
           )}
-          <Stack className={"pagination-config-mobile"}>
-            {service.length > 0 && Math.ceil(total / pageFilter.limit) > 1 && (
-              <Pagination
-                page={pageFilter.page ?? 1}
-                count={Math.ceil(total / pageFilter.limit)}
-                onChange={paginationChangeHandler}
-                shape="circular"
-                size="small"
-                sx={{
-                  "& .MuiPaginationItem-root": {
-                    color: "#004034",
-                    borderColor: "#004034",
-                  },
-                  "& .MuiPaginationItem-root.Mui-selected": {
-                    backgroundColor: "#C6D984",
-                    color: "#fff",
-                  },
-                }}
-              />
-            )}
-            {service.length !== 0 && (
-              <span className="page-text">
-                {t("Total")} {total}{" "}
-                {total > 1 ? t("services") : t("service")} {t("available")}
-              </span>
-            )}
-          </Stack>
+          {service.length !== 0 && (
+            <ListPagination
+              page={pageFilter.page ?? 1}
+              pageCount={Math.ceil(total / pageFilter.limit)}
+              onChange={paginationChangeHandler}
+              total={total}
+              totalLabel={`${total > 1 ? t("services") : t("service")} ${t("available")}`}
+            />
+          )}
         </Stack>
       </Stack>
     );
@@ -231,40 +211,15 @@ const OurService: NextPage<ServiceProps> = (props) => {
                 })}
               </>
             )}
-            <Stack className={"pagination"}>
-              <Stack className="pagination-box">
-                {service.length > 0 &&
-                  Math.ceil(total / pageFilter.limit) > 1 && (
-                    <Stack className="pagination-box">
-                      <Pagination
-                        page={pageFilter.page ?? 1}
-                        count={Math.ceil(total / pageFilter.limit)}
-                        onChange={paginationChangeHandler}
-                        shape="circular"
-                        sx={{
-                          "& .MuiPaginationItem-root": {
-                            color: "#004034", // text color
-                            borderColor: "#004034", // border color
-                          },
-                          "& .MuiPaginationItem-root.Mui-selected": {
-                            backgroundColor: "#C6D984", // selected background
-                            color: "#fff", // selected text
-                          },
-                          "& .MuiPaginationItem-root:hover": {
-                            backgroundColor: "#C6D984", // hover background
-                            color: "#fff",
-                          },
-                        }}
-                      />
-                    </Stack>
-                  )}
-              </Stack>
-              {service.length !== 0 && (
-                <span>
-                  {t("Total")} {total} {total > 1 ? t("services") : t("service")} {t("available")}
-                </span>
-              )}
-            </Stack>
+            {service.length !== 0 && (
+              <ListPagination
+                page={pageFilter.page ?? 1}
+                pageCount={Math.ceil(total / pageFilter.limit)}
+                onChange={paginationChangeHandler}
+                total={total}
+                totalLabel={`${total > 1 ? t("services") : t("service")} ${t("available")}`}
+              />
+            )}
           </Stack>
         </Stack>
       </Stack>

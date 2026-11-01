@@ -1,22 +1,29 @@
+# Cropper frontend - runs the image built by GitHub Actions (never built on the server).
+# Lives in /home/deploy/barbershop-client next to deploy.sh.
+# IMAGE_TAG is set by deploy.sh (e.g. sha-abc1234); defaults to latest for manual runs.
 services:
   barbershop-client:
+    image: ghcr.io/mdilshodbek/barbershop-client:${IMAGE_TAG:-latest}
     container_name: barbershop-client
-    restart: always
-    image: node:20.10.0
+    restart: unless-stopped
     ports:
-      - 4000:3000
+      # only reachable from the server itself; Nginx proxies the domain to it
+      - "127.0.0.1:${FRONTEND_PORT:-4003}:3000"
     environment:
-      - PORT=3000
-
-    volumes:
-      - ./:/usr/src/barbershop-client
-    working_dir: /usr/src/barbershop-client
-
-    networks:
-      - client_network
-
-    command: bash -c "yarn && yarn run build && yarn run start"
-
-networks:
-  client_network:
-    driver: bridge
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+      # keep Node's heap small on the 1 GB server
+      NODE_OPTIONS: --max-old-space-size=192
+    mem_limit: 320m
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

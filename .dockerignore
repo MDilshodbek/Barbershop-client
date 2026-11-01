@@ -1,0 +1,26 @@
+# secrets / local env
+.env
+.env.*
+
+# dependencies and build output (rebuilt inside the image)
+node_modules
+.next
+out
+build
+*.tsbuildinfo
+
+# git, CI and editor files
+.git
+.github
+.vscode
+.idea
+*.log
+.DS_Store
+
+# deploy files (live on the server, not in the image)
+Dockerfile
+.dockerignore
+docker-compose.yml
+deploy.sh
+deploy.ps1
+README.md

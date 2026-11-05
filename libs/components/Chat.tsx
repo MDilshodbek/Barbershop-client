@@ -2,6 +2,7 @@ import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Box, Stack } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useRouter } from "next/router";
 import ScrollableFeed from "react-scrollable-feed";
 import { useReactiveVar } from "@apollo/client";
@@ -129,7 +130,13 @@ const ChatMessageList = memo(function ChatMessageList() {
   );
 });
 
-const ChatHeader = memo(function ChatHeader({ status }: { status: ChatSocketStatus }) {
+const ChatHeader = memo(function ChatHeader({
+  status,
+  onClose,
+}: {
+  status: ChatSocketStatus;
+  onClose: () => void;
+}) {
   const { t } = useTranslation("common");
 
   return (
@@ -142,6 +149,10 @@ const ChatHeader = memo(function ChatHeader({ status }: { status: ChatSocketStat
           {t(STATUS_LABEL_KEYS[status])}
         </div>
       </div>
+      {/* Comment: visible on phones only (see chat.scss) */}
+      <button type={"button"} className={"chat-close-btn"} onClick={onClose} aria-label={t("Close AI chat")}>
+        <CloseRoundedIcon aria-hidden={"true"} />
+      </button>
     </Box>
   );
 });
@@ -173,6 +184,7 @@ const ChatLauncher = memo(function ChatLauncher({ open, onToggle }: { open: bool
 const Chat = () => {
   const { t } = useTranslation("common");
   const chatContentRef = useRef<HTMLDivElement>(null);
+  const chatFrameRef = useRef<HTMLDivElement>(null);
   const textInput = useRef<HTMLInputElement>(null);
   const isWaiting = useReactiveVar(chatIsWaitingVar);
   const status = useReactiveVar(chatStatusVar);
@@ -198,6 +210,28 @@ const Chat = () => {
   useEffect(() => {
     setOpenButton(false);
   }, [router.pathname]);
+
+  // Comment: on phones the open chat is full-screen; size it to the visible area so the
+  // on-screen keyboard never covers the input (desktop CSS ignores these variables)
+  useEffect(() => {
+    const frame = chatFrameRef.current;
+    const viewport = typeof window !== "undefined" ? window.visualViewport : null;
+    if (!open || !frame || !viewport) return;
+
+    const update = () => {
+      frame.style.setProperty("--chat-vv-height", `${viewport.height}px`);
+      frame.style.setProperty("--chat-vv-top", `${viewport.offsetTop}px`);
+    };
+    update();
+    viewport.addEventListener("resize", update);
+    viewport.addEventListener("scroll", update);
+    return () => {
+      viewport.removeEventListener("resize", update);
+      viewport.removeEventListener("scroll", update);
+      frame.style.removeProperty("--chat-vv-height");
+      frame.style.removeProperty("--chat-vv-top");
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!sendHint) return;
@@ -266,10 +300,10 @@ const Chat = () => {
   const counterClass = charsLeft === 0 ? "limit" : nearLimit ? "warn" : "";
 
   return (
-    <Stack className="chatting">
+    <Stack className={`chatting ${open ? "is-open" : ""}`}>
       {openButton ? <ChatLauncher open={open} onToggle={handleOpenChat} /> : null}
-      <Stack className={`chat-frame ${open ? "open" : ""}`}>
-        <ChatHeader status={status} />
+      <Stack className={`chat-frame ${open ? "open" : ""}`} ref={chatFrameRef}>
+        <ChatHeader status={status} onClose={handleOpenChat} />
         <Box
           className={"chat-content"}
           id="chat-content"
@@ -280,18 +314,23 @@ const Chat = () => {
         </Box>
         <Box className={"chat-bott"} component={"div"}>
           <div className={"chat-input-row"}>
-            <input
-              ref={textInput}
-              type={"text"}
-              name={"message"}
-              className={"msg-input"}
-              placeholder={t("Ask about services, prices, booking…")}
-              aria-label={t("Ask about services, prices, booking…")}
-              maxLength={CHAT_MAX_LENGTH}
-              value={messageInput}
-              onChange={getInputMessageHandler}
-              onKeyDown={getKeyHandler}
-            />
+            <div className={"chat-input-field"}>
+              <input
+                ref={textInput}
+                type={"text"}
+                name={"message"}
+                className={"msg-input"}
+                placeholder={t("Ask about services, prices, booking…")}
+                aria-label={t("Ask about services, prices, booking…")}
+                maxLength={CHAT_MAX_LENGTH}
+                value={messageInput}
+                onChange={getInputMessageHandler}
+                onKeyDown={getKeyHandler}
+              />
+              <span className={`chat-counter ${counterClass}`}>
+                {messageInput.length}/{CHAT_MAX_LENGTH}
+              </span>
+            </div>
             <button
               className={"send-msg-btn"}
               onClick={onClickHandler}
@@ -304,9 +343,6 @@ const Chat = () => {
           <div className={"chat-meta"}>
             <span className={"chat-hint"} aria-live={"polite"}>
               {hintText}
-            </span>
-            <span className={`chat-counter ${counterClass}`}>
-              {messageInput.length}/{CHAT_MAX_LENGTH}
             </span>
           </div>
         </Box>

@@ -8,7 +8,9 @@ export default function Document() {
 				<meta name="robots" content="index,follow" />
 
 				{/* Favicon */}
-				<link rel="icon" type="image/png" href="/logo/Logo.jpg" />
+				<link rel="icon" type="image/svg+xml" href="/logo/Logo.svg" />
+				<link rel="icon" type="image/png" sizes="32x32" href="/logo/Logo.png" />
+				<link rel="apple-touch-icon" sizes="180x180" href="/logo/Logo.png" />
 
 				{/* Fonts */}
 				<link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -261,16 +261,20 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      // Comment: full container width, so the heading starts at the logo/image left edge
+      // and the button ends at their right edge
       .hero-top {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        width: 100%;
         margin-top: 5px;
         height: 180px;
         align-items: center;
-        gap: 83px;
+        gap: 40px;
         .hero-slogan {
-          width: 770px;
+          flex: 0 1 770px;
+          min-width: 0;
           h1 {
             color: #004034;
             font-family: Limelight;
@@ -284,8 +288,9 @@
           display: flex;
           flex-direction: column;
           justify-content: center;
+          align-items: flex-end;
+          flex-shrink: 0;
           height: 140px;
-          width: 411px;
           .hero-butt {
             display: flex;
             justify-content: center;
